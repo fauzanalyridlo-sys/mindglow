@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buat Sandi Baru</title>
+</head>
+
+<body>
+    <header>
+        <h1>Buat Sandi Baru</h1>
+        <p>Pastikan sandi kamu memiliki setidaknya 8 karakter.</p>
+    </header>
+
+    <main>
+        <section aria-labelledby="password-section">
+            <h2 id="password-section">Sandi Baru</h2>
+
+            <form action="#" method="post">
+                <p>
+                    <label for="new-password">Sandi baru</label>
+                    <input
+                        type="password"
+                        id="new-password"
+                        name="new-password"
+                        placeholder="Masukkan sandi baru"
+                        autocomplete="new-password"
+                    >
+                </p>
+
+                <p>
+                    <label for="confirm-password">Konfirmasi sandi</label>
+                    <input
+                        type="password"
+                        id="confirm-password"
+                        name="confirm-password"
+                        placeholder="Masukkan kembali sandi"
+                        autocomplete="new-password"
+                    >
+                </p>
+
+                <p>
+                    <button type="submit">Simpan Sandi</button>
+                </p>
+            </form>
+
+            <nav aria-label="Navigasi kembali">
+                <a href="login.html">Kembali ke login</a>
+            </nav>
+        </section>
+    </main>
+
+    <footer>
+        <img
+            src="assets/images/login-ilustrasi.png"
+            alt=""
+        >
+    </footer>
+</body>
+</html>

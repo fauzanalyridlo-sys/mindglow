@@ -1,4 +1,4 @@
-!!contoh prompt!!
+!!prompt, jangan langsung ambil kesimpulan kalau jawaban AI nya udh bener ya guys, cek lagi siapatau ada yang kurang!!
 Tugas:
 Ubah desain/screenshot halaman yang saya berikan menjadi HTML5 semantic.
 
