@@ -1,52 +1,76 @@
-<section aria-labelledby="login-error-title">
-    <h1 id="login-error-title">Login Tidak Berhasil</h1>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Tidak Berhasil - MindGlow</title>
+</head>
 
-    <p role="alert">
-        Sepertinya email/username atau password belum sesuai.
-    </p>
+<body>
+    <header>
+        <h1>Login Tidak Berhasil</h1>
+    </header>
 
-    <p>Yuk, coba periksa kembali.</p>
+    <main>
+        <section aria-labelledby="login-error-title">
+            <h2 id="login-error-title">Periksa Kembali Akunmu</h2>
 
-    <form action="#" method="post">
-        <p>
-            <label for="username">Email/Username</label>
-            <input
-                type="text"
-                id="username"
-                name="username"
-                autocomplete="username"
-            >
-        </p>
+            <p role="alert">
+                Sepertinya email/username atau password belum sesuai.
+            </p>
 
-        <p>
-            <label for="password">Password</label>
-            <input
-                type="password"
-                id="password"
-                name="password"
-                autocomplete="current-password"
-            >
-        </p>
+            <p>Yuk, coba periksa kembali.</p>
 
-        <p>
-            <button type="submit">MASUK</button>
-        </p>
-    </form>
+            <form action="home_dashboard.html" method="get">
+                <p>
+                    <label for="username">Email/Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        autocomplete="username"
+                        required
+                    >
+                </p>
 
-    <nav aria-label="Navigasi akun">
-        <ul>
-            <li>
-                <a href="tautan_reset_pw.html">Lupa sandi</a>
-            </li>
-            <li>
-                <span>Belum Punya Akun?</span>
-                <a href="daftar.html">Daftar sekarang</a>
-            </li>
-        </ul>
-    </nav>
+                <p>
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </p>
 
-    <img
-        src="assets/images/login.png"
-        alt=""
-    >
-</section>
+                <p>
+                    <button type="submit">MASUK</button>
+                </p>
+            </form>
+
+            <nav aria-label="Navigasi akun">
+                <ul>
+                    <li>
+                        <a href="tautan_reset_pw.html">Lupa sandi</a>
+                    </li>
+                    <li>
+                        <span>Belum Punya Akun?</span>
+                        <a href="daftar.html">Daftar sekarang</a>
+                    </li>
+                    <li>
+                        <a href="login.html">Kembali ke Login</a>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+    </main>
+
+    <footer>
+        <img
+            src="assets/images/footer_login.png"
+            alt=""
+        >
+    </footer>
+</body>
+</html>
