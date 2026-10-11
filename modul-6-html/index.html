@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindGlow - Kenali Dirimu</title>
+</head>
+
+<body>
+    <header>
+        <a href="#beranda" aria-label="MindGlow Beranda">
+            <img src="assets/images/Group 20.png" alt="MindGlow">
+        </a>
+
+        <nav aria-label="Navigasi utama">
+            <ul>
+                <li><a href="#beranda">Beranda</a></li>
+                <li><a href="#fitur">Fitur</a></li>
+                <li><a href="#cara-kerja">Cara kerja</a></li>
+            </ul>
+        </nav>
+
+        <nav aria-label="Navigasi akun">
+            <form action="login.html" method="get">
+                <button type="submit">Masuk</button>
+            </form>
+            <form action="daftar.html" method="get">
+                <button type="submit">Daftar</button>
+            </form>
+        </nav>
+    </header>
+
+    <main>
+        <section id="beranda" aria-labelledby="hero-title">
+            <p>♡ Ruang aman untuk dirimu</p>
+
+            <h1 id="hero-title">
+                Kenali dirimu,<br>
+                satu hari dalam<br>
+                satu waktu.
+            </h1>
+
+            <p>
+                Temukan pola emosimu, tuangkan isi pikiran, dan dapatkan
+                refleksi personal — semuanya dalam satu ruang yang tenang.
+            </p>
+
+            <p>
+                <form action="daftar.html" method="get">
+    <button type="submit">Mulai perjalananmu →</button>
+</form>
+                <span>◉ Gratis untuk memulai</span>
+            </p>
+
+            <img
+                src="assets/images/herolading.png"
+                alt="Ilustrasi tiga orang yang bergerak dengan bebas di ruang terbuka"
+            >
+        </section>
+
+        <section aria-label="Ringkasan manfaat">
+            <ul>
+                <li>
+                    <strong>1 menit</strong>
+                    <p>untuk check-in</p>
+                </li>
+                <li>
+                    <strong>24/7</strong>
+                    <p>ruang refleksi</p>
+                </li>
+                <li>
+                    <strong>100%</strong>
+                    <p>privasi personal</p>
+                </li>
+                <li>
+                    <strong>Setiap hari</strong>
+                    <p>menemani kamu</p>
+                </li>
+            </ul>
+        </section>
+
+        <section id="fitur" aria-labelledby="features-title">
+            <header>
+                <p>DIRANCANG UNTUK KESEHARIANMU</p>
+                <h2 id="features-title">
+                    Memahami diri terasa lebih sederhana.
+                </h2>
+                <p>
+                    Rutinitas kecil yang membantu kamu berhenti sejenak,
+                    mengenali perasaan, dan melangkah dengan lebih sadar.
+                </p>
+            </header>
+
+            <article>
+                <h3>Check-in harian</h3>
+                <p>
+                    Rekam suasana hati setiap hari, dan lihat pola emosimu
+                    hanya dalam 1 menit.
+                </p>
+                <a href="#check-in">Lihat fitur →</a>
+            </article>
+
+            <article>
+                <h3>Refleksi AI</h3>
+                <p>
+                    Dapatkan rangkuman empatik dari perjalanan pikiran
+                    dan perasaan sehari-hari.
+                </p>
+                <a href="#refleksi">Lihat fitur →</a>
+            </article>
+
+            <article>
+                <h3>Jurnal terpandu</h3>
+                <p>
+                    Mulai menulis dengan pertanyaan sederhana yang
+                    membantu memahami isi pikiran.
+                </p>
+                <a href="#jurnal">Lihat fitur →</a>
+            </article>
+        </section>
+
+        <section id="cara-kerja" aria-labelledby="how-title">
+            <header>
+                <p>DEMO FITUR</p>
+                <h2 id="how-title">
+                    Satu check-in kecil, gambaran diri yang lebih utuh.
+                </h2>
+                <p>
+                    Coba satu sesi sederhana di bawah ini. Kenali apa yang
+                    kamu rasakan hari ini, sesuai kebutuhanmu.
+                </p>
+            </header>
+
+            <article id="check-in">
+                <h3>Check-in harian</h3>
+                <p>
+                    Luangkan dua menit untuk mengenali kondisi harian,
+                    menjawab pertanyaan sederhana, dan memperhatikan
+                    respons diri dari waktu ke waktu.
+                </p>
+
+                <ul>
+                    <li>Catat dan lacak suasana hati</li>
+                    <li>Perhatikan pola emosional</li>
+                    <li>Data disimpan secara privat</li>
+                </ul>
+
+                <form action="#" method="get">
+    <fieldset>
+        <legend>1. Pilih suasana hati utama</legend>
+
+        <label>
+            <input
+                type="radio"
+                name="suasana-hati"
+                value="lelah"
+                required
+            >
+             Lelah/Down
+        </label>
+
+        <label>
+            <input
+                type="radio"
+                name="suasana-hati"
+                value="cemas"
+            >
+            Cemas
+        </label>
+
+        <label>
+            <input
+                type="radio"
+                name="suasana-hati"
+                value="biasa"
+            >
+            Biasa aja
+        </label>
+
+        <label>
+            <input
+                type="radio"
+                name="suasana-hati"
+                value="tenang"
+            >
+            Tenang
+        </label>
+
+        <label>
+            <input
+                type="radio"
+                name="suasana-hati"
+                value="semangat"
+            >
+            Semangat!
+        </label>
+    </fieldset>
+
+    <fieldset>
+        <legend>Kondisi harianmu</legend>
+
+        <p>
+            <label for="energi">
+                Tingkat energi baterai diri
+            </label>
+
+            <input
+                type="range"
+                id="energi"
+                name="energi"
+                min="1"
+                max="5"
+                value="3"
+            >
+        </p>
+
+        <p>
+            <label for="istirahat">
+                Istirahat semalam (jam)
+            </label>
+
+            <input
+                type="number"
+                id="istirahat"
+                name="istirahat"
+                min="0"
+                max="24"
+                step="0.5"
+                placeholder="Contoh: 6"
+            >
+        </p>
+    </fieldset>
+
+    <fieldset>
+    <legend>Aktivitas utama</legend>
+
+    <label for="aktivitas-kuliah">
+        <input
+            type="checkbox"
+            id="aktivitas-kuliah"
+            name="aktivitas[]"
+            value="kuliah"
+        >
+        Kuliah
+    </label>
+
+    <label for="aktivitas-proyek">
+        <input
+            type="checkbox"
+            id="aktivitas-proyek"
+            name="aktivitas[]"
+            value="proyek-kelompok"
+        >
+        Proyek Kelompok
+    </label>
+
+    <label for="aktivitas-lab">
+        <input
+            type="checkbox"
+            id="aktivitas-lab"
+            name="aktivitas[]"
+            value="lab-praktikum"
+        >
+        Lab/Praktikum
+    </label>
+
+    <p>
+        <label for="aktivitas-lainnya">
+            Aktivitas lainnya
+        </label>
+
+        <input
+            type="text"
+            id="aktivitas-lainnya"
+            name="aktivitas-lainnya"
+            placeholder="Tulis aktivitas lainnya..."
+        >
+    </p>
+</fieldset>
+
+    <button type="submit">
+        Simpan Check-in Hari Ini
+    </button>
+</form>
+        <section id="refleksi" aria-labelledby="reflection-title">
+    <article>
+        <h2 id="reflection-title">Ruang Refleksi</h2>
+
+        <p>
+            Ceritakan apa yang sedang kamu rasakan.
+        </p>
+
+        <form action="#" method="get">
+            <label for="cerita-refleksi">
+                Ceritamu
+            </label>
+
+            <textarea
+                id="cerita-refleksi"
+                name="cerita-refleksi"
+                rows="4"
+                placeholder="Ceritakan apa yang sedang kamu rasakan..."
+                required
+            ></textarea>
+
+            <button type="submit">
+                Kirim
+            </button>
+        </form>
+
+        <p>
+            <small>
+                Ini adalah demo tampilan refleksi.
+                Respons AI belum tersedia pada versi HTML ini.
+            </small>
+        </p>
+    </article>
+
+    <article>
+        <h2>
+            Refleksi yang terasa personal, bukan menggurui.
+        </h2>
+
+        <p>
+            MindGlow dirancang untuk membantu pengguna
+            merefleksikan cerita dan pengalaman melalui
+            pertanyaan yang mendukung pemahaman diri.
+        </p>
+
+        <ul>
+            <li>Memahami situasi</li>
+            <li>Respons empatik</li>
+            <li>Melihat pola emosi</li>
+        </ul>
+    </article>
+</section>
+
+        <section id="jurnal" aria-labelledby="journal-title">
+            <header>
+                <h2 id="journal-title">
+                    Tuliskan cerita dan pengalamanmu di sini
+                </h2>
+                <p>
+                    Mulai menuliskan pikiran secara jujur tanpa perlu
+                    merasa takut dihakimi.
+                </p>
+            </header>
+
+            <article>
+                <h3>Jurnal</h3>
+
+                <p>
+                    Jurnal adalah ruang aman untuk menulis apa pun
+                    yang kamu rasakan. Dengan menulis, kamu bisa
+                    belajar memahami emosi, pikiran, dan pengalaman
+                    dalam perjalananmu.
+                </p>
+
+                <ul>
+                    <li>Ungkapkan pikiran dan perasaan</li>
+                    <li>Melakukan refleksi diri</li>
+                    <li>Mencatat pengalaman harian</li>
+                </ul>
+            </article>
+
+            <article>
+                <h3>JURNAL CURHAT PRIVAT</h3>
+
+                <form action="#" method="post">
+                    <label for="jurnal-cerita">Tulisanmu aman</label>
+
+                    <textarea
+                        id="jurnal-cerita"
+                        name="jurnal-cerita"
+                        rows="5"
+                        placeholder="Bagaimana harimu? Apa hal yang paling menyita pikiranmu saat ini?"
+                    ></textarea>
+
+                    <p>
+                        <small>0 dari 500 kata</small>
+                    </p>
+
+                    <button type="submit">Simpan Jurnal</button>
+                </form>
+            </article>
+        </section>
+
+        <section aria-labelledby="cta-title">
+            <header>
+                <p>MULAI DARI HARI INI</p>
+                <h2 id="cta-title">
+                    Dirimu layak mendapat ruang untuk didengar.
+                </h2>
+                <p>
+                    Tidak perlu menunggu semuanya sempurna untuk mulai
+                    memahami diri sendiri.
+                </p>
+               <form action="login.html" method="get">
+    <button type="submit">Mulai sekarang →</button>
+</form>
+            </header>
+        </section>
+    </main>
+
+    <footer>
+        <img
+            src="assets/images/bawah.png"
+            alt=""
+        >
+    </footer>
+</body>
+</html>

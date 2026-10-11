@@ -3,71 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selamat Datang Kembali</title>
+    <title>Masuk - MindGlow</title>
 </head>
 
 <body>
     <header>
-        <h1>Halo</h1>
-        <h1>Selamat Datang Kembali</h1>
-        
+        <h1>Halo, Selamat Datang Kembali</h1>
     </header>
 
     <main>
         <section aria-labelledby="login-title">
             <h2 id="login-title">Masuk</h2>
 
-            <form action="#" method="post">
-                <p>
-                    <label for="username">Email/Username</label>
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        autocomplete="username"
-                    >
-                </p>
+            <form action="home_dashboard.html" method="post">
+    <p>
+        <label for="username">Email/Username</label>
+        <input
+            type="text"
+            id="username"
+            name="username"
+            autocomplete="username"
+            required
+        >
+    </p>
 
-                <p>
-                    <label for="password">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        autocomplete="current-password"
-                    >
+    <p>
+        <label for="password">Password</label>
+        <input
+            type="password"
+            id="password"
+            name="password"
+            autocomplete="current-password"
+            required
+        >
+    </p>
 
-                    <button
-                        type="button"
-                        aria-label="Tampilkan password"
-                    >
-                        Tampilkan password
-                    </button>
-                </p>
-
+    <p>
+            
+        <button type="submit">MASUK</button>
+       
+    </p>
+</form>
             <p>
-                <a href="home_dashboard.html">MASUK</a>
+                <a href="login_data_tidakvalid.html">
+                    Lihat contoh login tidak berhasil
+                </a>
             </p>
-            </form>
 
             <nav aria-label="Navigasi akun">
                 <ul>
                     <li>
-                        <a href="sandi_baru_kofiremail.html">Lupa sandi</a>
+                        <a href="tautan_reset_pw.html">Lupa sandi</a>
                     </li>
                     <li>
-                        <span>Belum Punya Akun?</span>
+                        <span>Belum punya akun?</span>
                         <a href="daftar.html">Daftar sekarang</a>
                     </li>
                 </ul>
             </nav>
-            <footer>
-                <img
-                    src="assets/images/login.png"
-                    alt=""
-                >
-            </footer>
         </section>
     </main>
+
+    <footer>
+        <img src="assets/images/footer_login.png" alt="">
+    </footer>
 </body>
 </html>
