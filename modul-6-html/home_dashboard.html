@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - Mindglow</title>
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html">
+            <img src="assets/images/logo-mindglow.webp" alt="Logo Mindglow">
+            <span>Mindglow</span>
+        </a>
+        <nav>
+            <ul>
+                <li><a href="home_dashboard.html">Beranda</a></li>
+                <li><a href="check_harian.html">Cek Harian</a></li>
+                <li><a href="jurnal.html">Jurnal</a></li>
+                <li><a href="akademik.html">Akademik</a></li>
+                <li><a href="insigth.html">Wawasan</a></li>
+                <li><a href="AI_page.html">Refleksi AI</a></li>
+            </ul>
+        </nav>
+        <a href="profil.html" aria-label="Profil Pengguna">L</a>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section>
+            <h1>Selamat Datang Kembali, Kelompok 5 👋</h1>
+            <p>Ingat, kamu tidak perlu menyelesaikan semua masalah sekaligus.<br>Cukup ambil satu langkah kecil hari
+                ini."</p>
+            <div>
+                <form action="check_harian.html" method="GET">
+                    <button type="submit">Check hari ini</button>
+                </form>
+                <form action="relaksasi.html" method="GET">
+                    <button type="submit">
+                        <img src="assets/images/icon-heart.webp" alt="">
+                        Butuh Relaksasi Cepat
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Overview Cards Section -->
+        <!-- Overview Cards Section -->
+        <div>
+            <article>
+                <img src="assets/images/icon-smile.webp" alt="">
+                <h2>Suasana Hati Hari Ini</h2>
+                <p>Cukup Lelah / Kewalahan</p>
+                <p>Tidur: 6 jam • Energi: 3/5</p>
+            </article>
+
+            <article>
+                <img src="assets/images/icon-progress.webp" alt="">
+                <h2>Tugas Mendatang</h2>
+                <p>Cukup Lelah / Kewalahan</p>
+                <p>1 Proyek Kelompok</p>
+            </article>
+
+            <article>
+                <img src="assets/images/icon-chat.webp" alt="">
+                <h2>Ruang Curhat AI</h2>
+                <p>Siap Mendengarkan</p>
+                <a href="AI_chat.html">Mulai Chat &rarr;</a>
+            </article>
+        </div>
+
+        <!-- Task List Section -->
+        <section>
+            <header>
+                <h2>Tugas Prioritas Akademik</h2>
+                <a href="tasks.html">Kelola Semua Tasks &rarr;</a>
+            </header>
+            <form action="#" method="POST">
+                <ul>
+                    <li>
+                        <input type="checkbox" id="task-web" name="task-web">
+                        <label for="task-web">Makalah Proyek Sistem Web</label>
+                        <span>25 - 10 - 2026</span>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="task-uts" name="task-uts">
+                        <label for="task-uts">Ujian Tengah Semester Praktikum</label>
+                        <span>26 - 10 - 2026</span>
+                    </li>
+                </ul>
+            </form>
+        </section>
+    </main>
+
+</body>
+
+</html>
