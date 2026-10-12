@@ -30,7 +30,7 @@ Ketentuan wajib:
 Output:
 - Berikan hanya kode HTML.
 - Jangan menambahkan CSS.
-- Setelah kode, berikan daftar singkat bagian yang perlu saya
+- Setelah kode, berikan daftar singkat bagian yan g perlu saya
   cek secara manual sebelum validasi W3C.
 
 
