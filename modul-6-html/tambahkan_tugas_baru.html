@@ -1,843 +1,130 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tambah Tugas Baru - MindGlow</title>
-
-<style>
-:root {
-  --green: #86a99a;
-  --green-dark: #71957f;
-  --green-light: #e3eee7;
-  --cream: #fbfaf5;
-  --bg: #f0f1ec;
-  --navy: #303b4d;
-  --border: #c4d8cc;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  color: var(--navy);
-  background: var(--bg);
-}
-
-button, input, select {
-  font-family: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-.navbar {
-  min-height: 76px;
-  padding: 15px 5.5%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 25px;
-  background: var(--cream);
-  border-bottom: 1px solid #e4e7df;
-}
-
-.brand img {
-  display: block;
-  width: 145px;
-  height: auto;
-  object-fit: contain;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 25px;
-}
-
-.nav-links a {
-  color: var(--navy);
-  text-decoration: none;
-  font-size: 15px;
-}
-
-.nav-links a.active {
-  font-weight: 700;
-}
-
-.profile {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: var(--green);
-  color: white;
-  font-size: 21px;
-  flex-shrink: 0;
-}
-
-main {
-  max-width: 1500px;
-  margin: auto;
-  padding: 45px 4.2% 60px;
-}
-
-.hero {
-  padding: 38px 42px;
-  margin-bottom: 30px;
-  background: var(--cream);
-  border: 1px solid var(--border);
-  border-radius: 25px;
-  box-shadow: 0 5px 9px #00000012;
-}
-
-.hero h1 {
-  margin: 0 0 18px;
-  font-size: 38px;
-}
-
-.hero p {
-  margin: 0 0 24px;
-  font-size: 19px;
-  line-height: 1.5;
-}
-
-.add-button,
-.primary-button,
-.modal-ok {
-  padding: 13px 23px;
-  border: none;
-  border-radius: 25px;
-  background: var(--green);
-  color: white;
-  font-weight: 700;
-}
-
-.add-button:hover,
-.primary-button:hover,
-.modal-ok:hover {
-  background: var(--green-dark);
-}
-
-.content {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: 25px;
-  align-items: start;
-}
-
-.panel {
-  padding: 28px;
-  background: var(--cream);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  box-shadow: 0 5px 9px #00000012;
-}
-
-.panel h2 {
-  margin: 0 0 24px;
-  font-size: 23px;
-}
-
-.form-group {
-  margin-bottom: 16px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 7px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  height: 42px;
-  padding: 9px 14px;
-  border: 1px solid #a2b7ac;
-  border-radius: 12px;
-  background: white;
-  color: var(--navy);
-  font-size: 13px;
-  outline: none;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.form-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 25px;
-}
-
-.form-actions button {
-  min-height: 42px;
-  padding: 9px;
-  border: none;
-  border-radius: 25px;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.secondary-button {
-  background: var(--green);
-  color: white;
-}
-
-.secondary-button:hover {
-  background: var(--green-dark);
-}
-
-.primary-button {
-  background: var(--green-dark);
-  color: white;
-}
-
-.info-item {
-  padding: 13px 0;
-  border-bottom: 1px solid var(--border);
-  line-height: 1.6;
-}
-
-.info-item:last-child {
-  border-bottom: none;
-}
-
-.info-item strong {
-  font-size: 14px;
-}
-
-.info-item p {
-  margin: 5px 0 0;
-  color: #687c78;
-  font-size: 13px;
-}
-
-.task-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 22px;
-  margin-top: 28px;
-}
-
-.task-card {
-  padding: 23px;
-  background: var(--cream);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  box-shadow: 0 5px 9px #00000012;
-  overflow-wrap: anywhere;
-}
-
-.task-top,
-.task-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.task-top {
-  margin-bottom: 16px;
-}
-
-.priority {
-  padding: 6px 16px;
-  border-radius: 25px;
-  color: white;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.high { background: #d93838; }
-.medium { background: #e4aa43; }
-.low { background: var(--green); }
-
-.task-type {
-  font-size: 14px;
-  color: #333;
-}
-
-.task-card h3 {
-  margin: 0 0 10px;
-  font-size: 18px;
-}
-
-.course {
-  margin-bottom: 13px;
-  color: #687c78;
-  font-size: 13px;
-}
-
-.deadline {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 20px;
-  background: var(--green-light);
-  font-size: 12px;
-  color: #4a6358;
-}
-
-.task-actions {
-  margin-top: 18px;
-}
-
-.task-actions button {
-  padding: 9px 14px;
-  border: none;
-  border-radius: 25px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.done-button {
-  background: var(--green);
-  color: white;
-}
-
-.done-button:disabled {
-  opacity: .65;
-}
-
-.delete-button {
-  background: #d93838;
-  color: white;
-}
-
-.empty-state {
-  display: none;
-  margin-top: 15px;
-  padding: 30px 20px;
-  text-align: center;
-  color: #687c78;
-  font-size: 14px;
-  border: 1px dashed var(--border);
-  border-radius: 16px;
-}
-
-/* Modal Popup Overlay */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(2px);
-  overflow-y: auto;
-}
-
-/* KELAS SHOW UNTUK MENAMPILKAN POPUP */
-.modal-overlay.show {
-  display: flex;
-}
-
-.modal {
-  width: 100%;
-  max-width: 440px;
-  padding: 35px 30px;
-  background: #fbfaf6;
-  border: 1px solid var(--border);
-  border-radius: 28px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-  animation: appear .2s ease-out;
-}
-
-.form-modal h2 {
-  margin: 0 0 25px;
-  text-align: center;
-  color: #171717;
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.modal-result {
-  text-align: center;
-  padding: 28px 25px;
-}
-
-.modal-icon {
-  display: grid;
-  place-items: center;
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 12px;
-  border-radius: 50%;
-  font-size: 34px;
-  font-weight: 700;
-}
-
-.modal-icon.success {
-  color: white;
-  background: var(--green-dark);
-}
-
-.modal-icon.delete {
-  color: #bd3939;
-  background: #f1cccc;
-}
-
-.modal-result h2 {
-  margin: 0 0 10px;
-  font-size: 22px;
-}
-
-.modal-result p {
-  margin: 0 0 22px;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.modal-ok {
-  min-width: 90px;
-  padding: 10px 22px;
-  font-weight: 400;
-}
-
-.modal-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-}
-
-.cancel-button,
-.confirm-delete {
-  padding: 11px 17px;
-  border: none;
-  border-radius: 25px;
-  font-weight: 700;
-}
-
-.cancel-button {
-  background: var(--green-light);
-  color: var(--navy);
-}
-
-.confirm-delete {
-  background: #e44848;
-  color: white;
-}
-
-@keyframes appear {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-@media (max-width: 900px) {
-  .navbar { flex-wrap: wrap; }
-
-  .nav-links {
-    order: 3;
-    width: 100%;
-    justify-content: flex-start;
-    gap: 16px;
-  }
-
-  .content {
-    grid-template-columns: 1fr;
-  }
-
-  .task-list {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 500px) {
-  main { padding: 25px 4% 40px; }
-  .hero { padding: 24px; }
-  .hero h1 { font-size: 28px; }
-  .hero p { font-size: 16px; }
-  .panel { padding: 20px; }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Tugas Baru - MindGlow</title>
 </head>
-
 <body>
-
-<header class="navbar">
-  <a href="home_dashboard.html" class="brand">
-    <img src="assets/images/Group-20.png" alt="MindGlow">
-  </a>
-
-  <nav class="nav-links">
-    <a href="home_dashboard.html">Beranda</a>
-    <a href="check_harian.html">Cek Harian</a>
-    <a href="jurnal.html">Jurnal</a>
-    <a href="akademik.html" class="active">Akademik</a>
-    <a href="insight.html">Wawasan</a>
-    <a href="AI_page.html">Refleksi AI</a>
-  </nav>
-
-  <div class="profile">L</div>
-</header>
-
-<main>
-  <section class="hero">
-    <h1>Agenda Akademik</h1>
-    <p>Catat dan atur tugas kuliah, deadline, serta prioritasmu dalam satu tempat.</p>
-    <button class="add-button" id="openAdd">＋ Tambah Tugas Baru</button>
-  </section>
-
-  <div class="content">
-    <section class="panel">
-      <h2>Daftar Tugas Akademik</h2>
-
-      <!-- Daftar Tugas -->
-      <div class="task-list" id="taskList"></div>
-
-      <!-- Pesan jika belum ada tugas -->
-      <div class="empty-state" id="emptyState">
-        Belum ada tugas. Yuk, tambahkan tugas barumu!
-      </div>
-    </section>
-
-    <aside class="panel">
-      <h2>Petunjuk</h2>
-
-      <div class="info-item">
-        <strong>Nama Tugas</strong>
-        <p>Masukkan nama tugas kuliah yang perlu diselesaikan.</p>
-      </div>
-
-      <div class="info-item">
-        <strong>Deadline</strong>
-        <p>Pilih tanggal batas pengumpulan tugas.</p>
-      </div>
-
-      <div class="info-item">
-        <strong>Prioritas</strong>
-        <p>Tentukan tingkat kepentingan tugas.</p>
-      </div>
-
-      <div class="info-item">
-        <strong>Jenis Tugas</strong>
-        <p>Pilih tugas kelompok atau individu.</p>
-      </div>
-    </aside>
-  </div>
-</main>
-
-<!-- Popup Tambah Tugas Baru (Diatur langsung terbuka dengan kelas 'show') -->
-<div class="modal-overlay show" id="addModal">
-  <div class="modal form-modal">
-    <h2>Tambah Tugas Baru</h2>
-
-    <form id="taskForm">
-      <div class="form-group">
-        <label for="taskName">Nama Tugas</label>
-        <input
-          id="taskName"
-          type="text"
-          placeholder="Masukkan nama tugas kamu"
-          required
-        >
-      </div>
-
-      <div class="form-group">
-        <label for="courseName">Mata Kuliah</label>
-        <input
-          id="courseName"
-          type="text"
-          placeholder="Masukkan mata kuliah kamu"
-          required
-        >
-      </div>
-
-      <div class="form-group">
-        <label for="deadline">Deadline</label>
-        <input id="deadline" type="date" value="2026-02-01" required>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="priority">Prioritas</label>
-          <select id="priority" required>
-            <option value="">Pilih Prioritas</option>
-            <option value="Tinggi">Tinggi</option>
-            <option value="Sedang">Sedang</option>
-            <option value="Rendah">Rendah</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="taskType">Jenis Tugas</label>
-          <select id="taskType" required>
-            <option value="">Pilih jenis tugas</option>
-            <option value="Kelompok">Kelompok</option>
-            <option value="Individu">Individu</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" class="secondary-button" id="cancelAdd">
-          Batal
-        </button>
-
-        <button type="submit" class="primary-button">
-          Simpan Tugas
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Popup Berhasil -->
-<div class="modal-overlay" id="successModal">
-  <div class="modal modal-result">
-    <div class="modal-icon success">✓</div>
-    <h2 id="successTitle">Berhasil!</h2>
-    <p id="successMessage">Tugas baru berhasil ditambahkan.</p>
-    <button class="modal-ok" id="closeSuccess">Oke</button>
-  </div>
-</div>
-
-<!-- Popup Konfirmasi Hapus -->
-<div class="modal-overlay" id="confirmDeleteModal">
-  <div class="modal modal-result">
-    <div class="modal-icon delete">▣</div>
-    <h2>Hapus Tugas?</h2>
-    <p>Apakah kamu yakin ingin menghapus tugas ini dari daftar?</p>
-
-    <div class="modal-buttons">
-      <button class="cancel-button" id="cancelDelete">Batal</button>
-      <button class="confirm-delete" id="confirmDelete">Ya, Hapus</button>
-    </div>
-  </div>
-</div>
-
-<!-- Popup Berhasil Dihapus -->
-<div class="modal-overlay" id="deletedModal">
-  <div class="modal modal-result">
-    <div class="modal-icon delete">▣</div>
-    <h2>Berhasil dihapus!</h2>
-    <p>Tugas telah dihapus dari daftar.</p>
-    <button class="modal-ok" id="closeDeleted">Oke</button>
-  </div>
-</div>
-
-<script>
-// Menyiapkan contoh data tugas yang tampil di background (sesuai Figma)
-let tasks = [
-  {
-    id: 1,
-    name: "Makalah Proyek Sistem Web",
-    course: "Pemrograman Web",
-    deadline: "2026-10-01",
-    priority: "Tinggi",
-    type: "Individu",
-    done: false
-  }
-];
-let nextId = 2;
-let deleteTarget = null;
-
-const taskList = document.getElementById("taskList");
-const emptyState = document.getElementById("emptyState");
-
-const addModal = document.getElementById("addModal");
-const successModal = document.getElementById("successModal");
-const confirmDeleteModal = document.getElementById("confirmDeleteModal");
-const deletedModal = document.getElementById("deletedModal");
-
-function showModal(modal) {
-  modal.classList.add("show");
-}
-
-function hideModal(modal) {
-  modal.classList.remove("show");
-}
-
-function formatDate(value) {
-  if (!value) return "-";
-  const parts = value.split("-");
-  if (parts.length !== 3) return value;
-  const [year, month, day] = parts;
-  return `${day}-${month}-${year}`;
-}
-
-function renderTasks() {
-  taskList.innerHTML = "";
-  
-  if (tasks.length === 0) {
-    emptyState.style.display = "block";
-  } else {
-    emptyState.style.display = "none";
-  }
-
-  tasks.forEach(task => {
-    const card = document.createElement("article");
-    card.className = "task-card";
-
-    const top = document.createElement("div");
-    top.className = "task-top";
-
-    const priority = document.createElement("span");
-    priority.className = "priority " +
-      (task.priority === "Tinggi" ? "high" :
-       task.priority === "Rendah" ? "low" : "medium");
-    priority.textContent = task.priority;
-
-    const type = document.createElement("span");
-    type.className = "task-type";
-    type.textContent = task.type;
-
-    top.append(priority, type);
-
-    const title = document.createElement("h3");
-    title.textContent = task.name;
-
-    const course = document.createElement("div");
-    course.className = "course";
-    course.textContent = task.course;
-
-    const deadline = document.createElement("span");
-    deadline.className = "deadline";
-    deadline.textContent = "Deadline: " + formatDate(task.deadline);
-
-    const actions = document.createElement("div");
-    actions.className = "task-actions";
-
-    const doneButton = document.createElement("button");
-    doneButton.className = "done-button";
-    doneButton.textContent = task.done ? "✓ Selesai" : "✓ Tandai Selesai";
-    doneButton.disabled = task.done;
-
-    doneButton.addEventListener("click", () => {
-      task.done = true;
-      renderTasks();
-
-      document.getElementById("successTitle").textContent = "Berhasil!";
-      document.getElementById("successMessage").textContent =
-        "Tugas telah ditandai sebagai selesai.";
-
-      showModal(successModal);
-    });
-
-    const deleteButton = document.createElement("button");
-    deleteButton.className = "delete-button";
-    deleteButton.textContent = "Hapus";
-
-    deleteButton.addEventListener("click", () => {
-      deleteTarget = task.id;
-      showModal(confirmDeleteModal);
-    });
-
-    actions.append(doneButton, deleteButton);
-    card.append(top, title, course, deadline, actions);
-    taskList.appendChild(card);
-  });
-}
-
-document.getElementById("openAdd").addEventListener("click", () => {
-  document.getElementById("taskForm").reset();
-  showModal(addModal);
-});
-
-document.getElementById("cancelAdd").addEventListener("click", () => {
-  hideModal(addModal);
-  document.getElementById("taskForm").reset();
-});
-
-document.getElementById("taskForm").addEventListener("submit", event => {
-  event.preventDefault();
-
-  const name = document.getElementById("taskName").value.trim();
-  const course = document.getElementById("courseName").value.trim();
-  const deadline = document.getElementById("deadline").value;
-  const priority = document.getElementById("priority").value;
-  const type = document.getElementById("taskType").value;
-
-  if (!name || !course || !deadline || !priority || !type) {
-    return;
-  }
-
-  tasks.push({
-    id: nextId++,
-    name,
-    course,
-    deadline,
-    priority,
-    type,
-    done: false
-  });
-
-  renderTasks();
-  hideModal(addModal);
-  event.target.reset();
-
-  document.getElementById("successTitle").textContent = "Berhasil!";
-  document.getElementById("successMessage").textContent =
-    "Tugas baru berhasil ditambahkan.";
-
-  showModal(successModal);
-});
-
-document.getElementById("closeSuccess").addEventListener("click", () => {
-  hideModal(successModal);
-});
-
-document.getElementById("cancelDelete").addEventListener("click", () => {
-  deleteTarget = null;
-  hideModal(confirmDeleteModal);
-});
-
-document.getElementById("confirmDelete").addEventListener("click", () => {
-  if (deleteTarget === null) return;
-
-  tasks = tasks.filter(task => task.id !== deleteTarget);
-  deleteTarget = null;
-
-  renderTasks();
-  hideModal(confirmDeleteModal);
-  showModal(deletedModal);
-});
-
-document.getElementById("closeDeleted").addEventListener("click", () => {
-  hideModal(deletedModal);
-});
-
-[addModal, successModal, confirmDeleteModal, deletedModal].forEach(modal => {
-  modal.addEventListener("click", event => {
-    if (event.target === modal) {
-      hideModal(modal);
-
-      if (modal === confirmDeleteModal) {
-        deleteTarget = null;
-      }
-    }
-  });
-});
-
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") {
-    [addModal, successModal, confirmDeleteModal, deletedModal]
-      .forEach(hideModal);
-    deleteTarget = null;
-  }
-});
-
-renderTasks();
-</script>
-
+    <header>
+        <a href="home_dashboard.html">
+            <img src="assets/images/Group-20.png" alt="Logo MindGlow">
+        </a>
+
+        <nav aria-label="Navigasi utama">
+            <a href="home_dashboard.html">Beranda</a>
+            <a href="check_harian.html">Cek Harian</a>
+            <a href="jurnal.html">Jurnal</a>
+            <a href="akademik.html" aria-current="page">Akademik</a>
+            <a href="insight.html">Wawasan</a>
+            <a href="AI_page.html">Refleksi AI</a>
+        </nav>
+
+        <p>Profil: L</p>
+    </header>
+
+    <main>
+        <section aria-labelledby="judul-agenda">
+            <h1 id="judul-agenda">Agenda Akademik</h1>
+            <p>Catat dan atur tugas kuliah, deadline, serta prioritasmu dalam satu tempat.</p>
+            <a href="#form-tugas">＋ Tambah Tugas Baru</a>
+        </section>
+
+        <section aria-labelledby="judul-daftar">
+            <h2 id="judul-daftar">Daftar Tugas Akademik</h2>
+
+            <p>Belum ada tugas. Yuk, tambahkan tugas barumu!</p>
+        </section>
+
+        <aside aria-labelledby="judul-petunjuk">
+            <h2 id="judul-petunjuk">Petunjuk</h2>
+
+            <section>
+                <h3>Nama Tugas</h3>
+                <p>Masukkan nama tugas kuliah yang perlu diselesaikan.</p>
+            </section>
+
+            <section>
+                <h3>Deadline</h3>
+                <p>Pilih tanggal batas pengumpulan tugas.</p>
+            </section>
+
+            <section>
+                <h3>Prioritas</h3>
+                <p>Tentukan tingkat kepentingan tugas.</p>
+            </section>
+
+            <section>
+                <h3>Jenis Tugas</h3>
+                <p>Pilih tugas kelompok atau individu.</p>
+            </section>
+        </aside>
+
+        <section id="form-tugas" aria-labelledby="judul-form">
+            <h2 id="judul-form">Tambah Tugas Baru</h2>
+
+            <form action="#" method="get">
+                <p>
+                    <label for="taskName">Nama Tugas</label>
+                    <input
+                        id="taskName"
+                        name="taskName"
+                        type="text"
+                        placeholder="Masukkan nama tugas kamu"
+                        required
+                    >
+                </p>
+
+                <p>
+                    <label for="courseName">Mata Kuliah</label>
+                    <input
+                        id="courseName"
+                        name="courseName"
+                        type="text"
+                        placeholder="Masukkan mata kuliah kamu"
+                        required
+                    >
+                </p>
+
+                <p>
+                    <label for="deadline">Deadline</label>
+                    <input
+                        id="deadline"
+                        name="deadline"
+                        type="date"
+                        value="2026-02-01"
+                        required
+                    >
+                </p>
+
+                <p>
+                    <label for="priority">Prioritas</label>
+                    <select id="priority" name="priority" required>
+                        <option value="">Pilih Prioritas</option>
+                        <option value="Tinggi">Tinggi</option>
+                        <option value="Sedang">Sedang</option>
+                        <option value="Rendah">Rendah</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label for="taskType">Jenis Tugas</label>
+                    <select id="taskType" name="taskType" required>
+                        <option value="">Pilih jenis tugas</option>
+                        <option value="Kelompok">Kelompok</option>
+                        <option value="Individu">Individu</option>
+                    </select>
+                </p>
+
+                <button type="reset">Batal</button>
+                <button type="submit">Simpan Tugas</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>MindGlow</p>
+    </footer>
 </body>
 </html>
