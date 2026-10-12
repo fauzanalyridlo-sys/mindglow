@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Harian - MindGlow</title>
+</head>
+<body>
+    <header>
+        <a href="index.html" aria-label="MindGlow - Beranda">
+            <span aria-hidden="true">🧠</span>
+            <span>MindGlow</span>
+        </a>
+
+        <nav aria-label="Navigasi utama">
+            <ul>
+                <li><a href="home_dashboard.html">Beranda</a></li>
+                <li><a href="check_harian.html" aria-current="page">Cek Harian</a></li>
+                <li><a href="jurnal.html">Jurnal</a></li>
+                <li><a href="akademik.html">Akademik</a></li>
+                <li><a href="insight.html">Wawasan</a></li>
+                <li><a href="AI_chat.html">Refleksi AI</a></li>
+            </ul>
+        </nav>
+
+        <a href="profil.html" aria-label="Profil pengguna">L</a>
+    </header>
+
+    <main>
+        <section aria-labelledby="page-heading">
+            <p>Bagaimana perasaan hatimu hari ini?</p>
+            <h1 id="page-heading">Check harianmu di sini</h1>
+            <p>Hanya butuh 30 detik untuk mendengarkan dirimu sendiri</p>
+        </section>
+
+        <article aria-labelledby="checkin-form-title">
+            <h2 id="checkin-form-title">Check-in Hari Ini</h2>
+
+            <form action="#" method="get">
+                <fieldset>
+                    <legend>1. Pilih suasana hati utama</legend>
+
+                    <input type="radio" id="mood-down" name="mood" value="lelah-down">
+                    <label for="mood-down">
+                        <span aria-hidden="true">☹️</span> Lelah/Down
+                    </label>
+
+                    <input type="radio" id="mood-anxious" name="mood" value="cemas">
+                    <label for="mood-anxious">
+                        <span aria-hidden="true">😵</span> Cemas
+                    </label>
+
+                    <input type="radio" id="mood-neutral" name="mood" value="biasa-saja">
+                    <label for="mood-neutral">
+                        <span aria-hidden="true">😐</span> Biasa aja
+                    </label>
+
+                    <input type="radio" id="mood-calm" name="mood" value="tenang">
+                    <label for="mood-calm">
+                        <span aria-hidden="true">🙂</span> Tenang
+                    </label>
+
+                    <input type="radio" id="mood-energetic" name="mood" value="semangat">
+                    <label for="mood-energetic">
+                        <span aria-hidden="true">😊</span> Semangat!
+                    </label>
+                </fieldset>
+
+                <section aria-labelledby="energy-heading">
+                    <h2 id="energy-heading">Tingkat energi baterai diri</h2>
+
+                    <label for="energy-level">
+                        Pilih tingkat energi dari 1 sampai 5
+                    </label>
+
+                    <input
+                        type="range"
+                        id="energy-level"
+                        name="energy-level"
+                        min="1"
+                        max="5"
+                        value="1"
+                    >
+
+                    <output for="energy-level">1/5 (Sangat baterai lemah)</output>
+                </section>
+
+                <section aria-labelledby="sleep-heading">
+                    <h2 id="sleep-heading">Istirahat semalam</h2>
+
+                    <label for="sleep-hours">Durasi tidur semalam (jam)</label>
+
+                    <input
+                        type="number"
+                        id="sleep-hours"
+                        name="sleep-hours"
+                        min="0"
+                        max="24"
+                        value="6"
+                    >
+
+                    <span>Jam</span>
+                </section>
+
+                <fieldset>
+                    <legend>Aktivitas utama</legend>
+
+                    <input
+                        type="checkbox"
+                        id="activity-college"
+                        name="activity"
+                        value="kuliah"
+                    >
+                    <label for="activity-college">Kuliah</label>
+
+                    <input
+                        type="checkbox"
+                        id="activity-group-project"
+                        name="activity"
+                        value="proyek-kelompok"
+                    >
+                    <label for="activity-group-project">Proyek Kelompok</label>
+
+                    <input
+                        type="checkbox"
+                        id="activity-lab"
+                        name="activity"
+                        value="lab-praktikum"
+                    >
+                    <label for="activity-lab">Lab/Praktikum</label>
+                </fieldset>
+
+                <button type="submit">Simpan Check-in Hari Ini</button>
+            </form>
+        </article>
+    </main>
+</body>
+</html>
