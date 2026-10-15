@@ -1,0 +1,58 @@
+/* ========================================
+   MINDGLOW — APP FOOTER
+   Footer untuk halaman setelah login
+======================================== */
+
+/* Menggunakan desain dasar PublicFooter */
+
+.app-footer {
+  background-color: #173f35;
+  color: #ffffff;
+}
+
+/* Menjaga jarak antarkolom */
+
+.app-footer .footer-grid {
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 65px;
+}
+
+/* Navigasi Footer */
+
+.app-footer .footer-column a {
+  color: rgba(255, 255, 255, 0.62);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.app-footer .footer-column a:hover {
+  color: #ffffff;
+}
+
+.app-footer .footer-column a:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* TABLET */
+
+@media (max-width: 900px) {
+  .app-footer .footer-grid {
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 45px 28px;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 640px) {
+  .app-footer .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 42px 28px;
+  }
+
+  .app-footer .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
