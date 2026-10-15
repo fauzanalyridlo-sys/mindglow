@@ -1,0 +1,66 @@
+/* Statistik Landing Page MindGlow */
+
+.stats {
+  background: #ffffff;
+  border-top: 1px solid rgba(22, 61, 53, 0.08);
+  border-bottom: 1px solid rgba(22, 61, 53, 0.08);
+  padding: 24px 0;
+}
+
+.stats .container {
+  width: min(1140px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  text-align: center;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-item strong {
+  color: #173f35;
+  font-family: 'Manrope', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.stat-item span {
+  color: #6f817b;
+  font-size: 13px;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .stats {
+    padding: 28px 0;
+  }
+
+  .stats .container {
+    width: calc(100% - 32px);
+  }
+
+  .stat-item strong {
+    font-size: 17px;
+  }
+
+  .stat-item span {
+    font-size: 12px;
+  }
+}
