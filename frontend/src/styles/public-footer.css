@@ -1,0 +1,217 @@
+/* ===================================
+   MINDGLOW — PUBLIC FOOTER
+   =================================== */
+/* Warna MindGlow dari Figma Make */
+:root {
+  --cream: #fbfaf5;
+  --white: #ffffff;
+  --green-dark: #173f35;
+  --pink-bright: #e98f93;
+}
+
+.site-footer {
+  position: relative;
+  overflow: hidden;
+  padding: 100px 0 0;
+  background: var(--green-dark);
+  color: var(--white);
+}
+
+.footer-wave {
+  position: absolute;
+  top: -1px;
+  right: -5%;
+  left: -5%;
+  height: 54px;
+  border-radius: 0 0 50% 50%;
+  background: var(--cream);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 65px;
+  padding-top: 25px;
+  padding-bottom: 70px;
+}
+
+.footer-brand > p {
+  max-width: 340px;
+  margin: 24px 0 20px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.7;
+}
+
+.footer-brand > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+}
+
+.footer-brand > span svg {
+  color: var(--pink-bright);
+}
+
+.footer-column {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.footer-column h3 {
+  margin-bottom: 8px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.footer-column a {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.footer-column a:hover {
+  color: var(--white);
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 12px;
+}
+
+.footer-bottom p {
+  margin: 0;
+}
+
+/* TABLET */
+@media (max-width: 900px) {
+  .footer-grid {
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 45px 28px;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 640px) {
+  .site-footer {
+    padding-top: 85px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 42px 28px;
+    padding-bottom: 48px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .site-footer .container {
+  width: min(1140px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .site-footer .container {
+    width: min(100% - 40px, 760px);
+  }
+}
+
+@media (max-width: 640px) {
+  .site-footer .container {
+    width: min(100% - 32px, 560px);
+  }
+}
+
+.site-footer a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-footer .footer-column a {
+  color: rgba(255, 255, 255, 0.62);
+  transition: color 0.2s ease;
+}
+
+.site-footer .footer-column a:hover {
+  color: var(--white);
+}
+
+.site-footer .logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.site-footer .logo-image {
+  display: block;
+  width: auto;
+  max-width: 200px;
+  height: 48px;
+  object-fit: contain;
+}
+
+/* Perbaikan tampilan teks Footer */
+
+.site-footer {
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  text-align: left;
+}
+
+.site-footer .footer-brand {
+  text-align: left;
+}
+
+.site-footer .footer-brand > p {
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.site-footer .footer-column h3 {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.site-footer .footer-column a {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.site-footer .footer-column a:hover {
+  color: #ffffff;
+}
+
+.site-footer .footer-bottom {
+  font-size: 12px;
+}
+.site-footer .footer-brand .logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.site-footer .footer-brand .logo-image {
+  display: block;
+  width: auto;
+  max-width: 180px;
+  height: 48px;
+  object-fit: contain;
+}
+}
