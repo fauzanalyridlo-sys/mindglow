@@ -1,0 +1,373 @@
+.checkin-energy-slider {
+  width: 100%;
+  margin-top: 12px;
+  accent-color: #4a9b78;
+  cursor: pointer;
+}
+
+.checkin-energy-value {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #326b52;
+}
+
+.checkin-other-activity {
+  margin-top: 18px;
+}
+
+.checkin-other-activity label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #326b52;
+}
+
+.checkin-other-activity input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbded4;
+  border-radius: 10px;
+  font: inherit;
+  background-color: #fff;
+}
+
+.checkin-other-activity input:focus {
+  outline: 2px solid #4a9b78;
+  outline-offset: 2px;
+}
+
+/* ========================================
+   LANDING PAGE — DEMO CHECK-IN
+======================================== */
+
+.checkin-section {
+  width: 100%;
+  padding: 90px 24px 110px;
+  background-color: #dcefe5;
+}
+
+.checkin-section .container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Heading */
+
+.checkin-heading {
+  max-width: 720px;
+  margin: 0 auto 64px;
+  text-align: center;
+}
+
+.checkin-label {
+  display: inline-block;
+  margin-bottom: 18px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #477b65;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.checkin-heading h2 {
+  margin: 0 0 18px;
+  color: #203e35;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+
+.checkin-heading > p {
+  max-width: 560px;
+  margin: 0 auto;
+  color: #698078;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* Layout dua kolom */
+
+.checkin-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  align-items: center;
+  gap: 64px;
+}
+
+/* Deskripsi kiri */
+
+.checkin-description {
+  max-width: 420px;
+}
+
+.checkin-number {
+  display: block;
+  margin-bottom: 12px;
+  color: #d58e8e;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.checkin-description h3 {
+  margin: 0 0 16px;
+  color: #203e35;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+
+.checkin-description > p {
+  margin: 0 0 22px;
+  color: #668077;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.checkin-description ul {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checkin-description li {
+  position: relative;
+  padding-left: 24px;
+  color: #47665b;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.checkin-description li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #63977b;
+  font-weight: 700;
+}
+
+/* Kartu demo kanan */
+
+.checkin-demo-card {
+  min-width: 0;
+  padding: 28px;
+  border: 1px solid #a6c7b5;
+  border-radius: 24px;
+  background-color: #ffffff;
+  box-shadow: 6px 9px 0 rgba(45, 79, 65, 0.16);
+}
+
+/* Pilihan mood */
+
+.checkin-moods {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.mood-option {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px 4px;
+  border: 1px solid #d5e2d9;
+  border-radius: 18px;
+  background-color: #f9fcfa;
+  color: #365449;
+  font-family: inherit;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.mood-option span {
+  font-size: 27px;
+}
+
+.mood-option small {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.mood-option:hover {
+  border-color: #83ac95;
+  background-color: #edf7f0;
+}
+
+.mood-option.selected {
+  border-color: #609a79;
+  background-color: #e0f1e6;
+  box-shadow: 0 0 0 2px rgba(96, 154, 121, 0.15);
+}
+
+/* Field umum */
+
+.checkin-field {
+  margin-top: 18px;
+}
+
+.checkin-field > label,
+.checkin-field > p {
+  display: block;
+  margin: 0 0 10px;
+  color: #365449;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.checkin-field > input[type='number'] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #b9d1c2;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #203e35;
+  font: inherit;
+}
+
+/* Aktivitas */
+
+.checkin-activities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.checkin-activities button {
+  padding: 9px 13px;
+  border: 1px solid #b9d1c2;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #365449;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.checkin-activities button:hover {
+  background: #edf7f0;
+}
+
+.checkin-activities button.selected {
+  border-color: #609a79;
+  background: #dcefe5;
+  font-weight: 700;
+}
+
+/* Tombol simpan */
+
+.checkin-save {
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  background: #83ad99;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.checkin-save:hover {
+  background: #66967d;
+}
+
+.checkin-message {
+  margin: 14px 0 0;
+  color: #326b52;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* Keyboard accessibility */
+
+.mood-option:focus-visible,
+.checkin-activities button:focus-visible,
+.checkin-save:focus-visible,
+.checkin-field input:focus-visible {
+  outline: 2px solid #326b52;
+  outline-offset: 3px;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 900px) {
+  .checkin-section {
+    padding: 72px 24px;
+  }
+
+  .checkin-layout {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .checkin-description {
+    max-width: 100%;
+  }
+
+  .checkin-demo-card {
+    max-width: 650px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkin-section {
+    padding: 56px 16px;
+  }
+
+  .checkin-heading {
+    margin-bottom: 42px;
+  }
+
+  .checkin-heading h2 br {
+    display: none;
+  }
+
+  .checkin-demo-card {
+    padding: 18px 14px;
+    border-radius: 18px;
+  }
+
+  .checkin-moods {
+    gap: 5px;
+  }
+
+  .mood-option {
+    padding: 10px 2px;
+    border-radius: 12px;
+  }
+
+  .mood-option span {
+    font-size: 22px;
+  }
+
+  .mood-option small {
+    font-size: 9px;
+  }
+
+  .checkin-description h3 {
+    font-size: 28px;
+  }
+}

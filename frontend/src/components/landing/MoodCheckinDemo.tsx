@@ -15,16 +15,17 @@ const moods: Mood[] = [
 
 export default function MoodCheckinDemo() {
   const [selectedMood, setSelectedMood] = useState<string | null>(null)
-  const [sleepHours, setSleepHours] = useState('')
+const [energyLevel, setEnergyLevel] = useState(3)
+const [sleepHours, setSleepHours] = useState('')
   const [activities, setActivities] = useState<string[]>([])
+  const [otherActivity, setOtherActivity] = useState('')
   const [message, setMessage] = useState('')
 
   const activityOptions = [
-    'Belajar',
-    'Bersosialisasi',
-    'Olahraga',
-    'Istirahat',
-  ]
+  'Kuliah',
+  'Proyek Kelompok',
+  'Lab/Praktikum',
+]
 
   function toggleActivity(activity: string) {
     setActivities((previous) =>
@@ -41,12 +42,14 @@ export default function MoodCheckinDemo() {
       return
     }
 
-    const checkin = {
-      mood: selectedMood,
-      sleepHours,
-      activities,
-      createdAt: new Date().toISOString(),
-    }
+ const checkin = {
+  mood: selectedMood,
+  energyLevel,
+  sleepHours,
+  activities,
+  otherActivity: otherActivity.trim(),
+  createdAt: new Date().toISOString(),
+}
 
     localStorage.setItem('mindglow-demo-checkin', JSON.stringify(checkin))
 
@@ -74,6 +77,31 @@ export default function MoodCheckinDemo() {
           </button>
         ))}
       </div>
+
+      <div className="checkin-field">
+  <label htmlFor="energy-level">
+     Tingkat energi kamu hari ini
+  </label>
+
+  <input
+    id="energy-level"
+    className="checkin-energy-slider"
+    type="range"
+    min={1}
+    max={5}
+    step={1}
+    value={energyLevel}
+    onChange={(event) =>
+      setEnergyLevel(Number(event.target.value))
+    }
+  />
+
+  <p className="checkin-energy-value">
+    {energyLevel}/5 — {
+      ['', 'Sangat lelah', 'Lelah', 'Cukup', 'Berenergi', 'Sangat berenergi'][energyLevel]
+    }
+  </p>
+</div>
 
       <div className="checkin-field">
         <label htmlFor="sleep-hours">
@@ -110,6 +138,22 @@ export default function MoodCheckinDemo() {
             </button>
           ))}
         </div>
+        <div className="checkin-other-activity">
+  <label htmlFor="other-activity">
+    Aktivitas lainnya
+  </label>
+
+  <input
+    id="other-activity"
+    type="text"
+    placeholder="Tulis aktivitas lainnya..."
+    value={otherActivity}
+    onChange={(event) => {
+      setOtherActivity(event.target.value)
+      setMessage('')
+    }}
+  />
+</div>
       </div>
 
       <button
