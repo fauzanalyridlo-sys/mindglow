@@ -183,60 +183,153 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  padding: 12px 4px;
-  border: 1px solid #d5e2d9;
-  border-radius: 18px;
-  background-color: #f9fcfa;
+  gap: 10px;
+  padding: 8px 2px;
+  border: none;
+  background: transparent;
   color: #365449;
   font-family: inherit;
   cursor: pointer;
+}
+
+.mood-option .mood-image {
+  display: block;
+  width: 64px;
+  height: 64px;
+  padding: 10px;
+  border: 2px solid #d5e2d9;
+  border-radius: 50%;
+  background: #f9fcfa;
+  object-fit: contain;
   transition: 0.2s ease;
 }
 
-.mood-option span {
-  font-size: 27px;
-}
-
 .mood-option small {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
+  text-align: center;
 }
 
-.mood-option:hover {
+.mood-option:hover .mood-image {
   border-color: #83ac95;
-  background-color: #edf7f0;
+  background: #edf7f0;
 }
 
 .mood-option.selected {
-  border-color: #609a79;
-  background-color: #e0f1e6;
-  box-shadow: 0 0 0 2px rgba(96, 154, 121, 0.15);
+  background: transparent;
+  box-shadow: none;
 }
 
-/* Field umum */
+.mood-option.selected .mood-image {
+  border-color: #609a79;
+  background: #e0f1e6;
+  box-shadow: 0 0 0 3px rgba(96, 154, 121, 0.15);
+}
 
-.checkin-field {
+@media (max-width: 480px) {
+  .mood-option .mood-image {
+    width: 48px;
+    height: 48px;
+    padding: 7px;
+  }
+}
+
+/* ========================================
+   CHECK-IN — PANEL ISTIRAHAT & AKTIVITAS
+======================================== */
+
+.checkin-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  gap: 12px;
   margin-top: 18px;
 }
 
-.checkin-field > label,
-.checkin-field > p {
-  display: block;
-  margin: 0 0 10px;
-  color: #365449;
-  font-size: 13px;
-  font-weight: 700;
+.checkin-info-panel {
+  min-width: 0;
+  padding: 14px 16px;
+  border: 2px solid #91b19f;
+  border-radius: 36px;
+  background: #f8faf7;
+  box-shadow: 0 6px 10px rgba(48, 78, 62, 0.18);
 }
 
-.checkin-field > input[type='number'] {
+.checkin-info-panel > label,
+.checkin-panel-title {
+  display: block;
+  margin: 0 0 8px;
+  color: #294e3c;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.checkin-sleep-input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 10px;
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #b9d1c2;
-  border-radius: 12px;
+}
+
+.checkin-sleep-input input {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  padding: 7px 12px;
+  border: 1.5px solid #91b19f;
+  border-radius: 999px;
   background: #ffffff;
   color: #203e35;
   font: inherit;
+  font-size: 12px;
+}
+
+.checkin-sleep-input span {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  color: #365449;
+  font-size: 13px;
+}
+
+.checkin-info-panel .checkin-activities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.checkin-info-panel .checkin-activities button {
+  padding: 4px 9px;
+  font-size: 10px;
+}
+
+.checkin-info-panel .checkin-other-activity {
+  margin-top: 7px;
+}
+
+.checkin-info-panel .checkin-other-activity input {
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 600px) {
+  .checkin-bottom-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Aktivitas */
@@ -273,21 +366,21 @@
 
 .checkin-save {
   width: 100%;
-  margin-top: 24px;
-  padding: 14px 20px;
-  border: none;
-  border-radius: 12px;
-  background: #83ad99;
+  margin-top: 18px;
+  padding: 11px 18px;
+  border: 2px solid #789c86;
+  border-radius: 999px;
+  background: #86aea7;
   color: #ffffff;
   font-family: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 500;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
 .checkin-save:hover {
-  background: #66967d;
+  background: #6e9b90;
 }
 
 .checkin-message {
@@ -369,5 +462,66 @@
 
   .checkin-description h3 {
     font-size: 28px;
+  }
+}
+
+
+/* ===================================
+   CHECK-IN ENERGY PANEL
+=================================== */
+
+/* Panel energi — mengikuti desain Figma */
+
+.checkin-energy-panel {
+  margin-top: 16px;
+  padding: 18px 24px 14px;
+  border: 2px solid #8eac98;
+  border-radius: 999px;
+  background: #eef4ea;
+  box-shadow: 0 6px 10px rgba(42, 68, 52, 0.2);
+}
+
+.checkin-energy-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-bottom: 12px;
+}
+
+.checkin-energy-header label {
+  color: #223c2c;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.checkin-energy-badge {
+  color: #36764e;
+  font-size: 15px;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.checkin-energy-panel .checkin-energy-slider {
+  display: block;
+  width: 100%;
+  margin: 0;
+  accent-color: #7fa997;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .checkin-energy-panel {
+    padding: 16px 18px;
+    border-radius: 28px;
+  }
+
+  .checkin-energy-header label {
+    font-size: 11px;
+  }
+
+  .checkin-energy-badge {
+    font-size: 13px;
   }
 }

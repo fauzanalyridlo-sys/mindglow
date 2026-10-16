@@ -1,16 +1,16 @@
 import { useState } from 'react'
 
 type Mood = {
-  emoji: string
+  image: string
   label: string
 }
 
 const moods: Mood[] = [
-  { emoji: '😠', label: 'Kesal' },
-  { emoji: '😟', label: 'Cemas' },
-  { emoji: '😐', label: 'Biasa' },
-  { emoji: '🙂', label: 'Senang' },
-  { emoji: '😄', label: 'Semangat' },
+  { image: '/images/moods/sedih.svg', label: 'Lelah/Down' },
+  { image: '/images/moods/cemas.svg', label: 'Cemas' },
+  { image: '/images/moods/biasa aja.svg', label: 'Biasa aja' },
+  { image: '/images/moods/tenang.svg', label: 'Tenang' },
+  { image: '/images/moods/semangat.svg', label: 'Semangat!' },
 ]
 
 export default function MoodCheckinDemo() {
@@ -72,16 +72,35 @@ const [sleepHours, setSleepHours] = useState('')
             }}
             aria-pressed={selectedMood === mood.label}
           >
-            <span>{mood.emoji}</span>
-            <small>{mood.label}</small>
+            <img
+  src={mood.image}
+  alt=""
+  className="mood-image"
+  aria-hidden="true"
+/>
+<small>{mood.label}</small>
           </button>
         ))}
       </div>
+<div className="checkin-energy-panel">
+  <div className="checkin-energy-header">
+    <label htmlFor="energy-level">
+      TINGKAT ENERGI BATERAI DIRI
+    </label>
 
-      <div className="checkin-field">
-  <label htmlFor="energy-level">
-     Tingkat energi kamu hari ini
-  </label>
+    <span className="checkin-energy-badge">
+      {energyLevel}/5 (
+      {[
+        '',
+        'Sangat baterai lemah',
+        'Baterai lemah',
+        'Cukup',
+        'Berenergi',
+        'Sangat berenergi',
+      ][energyLevel]}
+      )
+    </span>
+  </div>
 
   <input
     id="energy-level"
@@ -91,70 +110,85 @@ const [sleepHours, setSleepHours] = useState('')
     max={5}
     step={1}
     value={energyLevel}
-    onChange={(event) =>
-      setEnergyLevel(Number(event.target.value))
+    onChange={(event) => setEnergyLevel(Number(event.target.value))}
+    aria-valuetext={
+      [
+        '',
+        'Sangat baterai lemah',
+        'Baterai lemah',
+        'Cukup',
+        'Berenergi',
+        'Sangat berenergi',
+      ][energyLevel]
     }
   />
-
-  <p className="checkin-energy-value">
-    {energyLevel}/5 — {
-      ['', 'Sangat lelah', 'Lelah', 'Cukup', 'Berenergi', 'Sangat berenergi'][energyLevel]
-    }
-  </p>
 </div>
 
-      <div className="checkin-field">
-        <label htmlFor="sleep-hours">
-          Berapa jam kamu tidur semalam?
-        </label>
+      <div className="checkin-bottom-grid">
+  {/* Panel istirahat */}
+  <div className="checkin-info-panel">
+    <label htmlFor="sleep-hours">
+      ISTIRAHAT SEMALAM
+    </label>
 
-        <input
-          id="sleep-hours"
-          type="number"
-          min="0"
-          max="24"
-          step="0.5"
-          placeholder="Contoh: 7"
-          value={sleepHours}
-          onChange={(event) => setSleepHours(event.target.value)}
-        />
-      </div>
+    <div className="checkin-sleep-input">
+      <input
+        id="sleep-hours"
+        type="number"
+        min="0"
+        max="24"
+        step="0.5"
+        placeholder="Contoh: 7"
+        value={sleepHours}
+        onChange={(event) => {
+          setSleepHours(event.target.value)
+          setMessage('')
+        }}
+      />
+      <span>Jam</span>
+    </div>
+  </div>
 
-      <div className="checkin-field">
-        <p>Aktivitas hari ini</p>
+  {/* Panel aktivitas */}
+  <div className="checkin-info-panel">
+    <p className="checkin-panel-title">
+      AKTIVITAS UTAMA
+    </p>
 
-        <div className="checkin-activities">
-          {activityOptions.map((activity) => (
-            <button
-              key={activity}
-              type="button"
-              className={
-                activities.includes(activity) ? 'selected' : ''
-              }
-              onClick={() => toggleActivity(activity)}
-              aria-pressed={activities.includes(activity)}
-            >
-              {activity}
-            </button>
-          ))}
-        </div>
-        <div className="checkin-other-activity">
-  <label htmlFor="other-activity">
-    Aktivitas lainnya
-  </label>
+    <div className="checkin-activities">
+      {activityOptions.map((activity) => (
+        <button
+          key={activity}
+          type="button"
+          className={
+            activities.includes(activity) ? 'selected' : ''
+          }
+          onClick={() => toggleActivity(activity)}
+          aria-pressed={activities.includes(activity)}
+        >
+          {activity}
+        </button>
+      ))}
+    </div>
 
-  <input
-    id="other-activity"
-    type="text"
-    placeholder="Tulis aktivitas lainnya..."
-    value={otherActivity}
-    onChange={(event) => {
-      setOtherActivity(event.target.value)
-      setMessage('')
-    }}
-  />
+    <div className="checkin-other-activity">
+      <label htmlFor="other-activity" className="sr-only">
+        Aktivitas lainnya
+      </label>
+
+      <input
+        id="other-activity"
+        type="text"
+        placeholder="Tulis aktivitas lainnya..."
+        value={otherActivity}
+        onChange={(event) => {
+          setOtherActivity(event.target.value)
+          setMessage('')
+        }}
+      />
+    </div>
+  </div>
 </div>
-      </div>
 
       <button
         className="checkin-save"
