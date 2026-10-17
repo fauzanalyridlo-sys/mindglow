@@ -1,0 +1,256 @@
+
+.reflection-page {
+  min-height: calc(100vh - 80px);
+  padding: 34px 5.2% 48px;
+  background: #f8f6f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 42px;
+  color: #111;
+}
+
+.reflection-panel {
+  width: 100%;
+  max-width: 1450px;
+  height: min(70vh, 700px);
+  min-height: 490px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 2px solid #91ae9e;
+  border-radius: 40px;
+  box-shadow: 0 8px 8px rgb(0 0 0 / 18%);
+  overflow: hidden;
+}
+
+.reflection-heading {
+  flex-shrink: 0;
+  padding: 14px 20px 18px;
+  border-bottom: 1.5px solid #91ae9e;
+  text-align: center;
+}
+
+.reflection-heading h1 {
+  margin: 0;
+  font-size: clamp(30px, 3vw, 40px);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.reflection-messages {
+  flex: 1;
+  min-height: 0;
+  padding: 28px 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}
+
+.reflection-message-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.reflection-message-row.is-user {
+  justify-content: flex-end;
+}
+
+.reflection-avatar {
+  width: 74px;
+  height: 74px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #88aa99;
+  display: grid;
+  place-items: center;
+  font-size: 36px;
+}
+
+.reflection-bubble {
+  max-width: 75%;
+  padding: 13px 20px;
+  border: 2px solid #88aa99;
+  border-radius: 30px;
+  background: #f9f8f4;
+  box-shadow: 0 6px 7px rgb(0 0 0 / 20%);
+  font-size: clamp(15px, 1.5vw, 21px);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.reflection-composer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 34px;
+  padding: 14px 4% 0;
+}
+
+.reflection-input-wrap {
+  flex: 1;
+  min-width: 0;
+  min-height: 84px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 12px 20px;
+  border: 1.5px solid #222;
+  border-radius: 17px;
+  background: #f9f8f4;
+  box-shadow: 0 4px 4px rgb(0 0 0 / 18%);
+}
+
+.reflection-input-icon {
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.reflection-input-wrap textarea {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  max-height: 120px;
+  resize: vertical;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #111;
+  font: inherit;
+  font-size: 20px;
+}
+
+.reflection-input-wrap textarea::placeholder {
+  color: #111;
+  opacity: 1;
+}
+
+.reflection-send {
+  width: 130px;
+  min-width: 90px;
+  border: 1px solid #222;
+  border-radius: 17px;
+  background: #77967e;
+  color: #000;
+  font-size: 54px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.reflection-send:hover:not(:disabled) {
+  background: #66866e;
+  transform: translateY(-2px);
+}
+
+.reflection-send:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.reflection-privacy {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0;
+  padding: 12px 12px 28px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.reflection-privacy span {
+  color: #88aa99;
+  font-size: 28px;
+}
+
+.reflection-back {
+  min-width: 160px;
+  padding: 15px 30px;
+  border: 1px solid #82998b;
+  border-radius: 30px;
+  background: #88aa99;
+  color: #263a30;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reflection-back:hover {
+  background: #769b87;
+}
+
+@media (max-width: 700px) {
+  .reflection-page {
+    min-height: calc(100vh - 70px);
+    padding: 20px 12px 30px;
+    gap: 24px;
+  }
+
+  .reflection-panel {
+    height: 72vh;
+    min-height: 460px;
+    border-radius: 24px;
+  }
+
+  .reflection-heading {
+    padding: 16px 10px;
+  }
+
+  .reflection-messages {
+    padding: 20px 12px;
+    gap: 18px;
+  }
+
+  .reflection-avatar {
+    width: 42px;
+    height: 42px;
+    font-size: 23px;
+  }
+
+  .reflection-bubble {
+    max-width: 86%;
+    padding: 10px 14px;
+    font-size: 15px;
+  }
+
+  .reflection-composer {
+    gap: 10px;
+    padding: 10px 12px 0;
+  }
+
+  .reflection-input-wrap {
+    min-height: 60px;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .reflection-input-icon {
+    font-size: 28px;
+  }
+
+  .reflection-input-wrap textarea {
+    font-size: 14px;
+  }
+
+  .reflection-send {
+    width: 58px;
+    min-width: 58px;
+    font-size: 34px;
+  }
+
+  .reflection-privacy {
+    padding: 10px 10px 18px;
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reflection-send {
+    transition: none;
+  }
+}
