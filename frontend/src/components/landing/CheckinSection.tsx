@@ -1,5 +1,5 @@
 import MoodCheckinDemo from './MoodCheckinDemo'
-import '../../styles/checkin.css'
+import '../../styles/public-checkin.css'
 
 export default function CheckinSection() {
   return (

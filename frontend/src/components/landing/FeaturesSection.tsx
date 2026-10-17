@@ -1,5 +1,5 @@
 import Icon, { type IconName } from '../ui/Icon'
-import '../../styles/features.css'
+import '../../styles/public-features.css'
 
 type Feature = {
   icon: IconName
@@ -12,31 +12,31 @@ type Feature = {
 
 const features: Feature[] = [
   {
-    icon: 'heart',
-    number: '01',
-    title: 'Check-in harian',
+    icon: 'calendar',
+  number: '01',
+  title: 'Check-in harian',
     description:
       'Kenali perasaanmu hari ini melalui refleksi singkat yang terasa ringan.',
     color: 'pink',
     href: '#checkin',
   },
   {
-    icon: 'sparkle',
-    number: '02',
-    title: 'Refleksi AI',
+    icon: 'brain',
+  number: '02',
+  title: 'Refleksi AI',
     description:
       'Temukan perspektif yang empatik dan personal tanpa rasa menghakimi.',
     color: 'green',
-    href: '#refleksi',
+    href: '#reflection',
   },
   {
-    icon: 'book',
-    number: '03',
-    title: 'Jurnal terpandu',
+     icon: 'message',
+  number: '03',
+  title: 'Jurnal terpandu',
     description:
       'Tulis ceritamu dengan aman untuk memahami pola pikiran dan emosimu.',
     color: 'cream',
-    href: '#jurnal',
+    href: '#journal',
   },
 ]
 
@@ -56,9 +56,9 @@ export default function FeaturesSection() {
           </h2>
 
           <p>
-            Rutinitas kecil yang membantu kamu mengenali emosi,
-            menata perasaan, dan melangkah dengan lebih sadar.
-          </p>
+  Rutinitas kecil yang membantumu berhenti sejenak,
+  mengenali perasaan, dan melangkah dengan lebih sadar.
+</p>
         </div>
 
         <div className="features-grid">

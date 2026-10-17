@@ -1,0 +1,341 @@
+/* ========================================
+   LANDING PAGE — DEMO REFLEKSI
+======================================== */
+
+.reflection-section {
+  width: 100%;
+  padding: 100px 24px;
+  background: #203e34;
+}
+
+.reflection-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.reflection-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  align-items: center;
+  gap: 52px;
+}
+
+/* ========================================
+   KARTU PERCAKAPAN
+======================================== */
+
+.reflection-demo-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 390px;
+  overflow: hidden;
+  border: 1px solid #a7c4b5;
+  border-radius: 28px;
+  background: #e9ecea;
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.18);
+}
+
+.reflection-demo-header {
+  padding: 10px 20px;
+  border-bottom: 1px solid #92b09f;
+  text-align: center;
+}
+
+.reflection-demo-header h3 {
+  margin: 0;
+  color: #111;
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.reflection-chat-area {
+  flex: 1;
+  min-height: 0;
+  padding: 24px 16px;
+  overflow-y: auto;
+}
+
+.reflection-chat-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.reflection-chat-message + .reflection-chat-message {
+  margin-top: 14px;
+}
+
+.reflection-chat-user {
+  justify-content: flex-end;
+}
+
+.reflection-chat-user .reflection-bubble {
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #8ba997;
+  color: #172b22;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.reflection-chat-message:not(.reflection-chat-user) .reflection-bubble {
+  border-radius: 16px 16px 16px 4px;
+}
+
+.reflection-input-row button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.reflection-privacy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 12px 0 0;
+  color: #679b83;
+  font-size: 11px;
+  text-align: center;
+}
+
+.reflection-privacy svg {
+  flex-shrink: 0;
+}
+
+.reflection-demo-note {
+  margin: 5px 0 0;
+  color: #6c8277;
+  font-size: 10px;
+  text-align: center;
+}
+
+.reflection-avatar {
+  display: block;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  padding: 5px;
+  border-radius: 50%;
+  background-color: #85aa98;
+  object-fit: contain;
+}
+
+.reflection-bubble {
+  max-width: 85%;
+  padding: 12px 14px;
+  border: 1px solid #8ba997;
+  border-radius: 999px;
+  background: #fff;
+  color: #172b22;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Input */
+
+.reflection-demo-bottom {
+  padding: 0 20px 16px;
+}
+
+.reflection-input-row {
+  display: flex;
+  gap: 12px;
+}
+
+.reflection-input-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid #8da99a;
+  border-radius: 12px;
+  background: #fff;
+  color: #203e35;
+  font: inherit;
+  font-size: 12px;
+}
+
+.reflection-input-row button {
+  width: 54px;
+  flex-shrink: 0;
+  border: 1px solid #4b7962;
+  border-radius: 12px;
+  background: #82a991;
+  color: #152e22;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.reflection-privacy {
+  margin: 12px 0 0;
+  color: #476459;
+  font-size: 11px;
+  text-align: center;
+}
+
+/* ========================================
+   DESKRIPSI KANAN
+======================================== */
+
+.reflection-number {
+  color: #e6a4a1;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+.reflection-description h2 {
+  margin: 16px 0;
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(28px, 3vw, 42px);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+}
+
+.reflection-intro {
+  max-width: 380px;
+  margin: 0 0 24px;
+  color: #b4c8be;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.reflection-benefits {
+  display: grid;
+  gap: 10px;
+}
+
+.reflection-benefit {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(206, 231, 217, 0.15);
+  border-radius: 12px;
+}
+
+.reflection-benefit-icon {
+  color: #e6a4a1;
+  font-size: 22px;
+}
+
+.reflection-benefit h3 {
+  margin: 0 0 4px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.reflection-benefit p {
+  margin: 0;
+  color: #b4c8be;
+  font-size: 11px;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 900px) {
+  .reflection-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .reflection-demo-card {
+    max-width: 650px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .reflection-section {
+    padding: 64px 16px;
+  }
+
+  .reflection-demo-card {
+    height: 350px;
+    border-radius: 20px;
+  }
+
+  .reflection-demo-bottom {
+    padding: 0 12px 14px;
+  }
+
+  .reflection-input-row {
+    gap: 8px;
+  }
+
+  .reflection-input-row button {
+    width: 44px;
+  }
+
+  .reflection-description h2 {
+    font-size: 30px;
+  }
+}
+
+/* CTA setelah demo refleksi selesai */
+
+.reflection-cta {
+  margin: 18px 0 4px;
+  padding: 18px;
+  border: 1px solid #a6c8b4;
+  border-radius: 18px;
+  background: #f4faf5;
+  text-align: center;
+}
+
+.reflection-cta h4 {
+  margin: 0 0 10px;
+  color: #234c38;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.reflection-cta p {
+  margin: 0;
+  color: #61786a;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.reflection-cta-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.reflection-cta-actions a {
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.reflection-cta-login {
+  border: 1px solid #7ca38a;
+  background: #fff;
+  color: #326b52;
+}
+
+.reflection-cta-register {
+  background: #77a58a;
+  color: #fff;
+}
+
+.reflection-cta-actions a:hover {
+  filter: brightness(0.95);
+}
+
+.reflection-input-row input:disabled {
+  background: #f1f3f1;
+  cursor: not-allowed;
+}

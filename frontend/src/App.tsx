@@ -1,56 +1,76 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 
 import PublicLayout from './layouts/PublicLayout'
 import AppLayout from './layouts/AppLayout'
+
 import LandingPage from './pages/LandingPage'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
+
 import Ai from './pages/Ai'
 import AiRuangRefleksi from './pages/AiRuangRefleksi'
 import Wawasan from './pages/Wawasan'
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Halaman utama */}
-        <Route
-          path="/"
-          element={
-            <PublicLayout>
-              <LandingPage />
-            </PublicLayout>
-          }
-        />
+    <Routes>
+      {/* Halaman publik */}
+      <Route
+        path="/"
+        element={
+          <PublicLayout>
+            <LandingPage />
+          </PublicLayout>
+        }
+      />
 
-        {/* Halaman AI */}
-        <Route
-          path="/ai"
-          element={
-            <AppLayout>
-              <Ai />
-            </AppLayout>
-          }
-        />
+      <Route
+        path="/login"
+        element={
+          <PublicLayout>
+            <LoginPage />
+          </PublicLayout>
+        }
+      />
 
-        {/* Ruang Refleksi AI */}
-        <Route
-          path="/reflection"
-          element={
-            <AppLayout>
-              <AiRuangRefleksi />
-            </AppLayout>
-          }
-        />
+      <Route
+        path="/register"
+        element={
+          <PublicLayout>
+            <RegisterPage />
+          </PublicLayout>
+        }
+      />
 
+      {/* Halaman AI */}
+      <Route
+        path="/ai"
+        element={
+          <AppLayout>
+            <Ai />
+          </AppLayout>
+        }
+      />
 
-          <Route
-  path="/wawasan"
-  element={
-    <AppLayout>
-      <Wawasan />
-    </AppLayout>
-  }
-/>
-      </Routes>
-    </BrowserRouter>
+      {/* Ruang Refleksi AI */}
+      <Route
+        path="/reflection"
+        element={
+          <AppLayout>
+            <AiRuangRefleksi />
+          </AppLayout>
+        }
+      />
+
+      {/* Halaman Wawasan */}
+      <Route
+        path="/wawasan"
+        element={
+          <AppLayout>
+            <Wawasan />
+          </AppLayout>
+        }
+      />
+    </Routes>
   )
 }

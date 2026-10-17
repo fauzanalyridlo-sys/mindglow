@@ -7,6 +7,9 @@ export type IconName =
   | 'arrow'
   | 'lock'
   | 'check'
+  | 'calendar'
+  | 'brain'
+  | 'message'
 
 type IconProps = {
   name: IconName
@@ -43,6 +46,31 @@ export default function Icon({ name, size = 18 }: IconProps) {
       </>
     ),
     check: <path d="m5 12 4 4L19 6" />,
+
+calendar: (
+  <>
+    <rect x="3" y="5" width="18" height="16" rx="2" />
+    <path d="M7 3v4" />
+    <path d="M17 3v4" />
+    <path d="M3 10h18" />
+  </>
+),
+
+brain: (
+  <>
+    <path d="M12 7a4 4 0 0 0-7.5-1.8A4 4 0 0 0 4 12a4 4 0 0 0 3 6.8A3.5 3.5 0 0 0 12 20V7Z" />
+    <path d="M12 7a4 4 0 0 1 7.5-1.8A4 4 0 0 1 20 12a4 4 0 0 1-3 6.8A3.5 3.5 0 0 1 12 20V7Z" />
+    <path d="M9 8c-2 0-3 1.5-3 3" />
+    <path d="M15 8c2 0 3 1.5 3 3" />
+    <path d="M9 14c-1.5 0-2 1-2 2" />
+    <path d="M15 14c1.5 0 2 1 2 2" />
+    <path d="M12 7v13" />
+  </>
+),
+
+message: (
+  <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-2 2V11.5a7.5 7.5 0 0 1 7.5-7.5h2A7.5 7.5 0 0 1 20 11.5Z" />
+),
   }
 
  return (
