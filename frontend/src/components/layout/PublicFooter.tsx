@@ -32,14 +32,14 @@ export default function PublicFooter() {
         <div className="footer-column">
           <h3>Fitur</h3>
           <a href="#checkin">Check-in harian</a>
-          <a href="#refleksi">Refleksi AI</a>
+          <a href="#reflection">Refleksi AI</a>
           <a href="#jurnal">Jurnal pribadi</a>
         </div>
 
       </div>
 
       <div className="container footer-bottom">
-        <p>© 2025 MindGlow. Semua hak dilindungi.</p>
+        <p>© 2026 MindGlow. Semua hak dilindungi.</p>
         <p>Temani dirimu dengan lebih lembut.</p>
       </div>
     </footer>

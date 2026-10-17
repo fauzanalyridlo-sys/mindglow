@@ -1,10 +1,10 @@
-import '../../styles/stats.css'
+import '../../styles/public-stats.css'
 
 const stats = [
   { value: '1 menit', label: 'untuk check-in' },
   { value: '24/7', label: 'ruang refleksi' },
-  { value: '100%', label: 'privat & aman' },
-  { value: 'Setiap hari', label: 'temani harimu' },
+  { value: '100%', label: 'privat & personal' },
+  { value: 'Setiap hari', label: 'wawasan baru' },
 ]
 
 export default function StatsSection() {

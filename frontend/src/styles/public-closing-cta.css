@@ -100,20 +100,27 @@
   padding: 14px 24px;
   border: 1px solid #82a994;
   border-radius: 999px;
-  background: #89b29b;
+  background-color: #91b5a1;
+  background-image:
+  radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.55) 0%, transparent 24%),
+  radial-gradient(circle at 62% 18%, rgba(255, 255, 255, 0.5) 0%, transparent 22%),
+  radial-gradient(circle at 42% 80%, rgba(255, 255, 255, 0.5) 0%, transparent 24%),
+  radial-gradient(circle at 88% 75%, rgba(255, 255, 255, 0.55) 0%, transparent 22%);
   color: #203b2e;
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
   box-shadow: 0 4px 0 rgba(67, 105, 81, 0.18);
   transition:
-    transform 0.2s ease,
-    background 0.2s ease;
+  transform 300ms ease-out,
+  background-color 300ms ease-out,
+  box-shadow 300ms ease-out;
 }
 
 .closing-cta-button:hover {
   transform: translateY(-2px);
-  background: #78a68b;
+  background-color: #6e9780;
+  box-shadow: 0 6px 14px rgba(45, 89, 65, 0.2);
 }
 
 .closing-cta-button:focus-visible {
