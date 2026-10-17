@@ -1,5 +1,5 @@
 import ReflectionDemo from './ReflectionDemo'
-import '../../styles/reflection.css'
+import '../../styles/public-reflection.css'
 
 const benefits = [
   {

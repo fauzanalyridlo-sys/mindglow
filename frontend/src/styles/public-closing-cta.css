@@ -1,0 +1,164 @@
+/* ========================================
+   LANDING PAGE - CLOSING CTA
+======================================== */
+
+.closing-cta-section {
+  width: 100%;
+  padding: 100px 24px;
+  background: #faf9f6;
+}
+
+.closing-cta-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.closing-cta-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+  padding: 70px 40px;
+  overflow: hidden;
+  border-radius: 32px;
+  background: #f7e4e0;
+}
+
+/* Ornamen lingkaran */
+
+.closing-cta-decoration {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border: 28px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.closing-cta-decoration-top {
+  top: -80px;
+  right: -40px;
+}
+
+.closing-cta-decoration-bottom {
+  bottom: -80px;
+  left: -40px;
+}
+
+/* Konten */
+
+.closing-cta-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  text-align: center;
+}
+
+.closing-cta-badge {
+  display: inline-block;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #557763;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.closing-cta-content h2 {
+  max-width: 950px;
+  margin: 24px 0 14px;
+  color: #263e34;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(28px, 3.3vw, 48px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.045em;
+}
+
+.closing-cta-content p {
+  max-width: 580px;
+  margin: 0;
+  color: #7f8983;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* Tombol */
+
+.closing-cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 28px;
+  padding: 14px 24px;
+  border: 1px solid #82a994;
+  border-radius: 999px;
+  background: #89b29b;
+  color: #203b2e;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 0 rgba(67, 105, 81, 0.18);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.closing-cta-button:hover {
+  transform: translateY(-2px);
+  background: #78a68b;
+}
+
+.closing-cta-button:focus-visible {
+  outline: 3px solid #3e7557;
+  outline-offset: 4px;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .closing-cta-section {
+    padding: 70px 20px;
+  }
+
+  .closing-cta-card {
+    min-height: 340px;
+    padding: 60px 24px;
+    border-radius: 24px;
+  }
+
+  .closing-cta-content h2 {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .closing-cta-section {
+    padding: 56px 16px;
+  }
+
+  .closing-cta-card {
+    min-height: 320px;
+    padding: 52px 18px;
+  }
+
+  .closing-cta-content h2 {
+    font-size: 27px;
+  }
+
+  .closing-cta-content p {
+    font-size: 12px;
+  }
+
+  .closing-cta-button {
+    padding: 12px 20px;
+    font-size: 13px;
+  }
+}
