@@ -1,0 +1,32 @@
+
+.ai-hero-image img {
+  display: block;
+  width: 100%;
+  max-width: 470px;
+  max-height: 420px;
+  object-fit: contain;
+  animation: ai-float 3.5s ease-in-out infinite;
+}
+
+@keyframes ai-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@media (max-width: 640px) {
+  .ai-hero-image img {
+    max-height: 270px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-hero-image img {
+    animation: none;
+  }
+}

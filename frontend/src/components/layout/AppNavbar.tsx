@@ -13,7 +13,7 @@ const navigation = [
   { label: 'Jurnal', path: '/journal' },
   { label: 'Akademik', path: '/akademik' },
   { label: 'Wawasan', path: '/wawasan' },
-  { label: 'Refleksi AI', path: '/reflection' },
+  { label: 'Refleksi AI', path: '/Ai' },
 ]
 
 export default function AppNavbar({
