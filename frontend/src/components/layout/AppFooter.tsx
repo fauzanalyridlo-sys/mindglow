@@ -34,28 +34,18 @@ export default function AppFooter() {
         </div>
 
         <div className="footer-column">
-          <h3>Navigasi</h3>
+  <h3>Navigasi</h3>
 
-          {navigation.slice(0, 3).map((item) => (
-            <Link key={item.path} to={item.path}>
-              {item.label}
-            </Link>
-          ))}
-        </div>
-
-        <div className="footer-column">
-          <h3>Fitur</h3>
-
-          {navigation.slice(3).map((item) => (
-            <Link key={item.path} to={item.path}>
-              {item.label}
-            </Link>
-          ))}
-        </div>
+  {navigation.map((item) => (
+    <Link key={item.path} to={item.path}>
+      {item.label}
+    </Link>
+  ))}
+</div>
       </div>
 
       <div className="container footer-bottom">
-        <p>© 2025 MindGlow. Semua hak dilindungi.</p>
+        <p>© 2026 MindGlow. Semua hak dilindungi.</p>
         <p>Temani dirimu dengan lebih lembut.</p>
       </div>
     </footer>

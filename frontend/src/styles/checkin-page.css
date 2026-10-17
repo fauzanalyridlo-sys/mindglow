@@ -1,0 +1,502 @@
+/* ========================================
+   MINDGLOW — DAILY CHECK-IN PAGE
+======================================== */
+
+.daily-checkin-page {
+  width: 100%;
+  min-height: 70vh;
+  padding: 80px 24px 110px;
+  background-color: #f8f6f0;
+}
+
+.daily-checkin-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.daily-checkin-heading {
+  margin-bottom: 56px;
+  text-align: center;
+}
+
+.daily-checkin-heading h1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.daily-checkin-heading-muted {
+  color: #718096;
+}
+
+.daily-checkin-heading-primary {
+  color: #000000;
+}
+
+.daily-checkin-heading p {
+  margin: 20px 0 0;
+  color: #718096;
+  font-family: 'Manrope', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* ========================================
+   CHECK-IN FORM
+======================================== */
+
+.daily-checkin-form {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Tampilan kartu yang konsisten */
+
+.daily-checkin-greeting,
+.daily-checkin-form .checkin-demo-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(22, 61, 53, 0.05);
+}
+
+/* ========================================
+   SUCCESS MODAL
+======================================== */
+
+.daily-checkin-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: rgba(23, 42, 33, 0.45);
+}
+
+.daily-checkin-modal {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 28px;
+  border-radius: 24px;
+  background-color: #ffffff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.daily-checkin-success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  background-color: #dcefe5;
+  color: #326b52;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.daily-checkin-modal h2 {
+  margin: 0 0 12px;
+  color: #203e35;
+  font-family: 'Manrope', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.daily-checkin-modal p {
+  margin: 0 0 28px;
+  color: #718096;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.daily-checkin-modal button {
+  min-width: 160px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 999px;
+  background-color: #86aea7;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.daily-checkin-modal button:hover {
+  background-color: #6e9b90;
+}
+
+.daily-checkin-modal button:focus-visible {
+  outline: 3px solid #326b52;
+  outline-offset: 4px;
+}
+
+/* ========================================
+   RESPONSIVE — TABLET
+======================================== */
+
+@media (max-width: 768px) {
+  .daily-checkin-page {
+    padding: 64px 20px 80px;
+  }
+
+  .daily-checkin-heading {
+    margin-bottom: 40px;
+  }
+
+  .daily-checkin-heading h1 {
+    font-size: 32px;
+  }
+
+  .daily-checkin-heading p {
+    font-size: 17px;
+  }
+
+  .daily-checkin-form .checkin-demo-card {
+  padding: 28px 24px;
+}
+
+.daily-checkin-form .checkin-demo-card {
+  min-height: 580px;
+  padding: 28px 24px;
+}
+}
+
+/* ========================================
+   RESPONSIVE — MOBILE
+======================================== */
+
+@media (max-width: 480px) {
+  .daily-checkin-page {
+    padding: 48px 16px 64px;
+  }
+
+  .daily-checkin-heading {
+    margin-bottom: 32px;
+  }
+
+  .daily-checkin-heading h1 {
+    font-size: 26px;
+    line-height: 1.35;
+  }
+
+  .daily-checkin-heading p {
+    margin-top: 16px;
+    font-size: 15px;
+  }
+
+  .daily-checkin-form .checkin-demo-card {
+    padding: 20px 14px;
+  }
+
+  .daily-checkin-modal {
+    padding: 32px 20px;
+  }
+
+  .daily-checkin-modal h2 {
+    font-size: 26px;
+  }
+
+  .daily-checkin-form .checkin-demo-card {
+  min-height: auto;
+  padding: 24px 16px;
+  gap: 20px;
+}
+}
+
+/* ========================================
+   CHECK-IN PAGE — FORM PROPORTIONS
+======================================== */
+
+/* Perbesar ikon mood */
+.daily-checkin-form .mood-option .mood-image {
+  width: 90px;
+  height: 90px;
+  padding: 14px;
+}
+
+/* Perbesar label mood */
+.daily-checkin-form .mood-option small {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Perbesar panel energi */
+.daily-checkin-form .checkin-energy-panel {
+  padding: 28px 32px;
+}
+
+/* Perbesar tulisan panel energi */
+.daily-checkin-form .checkin-energy-header label {
+  font-size: 15px;
+}
+
+.daily-checkin-form .checkin-energy-badge {
+  font-size: 17px;
+}
+
+/* Perbesar panel istirahat dan aktivitas */
+.daily-checkin-form .checkin-info-panel {
+  padding: 26px 28px;
+}
+
+/* Perbesar judul panel */
+.daily-checkin-form .checkin-info-panel > label,
+.daily-checkin-form .checkin-panel-title {
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+/* Perbesar input jam tidur */
+.daily-checkin-form .checkin-sleep-input input {
+  padding: 12px 16px;
+  font-size: 15px;
+}
+
+.daily-checkin-form .checkin-sleep-input span {
+  font-size: 15px;
+}
+
+/* Perbesar tombol aktivitas */
+.daily-checkin-form .checkin-info-panel .checkin-activities button {
+  padding: 9px 15px;
+  font-size: 13px;
+}
+
+/* Perbesar input aktivitas lainnya */
+.daily-checkin-form .checkin-info-panel .checkin-other-activity input {
+  padding: 11px 15px;
+  font-size: 13px;
+}
+
+/* Perbesar tombol simpan */
+.daily-checkin-form .checkin-save {
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 768px) {
+  .daily-checkin-form .mood-option .mood-image {
+    width: 64px;
+    height: 64px;
+    padding: 10px;
+  }
+
+  .daily-checkin-form .mood-option small {
+    font-size: 12px;
+  }
+
+  .daily-checkin-form .checkin-energy-panel {
+    padding: 20px 22px;
+  }
+
+  .daily-checkin-form .checkin-info-panel {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .daily-checkin-form .mood-option .mood-image {
+    width: 46px;
+    height: 46px;
+    padding: 7px;
+  }
+
+  .daily-checkin-form .mood-option small {
+    font-size: 10px;
+  }
+
+  .daily-checkin-form .checkin-energy-panel {
+    padding: 18px;
+  }
+
+  .daily-checkin-form .checkin-info-panel {
+    padding: 18px;
+  }
+
+  .daily-checkin-form .checkin-info-panel .checkin-activities button {
+    font-size: 12px;
+  }
+
+  .daily-checkin-form .checkin-save {
+    padding: 14px 18px;
+    font-size: 14px;
+  }
+}
+
+/* ========================================
+   CHECK-IN — BACKGROUND CONSISTENCY
+======================================== */
+
+.app-layout:has(.daily-checkin-page) {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f6f0;
+}
+
+.app-layout:has(.daily-checkin-page) > .app-main {
+  flex: 1;
+  background-color: #f8f6f0;
+}
+
+.app-layout:has(.daily-checkin-page) .daily-checkin-page {
+  background-color: #f8f6f0;
+}
+
+/* ========================================
+   CHECK-IN — BACKGROUND CONSISTENCY
+======================================== */
+
+.app-layout:has(.daily-checkin-page) {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f6f0;
+}
+
+.app-layout:has(.daily-checkin-page) > .app-main {
+  flex: 1;
+  background-color: #f8f6f0;
+}
+
+.app-layout:has(.daily-checkin-page) .daily-checkin-page {
+  background-color: #f8f6f0;
+}
+
+/* ========================================
+   CHECK-IN — GREETING CARD
+======================================== */
+
+.daily-checkin-greeting {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto 32px;
+  padding: 32px 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(22, 61, 53, 0.05);
+}
+
+.daily-checkin-greeting-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.daily-checkin-greeting-label {
+  display: inline-block;
+  margin-bottom: 14px;
+
+  color: #547963;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.daily-checkin-greeting-content h2 {
+  margin: 0 0 12px;
+
+  color: #173f35;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.daily-checkin-greeting-content p {
+  max-width: 520px;
+  margin: 0;
+
+  color: #52685e;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.daily-checkin-greeting-image {
+  display: block;
+  width: 230px;
+  max-width: 35%;
+  height: auto;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+/* Tablet */
+
+@media (max-width: 768px) {
+  .daily-checkin-greeting {
+    padding: 24px 28px;
+    gap: 20px;
+  }
+
+  .daily-checkin-greeting-image {
+    width: 180px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 540px) {
+  .daily-checkin-greeting {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+    gap: 12px;
+  }
+
+  .daily-checkin-greeting-content p {
+    font-size: 14px;
+  }
+
+  .daily-checkin-greeting-image {
+    width: 180px;
+    max-width: 75%;
+    align-self: center;
+  }
+}
+
+.daily-checkin-greeting,
+.daily-checkin-form .checkin-demo-card {
+  background-color: #ffffff;
+
+  /* Stroke sedikit lebih tebal */
+  border: 2px solid #82a392;
+
+  /* Sudut tetap konsisten */
+  border-radius: 24px;
+
+  /* Drop shadow lebih terlihat */
+  box-shadow:
+    0 10px 28px rgba(130, 163, 146, 0.30),
+    0 4px 10px rgba(22, 61, 53, 0.08);
+}

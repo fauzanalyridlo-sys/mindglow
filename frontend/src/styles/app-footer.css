@@ -13,8 +13,8 @@
 /* Menjaga jarak antarkolom */
 
 .app-footer .footer-grid {
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 65px;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 64px;
 }
 
 /* Navigasi Footer */
@@ -39,8 +39,8 @@
 
 @media (max-width: 900px) {
   .app-footer .footer-grid {
-    grid-template-columns: 1.6fr 1fr 1fr;
-    gap: 45px 28px;
+    grid-template-columns: minmax(0, 1.5fr) minmax(160px, 1fr);
+    gap: 40px;
   }
 }
 
@@ -48,11 +48,92 @@
 
 @media (max-width: 640px) {
   .app-footer .footer-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 42px 28px;
+    grid-template-columns: 1fr;
+    gap: 32px;
   }
 
   .app-footer .footer-brand {
-    grid-column: 1 / -1;
+    grid-column: auto;
   }
+}
+
+/* ========================================
+   APP FOOTER — NAVIGASI 2 KOLOM
+======================================== */
+
+.app-footer .footer-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 32px;
+  row-gap: 14px;
+  align-content: start;
+}
+
+.app-footer .footer-column h3 {
+  grid-column: 1 / -1;
+  margin-bottom: 8px;
+}
+
+/* Navigasi urut 3 menu per kolom */
+.app-footer .footer-column a:nth-of-type(1) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.app-footer .footer-column a:nth-of-type(2) {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.app-footer .footer-column a:nth-of-type(3) {
+  grid-column: 1;
+  grid-row: 4;
+}
+
+.app-footer .footer-column a:nth-of-type(4) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.app-footer .footer-column a:nth-of-type(5) {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.app-footer .footer-column a:nth-of-type(6) {
+  grid-column: 2;
+  grid-row: 4;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .app-footer .footer-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 32px;
+  }
+
+  .app-footer .footer-column {
+    column-gap: 20px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .app-footer .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .app-footer .footer-column {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+  }
+}
+
+/* ========================================
+   APP FOOTER — WAVE COLOR FIX
+======================================== */
+
+.app-footer .footer-wave {
+  background-color: #f8f6f0;
 }
