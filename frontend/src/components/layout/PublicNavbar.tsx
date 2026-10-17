@@ -15,11 +15,11 @@ export default function PublicNavbar() {
         </nav>
 
         <div className="nav-actions">
-          <Button href="#masuk" variant="secondary">
+          <Button href="/login" variant="secondary">
             Masuk
           </Button>
 
-          <Button href="#mulai">Daftar</Button>
+          <Button href="/register">Daftar</Button>
         </div>
       </div>
     </header>
