@@ -83,18 +83,22 @@
   display: grid;
   flex-shrink: 0;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 54px;
+  height: 54px;
   overflow: hidden;
-  border: 1px solid #dce9de;
+  box-sizing: border-box;
+  border: 2px solid #c9dfcd;
   border-radius: 50%;
-  background: #edf5ed;
+  background: linear-gradient(145deg, #f7fcf6, #e1efe2);
+  box-shadow:
+    inset 0 1px 3px rgb(255 255 255 / 90%),
+    0 3px 8px rgb(43 83 51 / 14%);
 }
 
 .reflection-avatar img {
   display: block;
-  width: 23px;
-  height: 23px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
 }
 
@@ -392,13 +396,13 @@
   }
 
   .reflection-avatar {
-    width: 30px;
-    height: 30px;
+    width: 48px;
+    height: 48px;
   }
 
   .reflection-avatar img {
-    width: 20px;
-    height: 20px;
+    width: 32px;
+    height: 32px;
   }
 
   .reflection-bubble {
@@ -497,13 +501,13 @@
   }
 
   .reflection-avatar {
-    width: 27px;
-    height: 27px;
+    width: 42px;
+    height: 42px;
   }
 
   .reflection-avatar img {
-    width: 18px;
-    height: 18px;
+    width: 28px;
+    height: 28px;
   }
 
   .reflection-bubble {
@@ -590,13 +594,13 @@
   }
 
   .reflection-avatar {
-    width: 24px;
-    height: 24px;
+    width: 38px;
+    height: 38px;
   }
 
   .reflection-avatar img {
-    width: 16px;
-    height: 16px;
+    width: 25px;
+    height: 25px;
   }
 
   .reflection-bubble {
