@@ -7,6 +7,7 @@ import { wawasanRoutes } from './wawasanRoutes'
 import { checkinRoutes } from './checkinRoutes'
 import { journalRoutes } from './journalRoutes'
 import { akademikRoutes } from './akademikRoutes'
+import { dashboardRoutes } from './dashboardRoutes'
 
 export const appRoutes: RouteObject[] = [
   ...publicRoutes,
@@ -16,4 +17,5 @@ export const appRoutes: RouteObject[] = [
   ...checkinRoutes,
   ...journalRoutes,
   ...akademikRoutes,
+  ...dashboardRoutes
 ]
