@@ -73,7 +73,7 @@ export default function AiRuangRefleksi() {
       return 'Senang mendengar ada hal yang membuatmu merasa lebih baik. Apa yang terjadi hari ini hingga kamu merasakan itu?'
     }
 
-    return 'Terima kasih sudah cerita. Aku ingin memahami lebih jauh—bagian mana dari pengalaman itu yang paling terasa buatmu?'
+    return 'Terima kasih sudah berbagi. Apa hal yang paling ingin kamu pahami dari perasaan itu ?'
   }
 
   function handleSend() {
