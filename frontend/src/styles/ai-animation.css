@@ -2,10 +2,11 @@
 .ai-hero-image img {
   display: block;
   width: 100%;
-  max-width: 470px;
-  max-height: 420px;
+  max-width: 432px;
+  max-height: 400px;
   object-fit: contain;
   animation: ai-float 3.5s ease-in-out infinite;
+  will-change: transform;
 }
 
 @keyframes ai-float {
@@ -15,12 +16,19 @@
   }
 
   50% {
-    transform: translateY(-12px);
+    transform: translateY(-10px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .ai-hero-image img {
+    max-height: 336px;
   }
 }
 
 @media (max-width: 640px) {
   .ai-hero-image img {
+    max-width: 100%;
     max-height: 270px;
   }
 }
@@ -28,5 +36,6 @@
 @media (prefers-reduced-motion: reduce) {
   .ai-hero-image img {
     animation: none;
+    will-change: auto;
   }
 }
