@@ -1,6 +1,7 @@
 
 .reflection-page {
   min-height: calc(100vh - 80px);
+<<<<<<< Updated upstream
   padding: 34px 5.2% 48px;
   background: #f8f6f0;
   display: flex;
@@ -22,17 +23,50 @@
   border-radius: 40px;
   box-shadow: 0 8px 8px rgb(0 0 0 / 18%);
   overflow: hidden;
+=======
+  padding: 36px 24px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  box-sizing: border-box;
+  background:
+    radial-gradient(ellipse at top left, #e8f0e8 0%, transparent 42%),
+    #f6f7f2;
+  color: #263b2f;
+}
+
+.reflection-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1080px;
+  height: min(76vh, 740px);
+  min-height: 500px;
+  overflow: hidden;
+  border: 1px solid #dce7dd;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 14px 40px rgb(40 67 48 / 9%);
+>>>>>>> Stashed changes
 }
 
 .reflection-heading {
   flex-shrink: 0;
+<<<<<<< Updated upstream
   padding: 14px 20px 18px;
   border-bottom: 1.5px solid #91ae9e;
+=======
+  padding: 20px 24px;
+  border-bottom: 1px solid #e8eee8;
+  background: linear-gradient(135deg, #fbfdf9, #f0f6ef);
+>>>>>>> Stashed changes
   text-align: center;
 }
 
 .reflection-heading h1 {
   margin: 0;
+<<<<<<< Updated upstream
   font-size: clamp(30px, 3vw, 40px);
   font-weight: 500;
   line-height: 1;
@@ -42,16 +76,51 @@
   flex: 1;
   min-height: 0;
   padding: 28px 34px;
+=======
+  color: #2f5b40;
+  font-size: clamp(24px, 2.5vw, 32px);
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+  overflow-wrap: break-word;
+}
+
+.reflection-messages {
+>>>>>>> Stashed changes
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
+  min-height: 0;
+  padding: 28px clamp(16px, 4%, 44px);
+  overflow-x: hidden;
   overflow-y: auto;
+<<<<<<< Updated upstream
+=======
+  scroll-behavior: smooth;
+  background: #fff;
+  overscroll-behavior: contain;
+}
+
+.reflection-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.reflection-messages::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #d7e2d8;
+>>>>>>> Stashed changes
 }
 
 .reflection-message-row {
   display: flex;
+<<<<<<< Updated upstream
   align-items: flex-start;
   gap: 12px;
+=======
+  align-items: flex-end;
+  gap: 10px;
+>>>>>>> Stashed changes
   width: 100%;
 }
 
@@ -60,13 +129,18 @@
 }
 
 .reflection-avatar {
+<<<<<<< Updated upstream
   width: 74px;
   height: 74px;
   flex-shrink: 0;
   border-radius: 50%;
   background: #88aa99;
+=======
+>>>>>>> Stashed changes
   display: grid;
+  flex-shrink: 0;
   place-items: center;
+<<<<<<< Updated upstream
   font-size: 36px;
 }
 
@@ -80,12 +154,59 @@
   font-size: clamp(15px, 1.5vw, 21px);
   line-height: 1.45;
   overflow-wrap: anywhere;
+=======
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  border: 1px solid #dce9de;
+  border-radius: 50%;
+  background: #edf5ed;
+}
+
+.reflection-avatar img {
+  display: block;
+  width: 23px;
+  height: 23px;
+  object-fit: contain;
+}
+
+.reflection-bubble {
+  max-width: min(78%, 620px);
+  padding: 12px 16px;
+  border: 1px solid #e0e9e1;
+  border-radius: 18px;
+  background: #f3f7f2;
+  color: #34483a;
+  font-size: 15px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.reflection-message-row.is-ai .reflection-bubble {
+  border-bottom-left-radius: 5px;
+}
+
+.reflection-message-row.is-user .reflection-bubble {
+  border-color: #477653;
+  border-bottom-right-radius: 5px;
+  background: #477653;
+  color: #fff;
+  box-shadow: 0 3px 10px rgb(55 103 69 / 10%);
+}
+
+.reflection-bubble.reflection-typing {
+  color: #7b8c7e;
+  font-size: 13px;
+  font-style: italic;
+>>>>>>> Stashed changes
 }
 
 .reflection-composer {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   align-items: stretch;
+<<<<<<< Updated upstream
   gap: 34px;
   padding: 14px 4% 0;
 }
@@ -94,8 +215,18 @@
   flex: 1;
   min-width: 0;
   min-height: 84px;
+=======
+  gap: 10px;
+  padding: 14px clamp(14px, 4%, 36px) 0;
+  background: #fff;
+}
+
+.reflection-input-wrap {
+>>>>>>> Stashed changes
   display: flex;
+  flex: 1;
   align-items: center;
+<<<<<<< Updated upstream
   gap: 18px;
   padding: 12px 20px;
   border: 1.5px solid #222;
@@ -110,18 +241,58 @@
   line-height: 1;
 }
 
+=======
+  gap: 10px;
+  min-width: 0;
+  min-height: 54px;
+  padding: 8px 14px;
+  border: 1px solid #d5e1d6;
+  border-radius: 16px;
+  background: #f8faf7;
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    background 200ms ease;
+}
+
+.reflection-input-wrap:focus-within {
+  border-color: #709779;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgb(112 151 121 / 12%);
+}
+
+.reflection-input-icon {
+  flex-shrink: 0;
+  color: #77917b;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.reflection-input-icon img {
+  display: block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+>>>>>>> Stashed changes
 .reflection-input-wrap textarea {
   flex: 1;
   width: 100%;
   min-width: 0;
-  max-height: 120px;
+  max-height: 110px;
   resize: vertical;
   border: none;
   outline: none;
   background: transparent;
   color: #111;
   font: inherit;
+<<<<<<< Updated upstream
   font-size: 20px;
+=======
+  font-size: 14px;
+  line-height: 1.55;
+>>>>>>> Stashed changes
 }
 
 .reflection-input-wrap textarea::placeholder {
@@ -130,6 +301,7 @@
 }
 
 .reflection-send {
+<<<<<<< Updated upstream
   width: 130px;
   min-width: 90px;
   border: 1px solid #222;
@@ -144,6 +316,35 @@
 .reflection-send:hover:not(:disabled) {
   background: #66866e;
   transform: translateY(-2px);
+=======
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 52px;
+  min-width: 52px;
+  min-height: 54px;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: #477653;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  transition:
+    background 200ms ease,
+    transform 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.reflection-send:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #365f41;
+  box-shadow: 0 5px 12px rgb(55 103 69 / 16%);
+}
+
+.reflection-send:active:not(:disabled) {
+  transform: translateY(0);
+>>>>>>> Stashed changes
 }
 
 .reflection-send:disabled {
@@ -152,10 +353,11 @@
 }
 
 .reflection-privacy {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
+<<<<<<< Updated upstream
   gap: 12px;
   margin: 0;
   padding: 12px 12px 28px;
@@ -182,11 +384,126 @@
 
 .reflection-back:hover {
   background: #769b87;
+=======
+  gap: 7px;
+  margin: 0;
+  padding: 12px 12px 18px;
+  background: #fff;
+  text-align: center;
 }
 
-@media (max-width: 700px) {
+.reflection-privacy img {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  opacity: 0.75;
+}
+
+.reflection-privacy span {
+  color: #7d8f80;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.reflection-back {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 132px;
+  min-height: 42px;
+  padding: 10px 18px;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid #91aa99;
+  border-radius: 999px;
+  background:
+    radial-gradient(
+      ellipse 15% 30% at 18% 40%,
+      rgb(255 255 255 / 78%),
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 13% 27% at 54% 20%,
+      rgb(255 255 255 / 68%),
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 16% 32% at 78% 70%,
+      rgb(255 255 255 / 75%),
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 12% 25% at 35% 82%,
+      rgb(255 255 255 / 58%),
+      transparent 100%
+    ),
+    linear-gradient(135deg, #c5d9ca, #a4c1ad 52%, #87a895);
+  color: #2e394c;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow:
+    inset 0 2px 4px rgb(255 255 255 / 80%),
+    inset 0 -2px 4px rgb(46 57 76 / 10%),
+    0 3px 6px rgb(46 57 76 / 12%);
+  transition:
+    background 250ms ease,
+    border-color 250ms ease,
+    transform 200ms ease,
+    box-shadow 250ms ease;
+}
+
+.reflection-back:hover {
+  border-color: #a9cbb3;
+  background:
+    radial-gradient(
+      ellipse 18% 34% at 20% 40%,
+      rgb(255 255 255 / 95%),
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 15% 30% at 55% 25%,
+      rgb(255 255 255 / 82%),
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 18% 34% at 80% 70%,
+      rgb(255 255 255 / 88%),
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 12% 25% at 35% 82%,
+      rgb(255 255 255 / 72%),
+      transparent 100%
+    ),
+    linear-gradient(135deg, #e1f0e5, #c9e5d1 52%, #b3d7be);
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 2px 4px rgb(255 255 255 / 90%),
+    inset 0 -2px 4px rgb(46 57 76 / 8%),
+    0 5px 10px rgb(46 57 76 / 14%);
+>>>>>>> Stashed changes
+}
+
+.reflection-back:active {
+  background: linear-gradient(135deg, #e8f5eb, #c4e8cf);
+  transform: scale(0.98);
+  box-shadow:
+    inset 0 2px 5px rgb(255 255 255 / 90%),
+    0 2px 4px rgb(46 57 76 / 10%);
+}
+
+@media (max-width: 768px) {
   .reflection-page {
     min-height: calc(100vh - 70px);
+<<<<<<< Updated upstream
     padding: 20px 12px 30px;
     gap: 24px;
   }
@@ -231,6 +548,73 @@
 
   .reflection-input-icon {
     font-size: 28px;
+=======
+    padding: 24px 16px 28px;
+    gap: 14px;
+  }
+
+  .reflection-panel {
+    width: 100%;
+    height: min(76dvh, 680px);
+    min-height: 440px;
+    border-radius: 20px;
+  }
+
+  .reflection-heading {
+    padding: 16px 14px;
+  }
+
+  .reflection-heading h1 {
+    font-size: clamp(22px, 4vw, 27px);
+  }
+
+  .reflection-messages {
+    gap: 16px;
+    padding: 20px 14px;
+  }
+
+  .reflection-message-row {
+    gap: 8px;
+  }
+
+  .reflection-avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .reflection-avatar img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .reflection-bubble {
+    max-width: 84%;
+    padding: 11px 13px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .reflection-composer {
+    gap: 8px;
+    padding: 12px 12px 0;
+  }
+
+  .reflection-input-wrap {
+    min-height: 48px;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 13px;
+  }
+
+  .reflection-input-icon {
+    font-size: 20px;
+  }
+
+  .reflection-input-icon img {
+    width: 19px;
+    height: 19px;
+>>>>>>> Stashed changes
   }
 
   .reflection-input-wrap textarea {
@@ -238,6 +622,7 @@
   }
 
   .reflection-send {
+<<<<<<< Updated upstream
     width: 58px;
     min-width: 58px;
     font-size: 34px;
@@ -247,10 +632,239 @@
     padding: 10px 10px 18px;
     font-size: 13px;
   }
+=======
+    width: 46px;
+    min-width: 46px;
+    min-height: 48px;
+    border-radius: 13px;
+    font-size: 22px;
+  }
+
+  .reflection-privacy {
+    gap: 6px;
+    padding: 10px 10px 14px;
+  }
+
+  .reflection-privacy img {
+    width: 14px;
+    height: 14px;
+  }
+
+  .reflection-privacy span {
+    font-size: 11px;
+  }
+
+  .reflection-back {
+    min-width: 120px;
+    min-height: 40px;
+    padding: 9px 15px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .reflection-page {
+    min-height: calc(100dvh - 60px);
+    padding: 14px 10px 20px;
+    gap: 12px;
+  }
+
+  .reflection-panel {
+    height: calc(100dvh - 150px);
+    min-height: 390px;
+    border-radius: 17px;
+  }
+
+  .reflection-heading {
+    padding: 14px 10px;
+  }
+
+  .reflection-heading h1 {
+    font-size: clamp(20px, 5.5vw, 24px);
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+  }
+
+  .reflection-messages {
+    gap: 14px;
+    padding: 16px 10px;
+  }
+
+  .reflection-message-row {
+    gap: 6px;
+  }
+
+  .reflection-avatar {
+    width: 27px;
+    height: 27px;
+  }
+
+  .reflection-avatar img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .reflection-bubble {
+    max-width: 87%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .reflection-bubble.reflection-typing {
+    font-size: 12px;
+  }
+
+  .reflection-composer {
+    gap: 7px;
+    padding: 10px 9px 0;
+  }
+
+  .reflection-input-wrap {
+    min-height: 44px;
+    gap: 7px;
+    padding: 6px 9px;
+    border-radius: 12px;
+  }
+
+  .reflection-input-icon img {
+    width: 17px;
+    height: 17px;
+  }
+
+  .reflection-input-wrap textarea {
+    font-size: 13px;
+  }
+
+  .reflection-send {
+    width: 42px;
+    min-width: 42px;
+    min-height: 44px;
+    border-radius: 12px;
+    font-size: 20px;
+  }
+
+  .reflection-privacy {
+    gap: 5px;
+    padding: 9px 8px 12px;
+  }
+
+  .reflection-privacy img {
+    width: 13px;
+    height: 13px;
+  }
+
+  .reflection-privacy span {
+    font-size: 10px;
+  }
+
+  .reflection-back {
+    min-width: 112px;
+    min-height: 38px;
+    padding: 8px 13px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .reflection-page {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .reflection-panel {
+    min-height: 370px;
+    border-radius: 15px;
+  }
+
+  .reflection-heading h1 {
+    font-size: 20px;
+  }
+
+  .reflection-messages {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .reflection-avatar {
+    width: 24px;
+    height: 24px;
+  }
+
+  .reflection-avatar img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .reflection-bubble {
+    max-width: 89%;
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+
+  .reflection-input-wrap {
+    padding-right: 7px;
+    padding-left: 8px;
+  }
+
+  .reflection-input-icon img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .reflection-send {
+    width: 38px;
+    min-width: 38px;
+    font-size: 18px;
+  }
+
+  .reflection-privacy span {
+    font-size: 9px;
+  }
+
+  .reflection-back {
+    min-width: 106px;
+    min-height: 36px;
+    padding: 8px 11px;
+    font-size: 11px;
+  }
+}
+
+@media (max-height: 600px) and (max-width: 768px) {
+  .reflection-page {
+    padding-top: 10px;
+    padding-bottom: 12px;
+  }
+
+  .reflection-panel {
+    height: 72dvh;
+    min-height: 340px;
+  }
+
+  .reflection-heading {
+    padding: 10px 12px;
+  }
+
+  .reflection-messages {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .reflection-privacy {
+    padding-top: 7px;
+    padding-bottom: 9px;
+  }
+>>>>>>> Stashed changes
 }
 
 @media (prefers-reduced-motion: reduce) {
   .reflection-send {
     transition: none;
+  }
+
+  .reflection-send:hover,
+  .reflection-back:hover {
+    transform: none;
   }
 }

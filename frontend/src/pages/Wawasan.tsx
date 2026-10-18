@@ -43,8 +43,16 @@ function MoodChart() {
     )
     .join(' ')
 
+  const legendItems = [
+    { icon: moodOverjoyed, label: 'Sangat Senang' },
+    { icon: moodHappy, label: 'Senang' },
+    { icon: moodNeutral, label: 'Biasa Saja' },
+    { icon: moodDepressed, label: 'Cemas' },
+  ]
+
   return (
     <div className="mood-chart-layout">
+<<<<<<< Updated upstream
       <aside className="mood-legend">
         {[
           { icon: moodOverjoyed, label: 'Sangat Senang' },
@@ -54,6 +62,10 @@ function MoodChart() {
           { icon: moodDepressed, label: 'Cemas' },
           { icon: moodSad, label: 'Sedih' },
         ].map((item) => (
+=======
+      <aside className="mood-legend" aria-label="Keterangan suasana hati">
+        {legendItems.map((item) => (
+>>>>>>> Stashed changes
           <div className="mood-legend-item" key={item.label}>
             <img src={item.icon} alt="" />
             <span>{item.label}</span>
@@ -254,10 +266,17 @@ export default function Wawasan() {
             <div className="habit-content">
               <h3>Tidur dan Perasaanmu</h3>
 
+<<<<<<< Updated upstream
               <p>
                 Pada hari-hari ketika kamu tidur lebih dari 7 jam,
                 kamu lebih sering mencatat suasana hati yang tenang.
               </p>
+=======
+            <p>
+              Pada hari-hari ketika kamu tidur lebih dari 7 jam, kamu lebih
+              sering mencatat suasana hati yang tenang.
+            </p>
+>>>>>>> Stashed changes
 
               <div className="habit-stat">
                 <span>☾ &nbsp; &gt; 7 jam tidur</span>
@@ -279,10 +298,17 @@ export default function Wawasan() {
             <div className="habit-content">
               <h3>Aktivitas Akademik</h3>
 
+<<<<<<< Updated upstream
               <p>
                 Kamu lebih sering mencatat rasa cemas pada hari
                 dengan banyak tugas kuliah.
               </p>
+=======
+            <p>
+              Kamu lebih sering mencatat rasa cemas pada hari dengan banyak
+              tugas kuliah.
+            </p>
+>>>>>>> Stashed changes
 
               <div className="habit-stat">
                 <span>▤ &nbsp; Banyak tugas</span>
@@ -308,6 +334,7 @@ export default function Wawasan() {
           <h2>Hal Kecil untuk Dicoba</h2>
 
           <p>
+<<<<<<< Updated upstream
             Kamu beberapa kali mencatat energi rendah setelah hari yang sibuk.
             Mungkin kamu bisa mencoba menyediakan waktu istirahat singkat
             di sela aktivitas.
@@ -315,6 +342,21 @@ export default function Wawasan() {
 
           <a href="/reflection" className="reflection-button">
             Mulai Refleksi <span aria-hidden="true">→</span>
+=======
+            Apa yang sedang kamu rasakan hari ini? Ceritakan pikiran atau
+            pengalamanmu di Ruang Refleksi AI. Kamu bisa menelusuri perasaanmu
+            dengan lebih tenang dan mencari langkah kecil yang terasa cocok
+            untukmu.
+          </p>
+
+          <a
+            href="/reflection"
+            className="reflection-button"
+            aria-label="Refleksikan bersama AI"
+          >
+            Refleksikan Bersama AI
+            <span aria-hidden="true">➜</span>
+>>>>>>> Stashed changes
           </a>
         </div>
 

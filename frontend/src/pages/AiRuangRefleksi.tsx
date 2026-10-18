@@ -27,7 +27,49 @@ export default function AiRuangRefleksi() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+<<<<<<< Updated upstream
   }, [messages])
+=======
+  }, [messages, isTyping])
+
+  function getAiReply(userText: string): string {
+    const text = userText.toLowerCase()
+
+    if (
+      text.includes('capek') ||
+      text.includes('lelah') ||
+      text.includes('kelelahan')
+    ) {
+      return 'Kedengarannya kamu sedang merasa lelah. Kamu nggak harus menyelesaikan semuanya sekaligus. Hal apa yang paling menguras energimu akhir-akhir ini?'
+    }
+
+    if (
+      text.includes('sedih') ||
+      text.includes('kecewa') ||
+      text.includes('menangis')
+    ) {
+      return 'Aku menangkap kalau ada hal yang membuatmu sedih. Kalau kamu nyaman, mau cerita apa yang terjadi?'
+    }
+
+    if (
+      text.includes('cemas') ||
+      text.includes('khawatir') ||
+      text.includes('takut')
+    ) {
+      return 'Rasa khawatir bisa terasa berat saat dipendam sendiri. Apa ada sesuatu yang paling kamu cemaskan saat ini?'
+    }
+
+    if (
+      text.includes('senang') ||
+      text.includes('bahagia') ||
+      text.includes('lega')
+    ) {
+      return 'Senang mendengar ada hal yang membuatmu merasa lebih baik. Apa yang terjadi hari ini hingga kamu merasakan itu?'
+    }
+
+    return 'Terima kasih sudah cerita. Aku ingin memahami lebih jauh—bagian mana dari pengalaman itu yang paling terasa buatmu?'
+  }
+>>>>>>> Stashed changes
 
   function handleSend() {
     const text = input.trim()
@@ -38,8 +80,34 @@ export default function AiRuangRefleksi() {
       { id: nextId.current++, sender: 'user', text },
     ])
     setInput('')
+<<<<<<< Updated upstream
   }
 
+=======
+    setIsTyping(true)
+
+    replyTimeoutRef.current = window.setTimeout(() => {
+      const aiMessage: Message = {
+        id: nextId.current++,
+        sender: 'ai',
+        text: getAiReply(text),
+      }
+
+      setMessages((current) => [...current, aiMessage])
+      setIsTyping(false)
+      replyTimeoutRef.current = null
+    }, 700)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (replyTimeoutRef.current !== null) {
+        window.clearTimeout(replyTimeoutRef.current)
+      }
+    }
+  }, [])
+
+>>>>>>> Stashed changes
   function handleKeyDown(
     event: React.KeyboardEvent<HTMLTextAreaElement>,
   ) {
