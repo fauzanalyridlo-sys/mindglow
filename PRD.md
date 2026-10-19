@@ -7,7 +7,7 @@ Website Pendukung Kesejahteraan Mental
 **Modul:** 7 - Transformasi Desain Figma ke Prototipe Web Interaktif  
 **Status:** Draft  
 **Repository:** https://github.com/fauzanalyridlo-sys/mindglow  
-**Figma:** [Masukkan link Figma Modul 5]
+**Figma:** [https://www.figma.com/design/UDo96YbSVLBGPN65TpP2S7/MindGlow?node-id=0-1&t=f3LnhtznFw3S3zCh-1]
 
 ---
 
@@ -148,24 +148,7 @@ agar dapat merefleksikan pengalaman sehari-hari.
 ### Backend
 - Laravel
 
-### Integrasi
-- [......]
-
-## 10. Pembagian Tugas
-
-[]
-
-## 11. Penggunaan AI
-
-### Prompt yang Digunakan
-
-[Masukkan prompt asli yang digunakan saat pengerjaan]
-
-### Perbaikan Manual
-
-[Catat perubahan yang dilakukan setelah menggunakan AI]
-
-## 12. Pengujian
+## 10. Pengujian
 
 - Pengujian tampilan desktop.
 - Pengujian tampilan mobile.
@@ -173,5 +156,5 @@ agar dapat merefleksikan pengalaman sehari-hari.
 - Pengujian interaksi dinamis.
 - Pemeriksaan runtime error.
 
-## 13. Panduan Menjalankan Proyek
+## 11. Panduan Menjalankan Proyek
 [Masukkan perintah sesuai konfigurasi proyek final]
