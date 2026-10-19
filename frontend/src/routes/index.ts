@@ -9,6 +9,7 @@ import { journalRoutes } from './journalRoutes'
 import { akademikRoutes } from './akademikRoutes'
 import { dashboardRoutes } from './dashboardRoutes'
 import { profileRoutes } from './profileRoutes'
+import { relaksasiRoutes } from './RelaksasiRoutes'
 
 export const appRoutes: RouteObject[] = [
   ...publicRoutes,
@@ -20,4 +21,5 @@ export const appRoutes: RouteObject[] = [
   ...akademikRoutes,
   ...dashboardRoutes,
   ...profileRoutes,
+  ...relaksasiRoutes,
 ]
