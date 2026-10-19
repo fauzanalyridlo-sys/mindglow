@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from 'react'
 import '../styles/wawasan.css'
 import '../styles/wawasan-animation.css'
 
+import moodSad from '../icons/Solid mood sad.svg'
+import moodDepressed from '../icons/Solid mood depressed.svg'
+import moodNeutral from '../icons/Solid mood neutral.svg'
 import moodHappy from '../icons/Solid mood happy.svg'
 import moodOverjoyed from '../icons/Solid mood overjoyed.svg'
-import moodNeutral from '../icons/Solid mood neutral.svg'
-import moodDepressed from '../icons/Solid mood depressed.svg'
 
 import emojiIcon from '../icons/emoji.svg'
 import energyIcon from '../icons/energi.svg'
@@ -27,14 +28,37 @@ type MoodPoint = {
   value: number
 }
 
+// Pemetaan nilai contoh ke kategori mood.
+const getMood = (
+  value: number,
+): Pick<MoodPoint, 'mood' | 'label'> => {
+  if (value <= 2) {
+    return { mood: moodSad, label: 'Lelah/Down' }
+  }
+
+  if (value < 2.5) {
+    return { mood: moodDepressed, label: 'Cemas' }
+  }
+
+  if (value < 3.5) {
+    return { mood: moodNeutral, label: 'Biasa aja' }
+  }
+
+  if (value < 4.3) {
+    return { mood: moodHappy, label: 'Tenang' }
+  }
+
+  return { mood: moodOverjoyed, label: 'Semangat!' }
+}
+
 const moodJourney7: MoodPoint[] = [
-  { day: 'Sen', mood: moodOverjoyed, label: 'Sangat Senang', value: 4.5 },
-  { day: 'Sel', mood: moodHappy, label: 'Senang', value: 3.8 },
-  { day: 'Rab', mood: moodDepressed, label: 'Cemas', value: 2.2 },
-  { day: 'Kam', mood: moodNeutral, label: 'Biasa Saja', value: 2.5 },
-  { day: 'Jum', mood: moodHappy, label: 'Tenang', value: 3.4 },
-  { day: 'Sab', mood: moodOverjoyed, label: 'Sangat Senang', value: 4.8 },
-  { day: 'Min', mood: moodHappy, label: 'Senang', value: 4.0 },
+  { day: 'Sen', value: 4.5, ...getMood(4.5) },
+  { day: 'Sel', value: 3.8, ...getMood(3.8) },
+  { day: 'Rab', value: 2.2, ...getMood(2.2) },
+  { day: 'Kam', value: 2.5, ...getMood(2.5) },
+  { day: 'Jum', value: 3.4, ...getMood(3.4) },
+  { day: 'Sab', value: 4.8, ...getMood(4.8) },
+  { day: 'Min', value: 4.0, ...getMood(4.0) },
 ]
 
 const moodValues30 = [
@@ -45,28 +69,11 @@ const moodValues30 = [
   4.0, 4.3,
 ]
 
-const moodJourney30: MoodPoint[] = moodValues30.map((value, index) => {
-  let mood = moodNeutral
-  let label = 'Biasa Saja'
-
-  if (value >= 4.3) {
-    mood = moodOverjoyed
-    label = 'Sangat Senang'
-  } else if (value >= 3.5) {
-    mood = moodHappy
-    label = 'Senang'
-  } else if (value < 2.5) {
-    mood = moodDepressed
-    label = 'Cemas'
-  }
-
-  return {
-    day: `${index + 1}`,
-    mood,
-    label,
-    value,
-  }
-})
+const moodJourney30: MoodPoint[] = moodValues30.map((value, index) => ({
+  day: `${index + 1}`,
+  value,
+  ...getMood(value),
+}))
 
 function MoodChart({ data }: { data: MoodPoint[] }) {
   const left = 24
@@ -88,10 +95,11 @@ function MoodChart({ data }: { data: MoodPoint[] }) {
     .join(' ')
 
   const legendItems = [
-    { icon: moodOverjoyed, label: 'Sangat Senang' },
-    { icon: moodHappy, label: 'Senang' },
-    { icon: moodNeutral, label: 'Biasa Saja' },
+    { icon: moodSad, label: 'Lelah/Down' },
     { icon: moodDepressed, label: 'Cemas' },
+    { icon: moodNeutral, label: 'Biasa aja' },
+    { icon: moodHappy, label: 'Tenang' },
+    { icon: moodOverjoyed, label: 'Semangat!' },
   ]
 
   return (
