@@ -106,9 +106,9 @@ export default function LoginPage() {
         </form>
 
         <nav className="auth-login-links" aria-label="Tautan autentikasi">
-          <span className="auth-inactive-link">Lupa sandi</span>
+          <a href="/forgot-password" className="auth-inactive-link">Lupa sandi</a>
           <span className="auth-register-prompt">
-            Belum Punya Akun? <span className="auth-inactive-link">Daftar sekarang</span>
+            Belum Punya Akun? <a href="/register" className="auth-inactive-link">Daftar sekarang</a>
           </span>
         </nav>
       </div>

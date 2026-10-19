@@ -141,3 +141,51 @@
     font-size: 17px;
   }
 }
+
+/* Layout halaman Lupa Sandi mengikuti Register */
+body:has(.auth-card--email) {
+  background-color: #f4f7f4;
+  background-image: url('/images/footer_login.png');
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+body:has(.auth-card--email) > #root > header,
+body:has(.auth-card--email) > #root > nav {
+  display: none;
+}
+
+.auth-card--email {
+  position: fixed;
+  z-index: 9999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  width: min(90vw, 400px);
+  max-width: 400px;
+  padding: 30px 32px;
+  border: 1px solid #b5c7b8;
+  border-radius: 25px;
+  background-color: #f9fbf9;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 640px) {
+  .auth-card--email {
+    width: min(92vw, 400px);
+    padding: 26px 22px;
+  }
+}
+
+/* Sembunyikan footer utama hanya pada halaman Lupa Sandi */
+body:has(.auth-card--email) #root > footer {
+  display: none;
+}
+
+/* Pastikan area konten tidak mendorong footer */
+body:has(.auth-card--email) #top {
+  min-height: 100vh;
+}
+
