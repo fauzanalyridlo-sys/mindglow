@@ -70,3 +70,67 @@
     margin-top: 24px;
   }
 }
+
+/* Halaman konfirmasi reset password mengikuti layout Register */
+body:has(.auth-card--confirmation) {
+  background-color: #f4f7f4;
+  background-image: url('/images/footer_login.png');
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  overflow: hidden;
+}
+
+body:has(.auth-card--confirmation) > #root > header,
+body:has(.auth-card--confirmation) > #root > nav,
+body:has(.auth-card--confirmation) #root > footer {
+  display: none;
+}
+
+body:has(.auth-card--confirmation) #top {
+  min-height: 100vh;
+}
+
+.auth-card--confirmation {
+  position: fixed;
+  z-index: 9999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  width: min(90vw, 400px);
+  max-width: 400px;
+  padding: 30px 32px;
+  border: 1px solid #b5c7b8;
+  border-radius: 25px;
+  background-color: #f9fbf9;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.auth-card--confirmation .auth-reset-confirmation-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  text-decoration: none;
+  text-shadow: none;
+}
+
+.auth-card--confirmation .auth-reset-confirmation-header p {
+  font-size: 14px;
+  margin-top: 14px;
+}
+
+.auth-card--confirmation .auth-reset-confirmation-button {
+  width: 100%;
+  margin-top: 24px;
+}
+
+@media (max-width: 640px) {
+  .auth-card--confirmation {
+    width: min(92vw, 400px);
+    padding: 26px 22px;
+  }
+
+  .auth-card--confirmation .auth-reset-confirmation-header h1 {
+    font-size: 21px;
+  }
+}

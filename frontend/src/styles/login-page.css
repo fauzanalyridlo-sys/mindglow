@@ -189,3 +189,126 @@
     font-size: 12px;
   }
 }
+
+/* Layout halaman Login mengikuti tampilan Register */
+.auth-card--login {
+  position: fixed;
+  z-index: 9999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90%, 400px);
+  max-width: 400px;
+  padding: 30px 40px;
+  border: 1px solid #b5c7b8;
+  border-radius: 25px;
+  background-color: #f9fbf9;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Background Login memenuhi layar */
+body:has(.auth-card--login) {
+  background-color: #f4f7f4;
+  background-image: url('/images/footer_login.png');
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* Sembunyikan navbar dan footer hanya saat Login */
+body:has(.auth-card--login) #top {
+  min-height: 100vh;
+}
+
+body:has(.auth-card--login) #top ~ footer {
+  display: none;
+}
+
+
+@media (max-width: 640px) {
+  .auth-card--login {
+    width: min(92%, 400px);
+    padding: 28px 22px 34px;
+  }
+}
+
+/* Penyempurnaan Login agar konsisten dengan Register */
+body:has(.auth-card--login) {
+  overflow: hidden;
+}
+
+body:has(.auth-card--login) > #root > header,
+body:has(.auth-card--login) > #root > nav {
+  display: none;
+}
+
+.auth-card--login {
+  width: min(90vw, 400px);
+  max-width: 400px;
+  padding: 30px 32px;
+  box-sizing: border-box;
+}
+
+.auth-card--login .auth-login-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.auth-card--login .auth-login-title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+.auth-card--login .auth-login-form {
+  padding: 0;
+  gap: 12px;
+}
+
+.auth-card--login .auth-login-field {
+  gap: 5px;
+}
+
+.auth-card--login .auth-login-field label {
+  padding-left: 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.auth-card--login .auth-login-field input {
+  height: 42px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.auth-card--login .auth-submit-button {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 15px;
+}
+
+.auth-card--login .auth-login-links {
+  margin: 20px 0 0;
+  font-size: 12px;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .auth-card--login {
+    width: min(92vw, 400px);
+    padding: 26px 22px;
+  }
+
+  .auth-card--login .auth-login-title {
+    font-size: 21px;
+  }
+}
+
+/* Pastikan tautan di dalam kartu Login tetap terlihat */
+body:has(.auth-card--login) .auth-login-links {
+  visibility: visible;
+}
+
