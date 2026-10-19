@@ -1,0 +1,202 @@
+/* Container Utama Halaman Journal */
+.journal-page-container {
+  width: 100%;
+  max-width: 1100px; 
+  margin: 0 auto;
+  /* Urutan padding: atas(40px) kiri-kanan(30px) bawah(120px) */
+  padding: 40px 30px 120px; 
+  background-color: transparent; 
+  box-sizing: border-box;
+  min-height: 80vh; /* Memastikan halaman cukup tinggi meskipun isinya kosong */
+}
+
+/* --- BAGIAN JUDUL --- */
+.journal-header {
+  margin-bottom: 40px; /* Jarak ke kotak form diperbesar agar lebih lega */
+}
+
+.journal-header h1 {
+  font-size: 48px; /* Diperbesar agar sesuai proporsi desain asli */
+  color: #2c363f; /* Warna biru dongker keabu-abuan gelap */
+  font-weight: 800;
+  margin-bottom: 5px;
+  letter-spacing: 0.5px;
+}
+
+.journal-header p {
+  font-size: 18px;
+  color: #5a6673;
+  margin-top: 0;
+}
+
+/* --- KOTAK UTAMA JURNAL --- */
+.journal-input-card {
+  background-color: transparent;
+  border: 1px solid #2c363f; /* Garis tepi disamakan dengan warna teks judul */
+  border-radius: 24px; /* Lengkungan luar diperhalus */
+  padding: 40px; /* Ruang dalam diperluas agar tulisan tidak menempel ke garis */
+  margin-bottom: 60px;
+}
+
+/* --- AREA KETIK (TEXTAREA) --- */
+.journal-textarea {
+  width: 100%;
+  min-height: 120px; /* Awalnya dibuat lebih pendek agar tidak makan tempat */
+  background-color: transparent;
+  border: 1px solid #aebac1; 
+  border-radius: 16px; 
+  padding: 24px;
+  font-size: 16px;
+  line-height: 1.6; 
+  color: #333;
+  font-family: inherit; 
+  resize: none; /* Dihilangkan karena sekarang sudah otomatis memanjang */
+  overflow: hidden; /* Sembunyikan scrollbar di dalam kotak teks */
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+/* Efek saat pengguna mulai mengetik di dalam kotak */
+.journal-textarea:focus {
+  border-color: #8db298; 
+  box-shadow: 0 0 0 3px rgba(141, 178, 152, 0.2); /* Nyala hijau sangat tipis di sekitar garis */
+}
+
+.journal-textarea::placeholder {
+  color: #94a3b8;
+  font-size: 17px;
+}
+
+/* --- BAGIAN BAWAH KOTAK (FOOTER KOTAK) --- */
+.journal-input-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px; /* Jarak ditata ulang agar tombol pas */
+}
+
+.auto-save-text {
+  font-size: 14px;
+  color: #8b96a5;
+}
+
+/* --- TOMBOL SIMPAN --- */
+.btn-simpan-journal {
+  padding: 12px 36px; /* Dibuat sedikit lebih panjang (bentuk pil) */
+  background: linear-gradient(180deg, #b6d3c3 0%, #8db298 100%);
+  color: #1a3442;
+  font-weight: 700;
+  font-size: 15px;
+  border: none; /* Garis dihilangkan agar terlihat bersih seperti desain */
+  border-radius: 50px; 
+  cursor: pointer;
+  /* Bayangan hijau untuk memberi efek menyatu dengan tema */
+  box-shadow: 0 6px 12px rgba(141, 178, 152, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+}
+
+.btn-simpan-journal:hover {
+  background: linear-gradient(180deg, #c4e0d0 0%, #97bea3 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(141, 178, 152, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.7);
+}
+
+.btn-simpan-journal:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 6px rgba(141, 178, 152, 0.2);
+}
+
+/* --- RIWAYAT --- */
+.journal-riwayat-section h2 {
+  font-size: 28px;
+  color: #2c363f;
+  font-weight: normal;
+  font-family: 'Times New Roman', Times, serif; 
+  border-bottom: 1px solid #e2e8f0; /* Tambahan garis bawah tipis sebagai pembatas elegan */
+  padding-bottom: 12px;
+}
+
+/* --- DAFTAR & KARTU RIWAYAT --- */
+.journal-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* Jarak antar kotak curhatan */
+  margin-top: 30px;
+}
+
+.journal-history-card {
+  background-color: #ffffff; /* Latar belakang putih solid agar tidak tembus pandang */
+  border: 1px solid #d1d5db; /* Garis tepi abu-abu lembut */
+  border-radius: 20px; 
+  padding: 24px 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); /* Bayangan sangat halus */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.journal-history-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06); /* Bayangan membesar saat disentuh mouse */
+}
+
+/* Teks Curhatan di dalam Kartu */
+.journal-text {
+  font-size: 16px;
+  color: #1f2937;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* --- HEADER KARTU RIWAYAT (Tanggal, Waktu & Tombol Hapus) --- */
+.journal-card-header {
+  display: flex;
+  justify-content: space-between; /* Memisahkan tanggal ke kiri, X ke kanan */
+  align-items: center;
+  margin-bottom: 15px; /* Jarak antara header kartu ke teks curhatan */
+}
+
+/* Bungkus Tanggal & Waktu */
+.journal-date-time {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Jarak antara tanggal dan waktu */
+}
+
+/* Teks Tanggal */
+.journal-date {
+  font-size: 14px;
+  color: #5a6673; /* Warna abu-abu gelap */
+  font-weight: 600;
+}
+
+/* Teks Waktu (Ukurannya dibuat sedikit lebih kecil/sedang) */
+.journal-time {
+  font-size: 13px;
+  color: #9ca3af; /* Warna abu-abu yang lebih terang dari tanggal */
+  font-weight: 400;
+}
+
+/* Tombol Hapus (Silang X) */
+.btn-delete-journal {
+  background: transparent;
+  border: none;
+  color: #aebac1; /* Warna awal abu-abu pudar */
+  font-size: 26px; /* Ukuran X cukup besar tapi tipis */
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+/* Efek saat kursor diarahkan ke tombol Hapus */
+.btn-delete-journal:hover {
+  color: #ef4444; /* Berubah menjadi merah cerah */
+  background-color: #fee2e2; /* Latar belakang merah sangat pudar */
+  transform: scale(1.1); /* Sedikit membesar */
+}
