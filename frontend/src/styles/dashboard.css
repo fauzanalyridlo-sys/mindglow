@@ -1,0 +1,215 @@
+/* Container Utama */
+.dashboard-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 30px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* --- BANNER SELAMAT DATANG --- */
+.welcome-banner {
+  background-color: #82A392; /* <--- DIPERBARUI: Menggunakan Hijau Tua */
+  border-radius: 24px;
+  padding: 40px 50px;
+  color: #ffffff;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(130, 163, 146, 0.2); /* Bayangan disesuaikan dengan warna baru */
+}
+
+.welcome-banner h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  letter-spacing: 0.5px;
+}
+
+.welcome-banner p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0 0 30px 0;
+  opacity: 0.9;
+  max-width: 600px;
+}
+
+.banner-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+/* Tombol Kaca (Glassmorphism) */
+.btn-glass {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+}
+
+/* --- GRID 3 KOTAK INFO --- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease;
+  border: 1px solid #f3f4f6;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+/* Ikon Bulat */
+.icon-circle {
+  width: 60px;
+  height: 60px;
+  background-color: #82A392; /* <--- DIPERBARUI: Menggunakan Hijau Tua */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-title {
+  font-size: 13px;
+  color: #9ca3af;
+  font-weight: 500;
+  margin: 0;
+}
+
+.stat-value {
+  font-size: 16px;
+  color: #1f2937;
+  font-weight: 700;
+  margin: 0;
+}
+
+.stat-subtext {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.text-red { color: #ef4444; }
+.text-blue { color: #3b82f6; text-decoration: none; font-weight: 600; }
+.text-blue:hover { text-decoration: underline; }
+
+/* --- BAGIAN TUGAS --- */
+.tasks-section {
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 30px 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f3f4f6;
+}
+
+.tasks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.tasks-header h2 {
+  font-size: 20px;
+  color: #111827;
+  margin: 0;
+  font-weight: 700;
+}
+
+.link-all {
+  font-size: 13px;
+  color: #9ca3af;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link-all:hover {
+  color: #6b7280;
+}
+
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  background-color: #f3f4f6; /* <-- Dikembalikan ke abu-abu muda yang bersih */
+  border-radius: 12px;
+  padding: 16px 20px;
+  gap: 15px;
+  border: none; /* Garis tepi dihilangkan agar menyatu rapi seperti desain asli */
+}
+
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid #82A392; /* <--- DIPERBARUI: Border checkbox pakai Hijau Tua */
+  background-color: #ffffff;
+  cursor: pointer;
+  appearance: none;
+}
+
+.task-checkbox:checked {
+  background-color: #82A392; /* <--- DIPERBARUI: Warna saat dicentang pakai Hijau Tua */
+  border-color: #82A392;
+}
+
+.task-name {
+  font-size: 15px;
+  color: #2c363f; /* Sedikit digelapkan agar terbaca jelas di atas hijau muda */
+  font-weight: 500;
+  flex-grow: 1;
+}
+
+.task-date {
+  font-size: 13px;
+  color: #ef4444;
+  font-weight: 500;
+}
+
+/* Responsif untuk layar kecil */
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
