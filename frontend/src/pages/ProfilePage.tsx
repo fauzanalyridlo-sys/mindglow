@@ -6,7 +6,7 @@ const ProfilePage = () => {
     username: 'Lambang_seto',
     email: 'Lambangseto@gmail.com',
     phone: '+14987889999',
-    password: 'Lambangjossjiss'
+    password: ''
   });
 
   // Fitur menyembunyikan/menampilkan password
