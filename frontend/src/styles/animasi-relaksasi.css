@@ -1,0 +1,127 @@
+
+.breath-stage {
+  --breath-scale: 1;
+  --breath-color: #A7B9A8;
+
+  display: grid;
+  place-items: center;
+  width: clamp(220px, 27vw, 350px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+}
+
+.breath-circle {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--breath-color);
+  color: #354339;
+  box-shadow: 0 12px 30px rgb(53 67 57 / 5%);
+  transform: scale(var(--breath-scale));
+  transition:
+    transform 4s ease-in-out,
+    background-color 900ms ease;
+  will-change: transform;
+}
+
+.breath-circle-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+}
+
+.breath-number {
+  font-size: clamp(90px, 10vw, 145px);
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: -4px;
+  font-variant-numeric: tabular-nums;
+  animation: number-appear 350ms ease-out;
+}
+
+.breath-label {
+  max-width: 220px;
+  color: #354339;
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.5;
+}
+
+.phase-siap {
+  --breath-scale: 1;
+  --breath-color: #A7B9A8;
+}
+
+.phase-tarik {
+  --breath-scale: 1.1;
+  --breath-color: #C7D5C5;
+}
+
+.phase-tahan {
+  --breath-scale: 1.1;
+  --breath-color: #C7D5C5;
+}
+
+.phase-hembus {
+  --breath-scale: 0.88;
+  --breath-color: #A7B9A8;
+}
+
+.phase-selesai {
+  --breath-scale: 1;
+  --breath-color: #DCE5D9;
+}
+
+.phase-tarik .breath-circle {
+  transition-duration: 4s, 900ms;
+}
+
+.phase-tahan .breath-circle {
+  transition-duration: 500ms, 900ms;
+}
+
+.phase-hembus .breath-circle {
+  transition-duration: 8s, 900ms;
+}
+
+@keyframes number-appear {
+  from {
+    opacity: 0.4;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 700px) {
+  .breath-stage {
+    width: min(65vw, 270px);
+  }
+
+  .breath-number {
+    font-size: clamp(76px, 18vw, 110px);
+  }
+
+  .breath-label {
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .breath-circle {
+    transition: none;
+    will-change: auto;
+  }
+
+  .breath-number {
+    animation: none;
+  }
+}

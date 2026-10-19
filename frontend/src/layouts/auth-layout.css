@@ -1,0 +1,52 @@
+
+.auth-page {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(80px, 11.5vh, 150px) 20px 240px;
+  overflow: hidden;
+  background: #f8f6f0;
+}
+
+.auth-landscape {
+  position: fixed;
+  z-index: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  line-height: 0;
+}
+
+.auth-landscape img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: bottom;
+}
+
+.auth-main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .auth-page {
+    padding: 40px 16px 190px;
+  }
+
+  .auth-landscape {
+    left: 50%;
+    width: max(100%, 700px);
+    transform: translateX(-50%);
+  }
+}
