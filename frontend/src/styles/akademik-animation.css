@@ -1,0 +1,89 @@
+.academic-task-card {
+  animation: task-card-enter 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms ease;
+}
+
+.academic-task-card:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.academic-task-card:nth-child(2) {
+  animation-delay: 90ms;
+}
+
+.academic-task-card:nth-child(3) {
+  animation-delay: 180ms;
+}
+
+.academic-task-card:nth-child(4) {
+  animation-delay: 270ms;
+}
+
+.academic-task-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 26px rgba(38, 56, 46, 0.14);
+}
+
+.academic-task-card:active {
+  transform: translateY(-1px) scale(0.995);
+}
+
+.academic-task-type img {
+  transition: transform 220ms ease;
+}
+
+.academic-task-card:hover .academic-task-type img {
+  transform: scale(1.08);
+}
+
+.academic-task-actions .academic-button {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.academic-task-actions .academic-button:hover {
+  transform: translateY(-2px);
+}
+
+@keyframes task-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.academic-learning-image {
+  animation: learning-float 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes learning-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .academic-task-card,
+  .academic-task-type img,
+  .academic-task-actions .academic-button,
+  .academic-learning-image {
+    animation: none;
+    transition: none;
+    transform: none;
+    will-change: auto;
+  }
+}

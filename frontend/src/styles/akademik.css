@@ -1,0 +1,632 @@
+
+.academic-page {
+  min-height: 100vh;
+  padding: 24px clamp(20px, 5vw, 60px) 60px;
+  color: #303747;
+  background: #f8f7f3;
+  font-family: inherit;
+}
+
+.academic-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 300px;
+  padding: 32px 24px;
+  overflow: hidden;
+  border: 1.5px solid #91aa9a;
+  border-radius: 30px;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(38, 56, 46, 0.12);
+}
+
+.academic-hero-copy {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+
+.academic-hero h1 {
+  margin: 0 0 8px;
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.1;
+  font-weight: 750;
+  letter-spacing: -1.2px;
+}
+
+.academic-hero p {
+  margin: 0 0 30px;
+  font-size: clamp(17px, 2.2vw, 29px);
+  line-height: 1.2;
+}
+
+.academic-hero-image {
+  width: min(36%, 340px);
+  max-height: 280px;
+  object-fit: contain;
+}
+
+/* Tombol umum: isi tombol selalu berada di tengah */
+.academic-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 44px;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  border: 1px solid #829a8a;
+  border-radius: 999px;
+  color: #20372a;
+  background:
+    radial-gradient(
+      ellipse 18% 35% at 18% 35%,
+      rgba(255, 255, 255, 0.72),
+      transparent 100%
+    ),
+    linear-gradient(135deg, #a9c0ae, #91aa9a);
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.45),
+    0 3px 8px rgba(32, 55, 40, 0.12);
+
+  transition:
+    background 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease,
+    transform 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.academic-button:hover {
+  color: #fff;
+  background: linear-gradient(135deg, #789b85, #668875);
+  border-color: #587963;
+  box-shadow: 0 6px 14px rgba(54, 86, 66, 0.2);
+  transform: translateY(-2px);
+}
+
+.academic-button:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 2px 4px rgba(54, 86, 66, 0.15);
+}
+
+.academic-button:focus-visible {
+  outline: 3px solid #b7d2bd;
+  outline-offset: 3px;
+}
+
+/* Ikon di dalam tombol */
+.academic-button img {
+  display: block;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.academic-button span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+.academic-plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Tombol sekunder */
+.academic-secondary {
+  color: #34473a;
+  background: linear-gradient(135deg, #edf2ed, #d9e2da);
+  border-color: #a4b6a8;
+}
+
+.academic-secondary:hover {
+  color: #26372c;
+  background: #cbdace;
+  border-color: #91aa9a;
+}
+
+/* Tombol hapus */
+.academic-delete {
+  min-width: 116px;
+  color: #fff;
+  background: linear-gradient(135deg, #cf5149, #b83b34);
+  border-color: #b93630;
+  box-shadow: 0 4px 10px rgba(160, 36, 32, 0.17);
+}
+
+.academic-delete:hover {
+  color: #fff;
+  background: linear-gradient(135deg, #d34d44, #a72e29);
+  border-color: #a72e29;
+  box-shadow: 0 7px 15px rgba(160, 36, 32, 0.25);
+}
+
+.academic-delete img {
+  filter: brightness(0) invert(1);
+}
+
+/* Daftar tugas */
+.academic-task-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.academic-task-card {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid #d4e0d6;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 5px 14px rgba(38, 56, 46, 0.08);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.academic-task-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(38, 56, 46, 0.13);
+}
+
+.academic-task-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.academic-priority {
+  padding: 7px 14px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 650;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.priority-tinggi {
+  background: #c83430;
+}
+
+.priority-sedang {
+  background: #d69a35;
+}
+
+.priority-rendah {
+  background: #719a7b;
+}
+
+.academic-task-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #303747;
+  font-size: 14px;
+}
+
+.academic-task-type svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.academic-task-card h2 {
+  margin: 12px 0;
+  color: #202720;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.academic-task-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e1e6e1;
+  color: #59645c;
+  font-size: 11px;
+}
+
+.academic-task-meta time {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #e5eee7;
+  color: #35483a;
+}
+
+.academic-task-meta time img {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+}
+
+/* Tombol aksi pada kartu tugas */
+.academic-task-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding-top: 14px;
+}
+
+.academic-task-actions .academic-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin: 0;
+  padding: 9px 16px;
+  gap: 7px;
+  box-sizing: border-box;
+
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.task-completed h2 {
+  color: #819087;
+  text-decoration: line-through;
+}
+
+/* Tampilan ketika daftar tugas kosong */
+.academic-empty {
+  grid-column: 1 / -1;
+  padding: 36px 24px;
+  border: 1px dashed #b9cbbd;
+  border-radius: 22px;
+  color: #6b776d;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+/* Overlay popup */
+.academic-overlay {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  overflow-y: auto;
+  background: rgba(25, 38, 29, 0.48);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+
+/* Kotak popup */
+.academic-modal {
+  position: relative;
+  width: min(100%, 470px);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  padding: 34px 32px;
+  border: 1px solid #d3e0d5;
+  border-radius: 26px;
+  background: linear-gradient(145deg, #fff 0%, #f8faf6 100%);
+  box-shadow:
+    0 24px 65px rgba(25, 43, 31, 0.25),
+    0 5px 16px rgba(25, 43, 31, 0.1);
+  animation: academic-modal-in 280ms ease both;
+}
+
+.academic-modal::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 26px 26px 0 0;
+  background: linear-gradient(90deg, #91aa9a, #c6d9c9, #789783);
+  pointer-events: none;
+}
+
+.academic-modal-heading {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.academic-modal-kicker {
+  display: block;
+  margin-bottom: 8px;
+  color: #789582;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.academic-modal-heading h2,
+.academic-confirm h2,
+.academic-notice h2 {
+  margin: 0;
+  color: #303747;
+  font-size: clamp(23px, 4vw, 28px);
+  line-height: 1.25;
+  font-weight: 750;
+  letter-spacing: -0.6px;
+}
+
+/* Form popup */
+.academic-form label {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 15px;
+  color: #37443a;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.academic-form input,
+.academic-form select {
+  width: 100%;
+  min-height: 47px;
+  padding: 11px 14px;
+  border: 1px solid #d4ded5;
+  border-radius: 13px;
+  background: #fff;
+  color: #252c27;
+  font: inherit;
+  font-size: 13px;
+  box-shadow: 0 2px 5px rgba(36, 54, 40, 0.03);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.academic-form input::placeholder {
+  color: #a0a7a0;
+}
+
+.academic-form input:hover,
+.academic-form select:hover {
+  border-color: #9bb4a0;
+}
+
+.academic-form input:focus,
+.academic-form select:focus {
+  outline: none;
+  border-color: #789783;
+  box-shadow: 0 0 0 3px rgba(145, 170, 154, 0.2);
+}
+
+.academic-form-selects {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Tombol di popup form: sama tinggi dan isi terpusat */
+.academic-form-actions {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 24px;
+}
+
+.academic-form-actions .academic-button {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  margin: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Ikon pada popup */
+.academic-popup-icon {
+  display: grid;
+  place-items: center;
+  width: 86px;
+  height: 86px;
+  margin: 0 auto 20px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  box-shadow: 0 7px 18px rgba(24, 40, 29, 0.1);
+  animation: academic-popup-icon-in 380ms ease both;
+}
+
+.academic-popup-icon img {
+  display: block;
+  width: 43px;
+  height: 43px;
+  object-fit: contain;
+  opacity: 1;
+  filter: none;
+  box-shadow: none;
+}
+
+/* Popup konfirmasi hapus berwarna merah */
+.academic-popup-delete {
+  background: linear-gradient(145deg, #cf5149, #b83b34);
+  border-color: #b93630;
+}
+
+.academic-popup-delete img {
+  filter: brightness(0) invert(1);
+}
+
+/* Popup sukses biasa tetap hijau */
+.academic-popup-success {
+  background: linear-gradient(145deg, #e8f4e9, #cfe6d2);
+  border-color: #b8d8bd;
+}
+
+.academic-popup-success img {
+  filter: none;
+}
+
+/* Konten popup konfirmasi dan notifikasi */
+.academic-confirm,
+.academic-notice {
+  text-align: center;
+}
+
+.academic-confirm > .academic-modal-kicker,
+.academic-notice > .academic-modal-kicker {
+  margin-bottom: 8px;
+}
+
+.academic-confirm p,
+.academic-notice p {
+  margin: 10px 0 0;
+  color: #69736c;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* Tombol notifikasi dipusatkan */
+.academic-notice-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 145px;
+  min-height: 44px;
+  margin: 25px auto 0;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Animasi popup */
+@keyframes academic-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes academic-popup-icon-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Tablet */
+@media (max-width: 760px) {
+  .academic-page {
+    padding: 18px 16px 40px;
+  }
+
+  .academic-hero {
+    min-height: 230px;
+    padding: 24px 20px;
+    border-radius: 24px;
+  }
+
+  .academic-hero-image {
+    width: 32%;
+  }
+
+  .academic-task-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+  .academic-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .academic-hero-image {
+    align-self: center;
+    width: min(80%, 260px);
+    max-height: 190px;
+  }
+
+  .academic-desktop-break {
+    display: none;
+  }
+
+  .academic-form-selects {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .academic-modal {
+    padding: 29px 21px 23px;
+    border-radius: 23px;
+  }
+
+  .academic-popup-icon {
+    width: 76px;
+    height: 76px;
+  }
+
+  .academic-popup-icon img {
+    width: 38px;
+    height: 38px;
+  }
+
+  .academic-task-card {
+    padding: 16px;
+  }
+
+  .academic-form-actions {
+    gap: 9px;
+  }
+
+  .academic-form-actions .academic-button {
+    padding-inline: 12px;
+    white-space: normal;
+  }
+}
+
+/* Kurangi animasi jika pengguna memilih reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .academic-button,
+  .academic-task-card,
+  .academic-modal,
+  .academic-popup-icon {
+    transition: none;
+    animation: none;
+  }
+}
