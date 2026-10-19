@@ -620,7 +620,7 @@
   }
 }
 
-/* Kurangi animasi jika pengguna memilih reduced motion */
+
 @media (prefers-reduced-motion: reduce) {
   .academic-button,
   .academic-task-card,
