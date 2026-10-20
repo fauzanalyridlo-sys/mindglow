@@ -1,3 +1,4 @@
+'use client'
 import '../styles/auth-email.css'
 import { useState } from 'react'
 import type { FormEvent } from 'react'

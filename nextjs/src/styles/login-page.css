@@ -237,9 +237,14 @@ body:has(.auth-card--login) {
   overflow: hidden;
 }
 
-body:has(.auth-card--login) > #root > header,
-body:has(.auth-card--login) > #root > nav {
+/* Sembunyikan navbar saat halaman Login aktif */
+body:has(.auth-card--login) > header {
   display: none;
+}
+
+/* Pastikan area Login memenuhi tinggi layar */
+body:has(.auth-card--login) > main#top {
+  min-height: 100vh;
 }
 
 .auth-card--login {

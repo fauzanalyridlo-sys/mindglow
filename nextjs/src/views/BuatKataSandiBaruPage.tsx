@@ -1,3 +1,4 @@
+'use client'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import AuthCard from '../components/auth/AuthCard'

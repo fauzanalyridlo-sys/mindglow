@@ -1,8 +1,10 @@
-import "../styles/dashboard.css";
-import { useNavigate } from 'react-router-dom';
+'use client'
+
+import '../styles/dashboard.css'
+import { useRouter } from 'next/navigation'
 
 const DashboardPage = () => {
-  const navigate = useNavigate(); 
+  const router = useRouter();
 
   return (
     <main className="dashboard-container">
@@ -18,14 +20,14 @@ const DashboardPage = () => {
           
           <button 
             className="btn-glass" 
-            onClick={() => navigate('/checkin')}
+            onClick={() => router.push('/checkin')}
           >
             Check hari ini
           </button>
           
           <button 
             className="btn-glass" 
-            onClick={() => navigate('/relaksasi')}
+            onClick={() => router.push('/relaksasi')}
           >
             🫀 Butuh Relaksasi Cepat
           </button>

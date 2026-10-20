@@ -1,25 +1,42 @@
-
+'use client'
 import { useEffect, useRef, useState } from 'react'
 
 import '../styles/wawasan.css'
 import '../styles/wawasan-animation.css'
 
-import moodSad from '../icons/Solid mood sad.svg'
-import moodDepressed from '../icons/Solid mood depressed.svg'
-import moodNeutral from '../icons/Solid mood neutral.svg'
-import moodHappy from '../icons/Solid mood happy.svg'
-import moodOverjoyed from '../icons/Solid mood overjoyed.svg'
+import moodSadAsset from '../icons/Solid mood sad.svg'
+import moodDepressedAsset from '../icons/Solid mood depressed.svg'
+import moodNeutralAsset from '../icons/Solid mood neutral.svg'
+import moodHappyAsset from '../icons/Solid mood happy.svg'
+import moodOverjoyedAsset from '../icons/Solid mood overjoyed.svg'
 
-import emojiIcon from '../icons/emoji.svg'
-import energyIcon from '../icons/energi.svg'
-import sleepIcon from '../icons/tidur.svg'
-import ringkasanIcon from '../icons/Ringkasan.svg'
-import gambarWawasan from '../assets/gambarwawasan.svg'
-import perjalananIcon from '../icons/Perjalanan.svg'
-import polaIcon from '../icons/pola.svg'
-import aiIcon from '../icons/ai.svg'
-import robotIcon from '../icons/robot.svg'
-import akademikIcon from '../icons/akademik.svg'
+import emojiAsset from '../icons/emoji.svg'
+import energyAsset from '../icons/energi.svg'
+import sleepAsset from '../icons/tidur.svg'
+import ringkasanAsset from '../icons/Ringkasan.svg'
+import gambarWawasanAsset from '../assets/gambarwawasan.svg'
+import perjalananAsset from '../icons/Perjalanan.svg'
+import polaAsset from '../icons/pola.svg'
+import aiAsset from '../icons/ai.svg'
+import robotAsset from '../icons/robot.svg'
+import akademikAsset from '../icons/akademik.svg'
+
+const moodSad = moodSadAsset.src
+const moodDepressed = moodDepressedAsset.src
+const moodNeutral = moodNeutralAsset.src
+const moodHappy = moodHappyAsset.src
+const moodOverjoyed = moodOverjoyedAsset.src
+
+const emojiIcon = emojiAsset.src
+const energyIcon = energyAsset.src
+const sleepIcon = sleepAsset.src
+const ringkasanIcon = ringkasanAsset.src
+const gambarWawasan = gambarWawasanAsset.src
+const perjalananIcon = perjalananAsset.src
+const polaIcon = polaAsset.src
+const aiIcon = aiAsset.src
+const robotIcon = robotAsset.src
+const akademikIcon = akademikAsset.src
 
 type MoodPoint = {
   day: string

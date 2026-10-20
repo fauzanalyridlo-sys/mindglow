@@ -1,5 +1,7 @@
-import "../styles/JournalPage.css";
-import { useRef, useState } from 'react';
+'use client'
+
+import '../styles/JournalPage.css'
+import { useRef, useState } from 'react'
 
 // Cetakan data sekarang kita tambah 'time'
 interface JournalEntry {

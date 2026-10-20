@@ -1,5 +1,6 @@
+'use client'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 
 type Mood = {
   image: string
@@ -30,7 +31,7 @@ const energyLabels = [
 ]
 
 export default function CheckinForm() {
-  const navigate = useNavigate()
+  const router = useRouter()
 
   const [selectedMood, setSelectedMood] = useState<string | null>(null)
   const [energyLevel, setEnergyLevel] = useState(3)
@@ -255,7 +256,7 @@ export default function CheckinForm() {
 
             <button
               type="button"
-              onClick={() => navigate('/dashboard')}
+              onClick={() => router.push('/dashboard')}
               autoFocus
             >
               Oke

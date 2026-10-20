@@ -1,5 +1,8 @@
+'use client'
+
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import Logo from '../ui/Logo'
 import UserAvatar from '../ui/UserAvatar'
 import '../../styles/app-navbar.css'
@@ -14,12 +17,13 @@ const navigation = [
   { label: 'Jurnal', path: '/journal' },
   { label: 'Akademik', path: '/akademik' },
   { label: 'Wawasan', path: '/wawasan' },
-  { label: 'Refleksi AI', path: '/Ai' },
+  { label: 'Refleksi AI', path: '/ai' },
 ]
 
 export default function AppNavbar({
   userName = 'Fauzan Aly Ridlo',
 }: AppNavbarProps) {
+  const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const closeMenu = () => setIsMenuOpen(false)
@@ -37,29 +41,29 @@ export default function AppNavbar({
           aria-label="Navigasi utama"
         >
           {navigation.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              onClick={closeMenu}
-              className={({ isActive }) =>
-                `app-navbar-link ${isActive ? 'active' : ''}`
-              }
-            >
-              {item.label}
-            </NavLink>
+            <Link
+  key={item.path}
+  href={item.path}
+  onClick={closeMenu}
+  className={`app-navbar-link ${
+    (pathname ?? '').toLowerCase() === item.path.toLowerCase() ? 'active' : ''
+  }`}
+>
+  {item.label}
+</Link>
           ))}
         </nav>
 
         <div className="app-navbar-actions">
-          <NavLink
-            to="/profile"
-            className="app-navbar-profile"
-            aria-label="Buka profil pengguna"
-            title="Profil pengguna"
-            onClick={closeMenu}
-          >
-            <UserAvatar name={userName} />
-          </NavLink>
+          <Link
+  href="/profile"
+  className="app-navbar-profile"
+  aria-label="Buka profil pengguna"
+  title="Profil pengguna"
+  onClick={closeMenu}
+>
+  <UserAvatar name={userName} />
+</Link>
 
           <button
             type="button"

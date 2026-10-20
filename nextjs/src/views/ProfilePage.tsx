@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import '../styles/profile.css'; 
+'use client'
+
+import { useState } from 'react'
+import '../styles/profile.css'
 
 const ProfilePage = () => {
   const [profileData, setProfileData] = useState({

@@ -1,10 +1,13 @@
-
+'use client'
 import { useState, useRef, useEffect } from 'react'
 import '../styles/ai-ruang-refleksi.css'
 import '../styles/ai-ruang-refleksi-animation.css'
 
-import iconAi from '../icons/iconai.svg'
-import iconGembok from '../icons/gembok.svg'
+import iconAiAsset from '../icons/iconai.svg'
+import iconGembokAsset from '../icons/gembok.svg'
+
+const iconAi = iconAiAsset.src
+const iconGembok = iconGembokAsset.src
 
 type Message = {
   id: number

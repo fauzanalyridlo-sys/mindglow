@@ -1,10 +1,9 @@
 import '../styles/ai.css'
 import '../styles/ai-animation.css'
 
-const aiImage = new URL(
-  '../assets/elemenheroai.svg',
-  import.meta.url,
-).href
+import aiImageAsset from '../assets/elemenheroai.svg'
+
+const aiImage = aiImageAsset.src
 
 export default function Ai() {
   return (
@@ -30,9 +29,9 @@ export default function Ai() {
 
         <div className="ai-hero-image">
           <img
-            src={aiImage}
-            alt="Ilustrasi chatbot MindGlow"
-          />
+  src={aiImage}
+  alt="Ilustrasi chatbot MindGlow"
+/>
         </div>
       </div>
     </section>

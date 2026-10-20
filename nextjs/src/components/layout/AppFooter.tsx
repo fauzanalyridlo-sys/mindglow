@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import Logo from '../ui/Logo'
 import Icon from '../ui/Icon'
 import '../../styles/public-footer.css'
@@ -37,7 +37,7 @@ export default function AppFooter() {
   <h3>Navigasi</h3>
 
   {navigation.map((item) => (
-    <Link key={item.path} to={item.path}>
+    <Link key={item.path} href={item.path}>
       {item.label}
     </Link>
   ))}

@@ -1,3 +1,4 @@
+'use client'
 
 import { useState, type FormEvent } from 'react'
 import '../styles/akademik.css'
@@ -96,7 +97,7 @@ export default function AkademikPage() {
     setNotice({
       title: 'Berhasil!',
       message: 'Tugas berhasil ditambahkan ke daftar.',
-      icon: successIcon,
+      icon: successIcon.src,
       variant: 'success',
     })
   }
@@ -114,7 +115,7 @@ export default function AkademikPage() {
       setNotice({
         title: 'Berhasil!',
         message: 'Tugas telah ditandai sebagai selesai.',
-        icon: successIcon,
+        icon: successIcon.src,
         variant: 'success',
       })
     }
@@ -129,7 +130,7 @@ export default function AkademikPage() {
     setNotice({
       title: 'Berhasil dihapus!',
       message: 'Tugas telah dihapus dari daftar.',
-      icon: deleteIcon,
+      icon: deleteIcon.src,
       variant: 'delete',
     })
   }
@@ -171,7 +172,7 @@ export default function AkademikPage() {
 
         <img
           className="academic-hero-image academic-learning-image"
-          src={learningImage}
+          src={learningImage.src}
           alt="Ilustrasi mahasiswa sedang belajar"
         />
       </section>
@@ -196,7 +197,7 @@ export default function AkademikPage() {
 
                 <span className="academic-task-type">
                   <img
-                    src={task.type === 'Kelompok' ? groupIcon : individualIcon}
+                    src={task.type === 'Kelompok' ? groupIcon.src : individualIcon.src}
                     alt=""
                     aria-hidden="true"
                   />
@@ -210,7 +211,7 @@ export default function AkademikPage() {
                 <span>{task.course}</span>
 
                 <time dateTime={task.deadline}>
-                  <img src={calendarIcon} alt="" />
+                  <img src={calendarIcon.src} alt="" />
                   {formatDate(task.deadline)}
                 </time>
               </div>
@@ -233,7 +234,7 @@ export default function AkademikPage() {
                   onClick={() => setDeleteId(task.id)}
                 >
                   {buttonShine}
-                  <img src={deleteIcon} alt="" />
+                  <img src={deleteIcon.src} alt="" />
                   <span>Hapus</span>
                 </button>
               </div>
@@ -359,7 +360,7 @@ export default function AkademikPage() {
             <div className="academic-popup-icon academic-popup-delete">
               <img
                 className="academic-popup-delete-image"
-                src={deleteIcon}
+                src={deleteIcon.src}
                 alt=""
               />
             </div>
@@ -384,7 +385,7 @@ export default function AkademikPage() {
                 onClick={confirmDelete}
               >
                 {buttonShine}
-                <img src={deleteIcon} alt="" />
+                <img src={deleteIcon.src} alt="" />
                 <span>Hapus</span>
               </button>
             </div>

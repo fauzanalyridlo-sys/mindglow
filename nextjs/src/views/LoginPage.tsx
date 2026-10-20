@@ -1,3 +1,4 @@
+'use client'
 import '../styles/login-page.css'
 import { useState } from 'react'
 import type { FormEvent } from 'react'

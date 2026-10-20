@@ -1,3 +1,4 @@
+'use client'
 import '../styles/daftar.css'
 import { useState } from 'react';
 

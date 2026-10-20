@@ -1,3 +1,4 @@
+'use client'
 import { useEffect, useState } from 'react'
 import '../styles/relaksasi.css'
 import '../styles/animasi-relaksasi.css'
@@ -116,7 +117,7 @@ export default function RelaksasiPage() {
         : phases.find((item) => item.name === phase)?.instruction
 
   return (
-    <main className="relax-page">
+    <section className="relax-page">
       <section className="relax-content">
         <header className="relax-header">
           <h1>LATIHAN PERNAPASAN 4–7–8</h1>
@@ -212,6 +213,6 @@ export default function RelaksasiPage() {
           hentikan latihan dan bernapaslah secara normal.
         </p>
       </section>
-    </main>
+    </section>
   )
 }
