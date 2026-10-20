@@ -1,0 +1,246 @@
+/* Trik menutupi Navbar & Footer utama, membuat tepat 1 layar penuh (100vh) */
+/* Container Utama + Background Gambar di Bawah */
+.daftar-page-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+
+    /* --- PENGATURAN GAMBAR BACKGROUND --- */
+    background-color: #f4f7f4;
+    /* Warna dasar krem */
+    background-image: url('/images/footer_login.png');
+    /* Mengambil gambar dari folder public */
+    background-position: bottom center;
+    /* Posisikan gambar mentok di bawah tengah */
+    background-repeat: no-repeat;
+    /* Jangan diulang (tile) */
+    background-size: contain;
+    /* Sesuaikan ukuran gambar agar pas di layar, gunakan 'cover' jika ingin lebih penuh */
+}
+
+/* Mengatur kotak form agar UKURANNYA LEBIH KECIL dan rapi */
+.daftar-card {
+    background-color: #f9fbf9;
+    border: 1px solid #b5c7b8;
+    border-radius: 25px;
+    padding: 30px 40px;
+    /* Jarak ruang dalam diperkecil */
+    width: 90%;
+    max-width: 400px;
+    /* Lebar maksimal diturunkan drastis dari 550px ke 400px */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Bagian Judul (Diperkecil) */
+.daftar-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.daftar-header h1 {
+    font-size: 24px;
+    /* Mengecilkan teks judul */
+    color: #000;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.daftar-header p {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Jarak antar isian form (Diperkecil) */
+.form-group {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #000;
+    font-weight: 500;
+}
+
+/* Desain kotak input teks (Diperkecil) */
+.form-group input {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 13px;
+    outline: none;
+    background-color: #fff;
+}
+
+.form-group input:focus {
+    border-color: #8cb494;
+}
+
+
+/* --- FOOTER DI DALAM KOTAK PUTIH --- */
+.daftar-footer-inside {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    /* Menyusun atas bawah */
+    align-items: center;
+    /* Rata tengah secara horizontal */
+    text-align: center;
+    gap: 8px;
+    /* Jarak antara tulisan "Sudah punya akun" dan "Copyright" */
+}
+
+.daftar-footer-inside p {
+    margin: 0;
+    font-size: 13px;
+    color: #333;
+}
+
+.link-login {
+    color: #2b5c38;
+    /* Warna hijau tua mirip desain */
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.link-login:hover {
+    text-decoration: underline;
+}
+
+.copyright-text {
+    font-size: 11px !important;
+    /* Ukuran lebih kecil untuk copyright */
+    color: #888 !important;
+    /* Warna abu-abu pudar */
+}
+
+/*BUTTON*/
+/* --- DESAIN TOMBOL BARU SESUAI GAMBAR --- */
+.btn-submit {
+  width: 100%;
+  padding: 14px 20px;
+  /* Gradasi hijau lembut meniru efek 3D */
+  background: linear-gradient(180deg, #abcaba 0%, #8db298 100%);
+  color: #1a3442; /* Warna teks biru gelap/slate */
+  font-weight: 700;
+  font-size: 15px;
+  border: 1px solid #7d9e87; /* Garis tepi tipis */
+  border-radius: 40px; /* Bentuk pil melingkar penuh */
+  cursor: pointer;
+  margin-top: 15px;
+  /* Kombinasi bayangan luar (drop shadow) dan bayangan dalam (inner shadow) */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08), inset 0 2px 3px rgba(255, 255, 255, 0.4);
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px; /* Jarak teks DAFTAR dengan panah */
+  
+  /* Persiapan Animasi */
+  transition: all 0.3s ease;
+}
+
+/* Animasi 1: Saat mouse menyorot (Hover) tombol terangkat */
+.btn-submit:hover {
+  background: linear-gradient(180deg, #b5d5c4 0%, #97bea3 100%); /* Warna sedikit lebih terang */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12), inset 0 2px 3px rgba(255, 255, 255, 0.5);
+  transform: translateY(-3px); /* Mengangkat tombol 3px ke atas */
+}
+
+/* Animasi 2: Saat tombol ditekan (Active) tombol tenggelam */
+.btn-submit:active {
+  transform: translateY(1px); /* Bergerak ke bawah seperti ditekan */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), inset 0 3px 6px rgba(0, 0, 0, 0.15); /* Bayangan dalam menebal */
+}
+
+/* Animasi 3: Panah bergerak otomatis ke kanan */
+.arrow-icon {
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+.btn-submit:hover .arrow-icon {
+  transform: translateX(5px); /* Geser panah 5px ke kanan saat disorot */
+}
+
+/*NOTIFIKASI*/
+/* --- DESAIN NOTIFIKASI KUSTOM --- */
+
+/* Latar belakang transparan gelap untuk menyorot notifikasi */
+.notif-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4); /* Efek gelap */
+  z-index: 99999; /* Selalu di paling depan */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Kotak putih notifikasinya */
+.notif-box {
+  background-color: #f9fbf9;
+  padding: 30px 40px;
+  border-radius: 20px;
+  border: 1px solid #b5c7b8;
+  text-align: center;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  /* Animasi muncul membesar (pop up) */
+  animation: popUp 0.3s ease-out forwards;
+}
+
+.notif-icon {
+  font-size: 45px;
+  margin-bottom: 10px;
+}
+
+.notif-box h3 {
+  color: #1a3442;
+  margin-bottom: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.notif-box p {
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* Tombol Tutup di dalam notifikasi */
+.notif-btn {
+  background: linear-gradient(180deg, #abcaba 0%, #8db298 100%);
+  color: #1a3442;
+  border: 1px solid #7d9e87;
+  padding: 10px 30px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.notif-btn:hover {
+  background: linear-gradient(180deg, #b5d5c4 0%, #97bea3 100%);
+  transform: translateY(-2px);
+}
+
+/* Animasi bingkai muncul */
+@keyframes popUp {
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}

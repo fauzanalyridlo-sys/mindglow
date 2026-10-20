@@ -1,0 +1,194 @@
+
+@keyframes wawasanEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.insight-page .emotion-summary,
+.insight-page .insight-panel,
+.insight-page .reflection-prompt {
+  animation: wawasanEnter 560ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.insight-page .prompt-ai-image {
+  animation: wawasanFloat 3.2s ease-in-out infinite;
+}
+
+@keyframes wawasanFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.insight-page .habit-card {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 500ms ease,
+    transform 500ms ease,
+    box-shadow 220ms ease;
+}
+
+.insight-page .habit-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .insight-page .habit-card.is-visible:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 9px 22px rgb(30 55 43 / 9%);
+  }
+}
+
+.insight-page .habit-progress-fill {
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: habitProgressGrow 900ms cubic-bezier(0.22, 0.7, 0.25, 1) 250ms both;
+}
+
+@keyframes habitProgressGrow {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.insight-page .mood-line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: moodPathDraw 1.35s ease-out 100ms forwards;
+}
+
+@keyframes moodPathDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.insight-page .mood-guide {
+  opacity: 0;
+  animation: moodGuideDraw 480ms ease-out forwards;
+}
+
+@keyframes moodGuideDraw {
+  to {
+    opacity: 1;
+  }
+}
+
+.insight-page .mood-dot {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: moodDotPop 420ms cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes moodDotPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+
+  75% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.insight-page .mood-chart svg image {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: moodIconAppear 460ms ease-out forwards;
+}
+
+@keyframes moodIconAppear {
+  from {
+    opacity: 0;
+    transform: translateY(5px) scale(0.78);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.insight-page .mood-day {
+  animation: moodDayAppear 350ms ease-out forwards;
+}
+
+@keyframes moodDayAppear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.insight-page .period-switch button {
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.insight-page .period-switch button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.insight-page .period-switch button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .insight-page *,
+  .insight-page *::before,
+  .insight-page *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  .insight-page .habit-card {
+    opacity: 1;
+    transform: none;
+  }
+
+  .insight-page .habit-progress-fill {
+    transform: none;
+  }
+
+  .insight-page .mood-line {
+    stroke-dashoffset: 0;
+  }
+
+  .insight-page .mood-guide,
+  .insight-page .mood-dot,
+  .insight-page .mood-chart svg image,
+  .insight-page .mood-day {
+    opacity: 1;
+    transform: none;
+  }
+}

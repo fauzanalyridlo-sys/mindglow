@@ -1,0 +1,62 @@
+
+/* Animasi indikator AI sedang mengetik */
+.isTyping {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.isTyping span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: typingBounce 1.2s infinite ease-in-out;
+}
+
+.isTyping span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.isTyping span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes typingBounce {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+/* Animasi pesan saat muncul */
+.reflection-message-row {
+  animation: messageFadeIn 0.25s ease-out both;
+}
+
+@keyframes messageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hormati pengaturan pengguna yang mengurangi animasi */
+@media (prefers-reduced-motion: reduce) {
+  .isTyping span,
+  .reflection-message-row {
+    animation: none;
+  }
+}

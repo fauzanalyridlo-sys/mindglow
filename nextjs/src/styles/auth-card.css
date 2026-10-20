@@ -1,0 +1,38 @@
+
+.auth-card {
+  width: 100%;
+  max-width: 562px;
+  min-width: 0;
+  padding: 24px 38px 66px;
+  background: rgba(249, 248, 245, 0.97);
+  border: 2px solid #87a995;
+  border-radius: 68px;
+  box-shadow: 0 18px 28px rgba(35, 46, 39, 0.28);
+  color: #111;
+}
+
+.auth-card--email {
+  max-width: 685px;
+  padding: 36px 48px 48px;
+}
+
+.auth-card--new-password {
+  max-width: 710px;
+  padding: 52px 48px 68px;
+}
+
+.auth-card--confirmation {
+  max-width: 840px;
+  padding: 64px 40px 60px;
+}
+
+@media (max-width: 640px) {
+  .auth-card,
+  .auth-card--email,
+  .auth-card--new-password,
+  .auth-card--confirmation {
+    max-width: 100%;
+    padding: 28px 22px 34px;
+    border-radius: 36px;
+  }
+}
