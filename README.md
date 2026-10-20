@@ -175,7 +175,7 @@ npm run lint
 
 | Nama Anggota | Kontribusi |
 |---|---|
-| [Muhammad Fauzan Aly Ridlo] | [mengerjakan footer public&app, mengerjakan navbar public&app, mengerjakan halaman ladingpage dan checkin harian, serta merapihkan routes journal dan merapihkan seluruh bagian login css (login, lupa sandi, tautan reset sandi, halaman buat sandi baru), dan mengelola/memonitoring github, membuat prd] |
+| [Muhammad Fauzan Aly Ridlo] | [mengerjakan footer public&app, mengerjakan navbar public&app, mengerjakan halaman landing page dan check-in harian, serta merapikan routes journal dan seluruh bagian CSS login (login, lupa sandi, tautan reset sandi, halaman buat sandi baru), mengelola dan memonitor GitHub, serta membuat PRD] |
 | [Dicky Adi Nugroho] | [mengerjakan halaman AI, insight/wawasan, relaksasi, dan membantu pengerjaan bagian akademik ] |
 | [Lambang Seto Insani] | [mengerjakan halaman home dashboard, halaman journal, dan profile, dan register/daftar] |
 | [Amandania Sagala] | [mengerjakan seluruh bagian login (login, lupa sandi, tautan reset sandi, halaman buat sandi baru)] |

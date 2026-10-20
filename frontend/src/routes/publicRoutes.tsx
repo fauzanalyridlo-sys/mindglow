@@ -5,6 +5,8 @@ import PublicLayout from '../layouts/PublicLayout'
 import LandingPage from '../pages/LandingPage'
 import LoginPage from '../pages/LoginPage'
 import RegisterPage from '../pages/RegisterPage'
+import KonfirmasiEmailPage from '../pages/KonfirmasiEmailPage'
+import BuatKataSandiBaruPage from '../pages/BuatKataSandiBaruPage'
 
 export const publicRoutes: RouteObject[] = [
   {
@@ -20,6 +22,22 @@ export const publicRoutes: RouteObject[] = [
     element: (
       <PublicLayout>
         <LoginPage />
+      </PublicLayout>
+    ),
+  },
+  {
+    path: '/forgot-password',
+    element: (
+      <PublicLayout>
+        <KonfirmasiEmailPage />
+      </PublicLayout>
+    ),
+  },
+  {
+    path: '/reset-password',
+    element: (
+      <PublicLayout>
+        <BuatKataSandiBaruPage />
       </PublicLayout>
     ),
   },
