@@ -7,7 +7,7 @@ Website Pendukung Kesejahteraan Mental
 **Modul:** 7 - Transformasi Desain Figma ke Prototipe Web Interaktif  
 **Status:** Draft  
 **Repository:** https://github.com/fauzanalyridlo-sys/mindglow  
-**Figma:** [Masukkan link Figma Modul 5]
+**Figma:** [https://www.figma.com/design/UDo96YbSVLBGPN65TpP2S7/MindGlow?node-id=0-1&t=f3LnhtznFw3S3zCh-1]
 
 ---
 
@@ -19,7 +19,15 @@ mencatat suasana hati, dan melakukan refleksi diri.
 
 ## 2. Latar Belakang
 
-[Ada di Modul 5]
+Kesehatan mental merupakan salah satu aspek penting dalam kehidupan sehari-hari yang dapat memengaruhi kondisi emosional, aktivitas, serta hubungan sosial seseorang. Namun, tidak semua individu memiliki kebiasaan untuk mengenali, memahami, dan mencatat perubahan suasana hati yang mereka alami.
+
+Seiring berkembangnya teknologi digital, diperlukan sebuah media yang mudah diakses untuk membantu pengguna melakukan pemantauan kondisi emosional dan refleksi diri secara mandiri.
+
+MindGlow dikembangkan sebagai website pendukung kesejahteraan mental yang menyediakan fitur seperti check-in harian, jurnal pribadi, latihan relaksasi, wawasan seputar kesehatan mental, serta fitur refleksi berbasis AI.
+
+Melalui pendekatan antarmuka yang sederhana, nyaman, dan mudah digunakan, MindGlow diharapkan dapat membantu pengguna membangun kebiasaan mengenali emosi, mengekspresikan perasaan, dan melakukan refleksi diri secara lebih teratur.
+
+MindGlow berfungsi sebagai sarana pendukung kesejahteraan mental dan bukan sebagai pengganti diagnosis maupun layanan profesional kesehatan mental.
 
 ## 3. Tujuan Produk
 
@@ -30,7 +38,8 @@ mencatat suasana hati, dan melakukan refleksi diri.
 
 ## 4. Target Pengguna
 
-[Ada di Modul 5]
+Mahasiswa usia 18- 24 tahun yang sedang mengalami tekanan emosional akibat tuntutan akademik, hubungan sosial, maupun 
+ketidakpastian masa depan.
 
 ## 5. Ruang Lingkup MVP
 
@@ -104,9 +113,9 @@ kesiapan pengembangan dan kesepakatan tim.
 | 1 | Beranda | Halaman utama MindGlow |
 | 2 | Cek Harian | Pencatatan suasana hati |
 | 3 | Jurnal | Catatan refleksi pengguna |
-| 4 | Akademik | [Lengkapi fungsi] |
-| 5 | Wawasan | [Lengkapi fungsi] |
-| 6 | Refleksi AI | [Lengkapi fungsi] |
+| 4 | Akademik | mengelola jadwal tugas kuliah |
+| 5 | Wawasan | informasi ringkasan mengenai kondisi user |
+| 6 | Refleksi AI | melakukan refleksi dengan ai mengenai kondisi diri  |
 | 7 | Relaksasi | Latihan pernapasan 4-7-8 |
 
 ## 7. User Story
@@ -148,24 +157,7 @@ agar dapat merefleksikan pengalaman sehari-hari.
 ### Backend
 - Laravel
 
-### Integrasi
-- [......]
-
-## 10. Pembagian Tugas
-
-[]
-
-## 11. Penggunaan AI
-
-### Prompt yang Digunakan
-
-[Masukkan prompt asli yang digunakan saat pengerjaan]
-
-### Perbaikan Manual
-
-[Catat perubahan yang dilakukan setelah menggunakan AI]
-
-## 12. Pengujian
+## 10. Pengujian
 
 - Pengujian tampilan desktop.
 - Pengujian tampilan mobile.
@@ -173,5 +165,83 @@ agar dapat merefleksikan pengalaman sehari-hari.
 - Pengujian interaksi dinamis.
 - Pemeriksaan runtime error.
 
-## 13. Panduan Menjalankan Proyek
-[Masukkan perintah sesuai konfigurasi proyek final]
+## 11. Panduan Menjalankan Proyek
+### Menjalankan Frontend
+
+1. Pastikan Node.js dan npm sudah terpasang.
+2. Buka terminal pada folder frontend:
+
+   ```bash
+   cd frontend
+   ```
+
+3. Instal dependensi:
+
+   ```bash
+   npm install
+   ```
+
+4. Jalankan server pengembangan:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Buka alamat lokal yang ditampilkan Vite pada terminal.
+
+### Menjalankan Backend
+
+Backend MindGlow menggunakan Laravel.
+
+1. Pastikan PHP dan Composer sudah terpasang.
+2. Buka terminal baru pada folder backend:
+
+   ```bash
+   cd backend
+   ```
+
+3. Instal dependensi:
+
+   ```bash
+   composer install
+   ```
+
+4. Siapkan file konfigurasi lingkungan:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+5. Buat application key:
+
+   ```bash
+   php artisan key:generate
+   ```
+
+6. Konfigurasikan database melalui file `.env`, lalu jalankan migrasi:
+
+   ```bash
+   php artisan migrate
+   ```
+
+7. Jalankan server Laravel:
+
+   ```bash
+   php artisan serve
+   ```
+
+### Build dan Pemeriksaan Frontend
+
+Untuk membuat build produksi:
+
+```bash
+npm run build
+```
+
+Untuk memeriksa kode menggunakan Oxlint:
+
+```bash
+npm run lint
+```
+
+**Catatan:** Frontend dan backend dijalankan pada terminal terpisah. Konfigurasi koneksi API perlu disesuaikan dengan implementasi integrasi yang digunakan.
