@@ -1,0 +1,251 @@
+/* =====================================
+   MINDGLOW — PUBLIC NAVBAR
+   ===================================== */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #fbfaf5;
+  border-bottom: 1px solid rgba(22, 61, 53, 0.12);
+}
+
+.site-header .container {
+  width: min(1140px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.nav-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 76px;
+}
+
+.site-header .logo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.site-header .logo-image {
+  display: block;
+  width: auto;
+  max-width: 160px;
+  height: 48px;
+  object-fit: contain;
+}
+
+/* Desktop navigation */
+
+.nav-content {
+  display: contents;
+}
+
+.site-header nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.site-header nav a {
+  color: #163d35;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.site-header nav a:hover {
+  color: #80b69e;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.site-header .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+  background-color 300ms ease-out,
+  box-shadow 300ms ease-out,
+  transform 300ms ease-out;
+}
+
+.site-header .button--primary {
+  background-color: #91b5a1;
+
+  background-image:
+  radial-gradient(
+    circle at 15% 25%,
+    rgba(255, 255, 255, 0.55) 0%,
+    transparent 24%
+  ),
+  radial-gradient(
+    circle at 62% 18%,
+    rgba(255, 255, 255, 0.5) 0%,
+    transparent 22%
+  ),
+  radial-gradient(
+    circle at 42% 80%,
+    rgba(255, 255, 255, 0.5) 0%,
+    transparent 24%
+  ),
+  radial-gradient(
+    circle at 88% 75%,
+    rgba(255, 255, 255, 0.55) 0%,
+    transparent 22%
+  );
+
+  color: #173f35;
+}
+
+.site-header .button--secondary {
+  background: #ffffff;
+  color: #173f35;
+  border: 1px solid rgba(22, 61, 53, 0.15);
+}
+
+/* Figma hover — Navbar buttons */
+
+.site-header .button--primary:hover {
+  background-color: #6e9780;
+  box-shadow: 0 4px 12px rgba(45, 89, 65, 0.18);
+}
+
+.site-header .button--secondary:hover {
+  background: #e9e9e9;
+}
+
+.site-header .button:focus-visible {
+  outline: 3px solid #547963;
+  outline-offset: 3px;
+}
+/* Hamburger: hidden on desktop */
+
+.nav-toggle {
+  display: none;
+}
+
+/* =====================================
+   TABLET & MOBILE
+   ===================================== */
+
+@media (max-width: 768px) {
+  .site-header .container {
+    width: calc(100% - 32px);
+  }
+
+  .nav-wrap {
+    position: relative;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    min-height: 68px;
+    gap: 16px;
+  }
+
+  .site-header .logo-image {
+    max-width: 140px;
+    height: 42px;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 44px;
+    height: 44px;
+    padding: 0;
+
+    border: 1px solid rgba(22, 61, 53, 0.15);
+    border-radius: 12px;
+    background: #ffffff;
+    color: #173f35;
+
+    cursor: pointer;
+  }
+
+  .nav-toggle:hover {
+    background: #e8f1ec;
+  }
+
+  .nav-toggle:focus-visible {
+    outline: 2px solid #356c53;
+    outline-offset: 3px;
+  }
+
+  /* Dropdown */
+
+  .nav-content {
+    display: none;
+    position: absolute;
+    top: calc(100% + 1px);
+    left: 0;
+    right: 0;
+    z-index: 30;
+
+    padding: 20px;
+
+    border: 1px solid rgba(22, 61, 53, 0.12);
+    border-radius: 0 0 18px 18px;
+    background: #fbfaf5;
+    box-shadow: 0 12px 24px rgba(22, 61, 53, 0.08);
+  }
+
+  .nav-content--open {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .site-header nav {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .site-header nav a {
+    display: block;
+    padding: 12px 8px;
+    font-size: 14px;
+  }
+
+  .site-header nav a + a {
+    border-top: 1px solid rgba(22, 61, 53, 0.08);
+  }
+
+  .nav-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .site-header .nav-actions .button {
+    width: 100%;
+    min-height: 44px;
+    text-align: center;
+  }
+}
+/* Accessibility — Reduced Motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header .button,
+  .hero-actions .button,
+  .closing-cta-button {
+    transition: none;
+  }
+}

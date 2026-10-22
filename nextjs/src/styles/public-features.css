@@ -1,0 +1,199 @@
+/* =====================================
+   MINDGLOW — FEATURES SECTION
+   ===================================== */
+
+.features-section {
+  background: #fbfaf5;
+  padding: 100px 0 110px;
+}
+
+.features-section .container {
+  width: min(1320px, calc(100% - 120px));
+  margin: 0 auto;
+}
+
+.features-heading {
+  max-width: 650px;
+  margin: 0 auto 54px;
+  text-align: center;
+}
+
+.features-label {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1px solid #dcece4;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #4f6b64;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.features-heading h2 {
+  margin: 24px 0 16px;
+  color: #263b48;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(30px, 3.5vw, 44px);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.04em;
+}
+
+.features-heading p {
+  max-width: 520px;
+  margin: 0 auto;
+  color: #72849a;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* Kartu fitur */
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 260px;
+  padding: 28px;
+  border: 1px solid rgba(22, 61, 53, 0.06);
+  border-radius: 22px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(22, 61, 53, 0.08);
+}
+
+.feature-card--pink {
+  background: #f8e5e2;
+}
+
+.feature-card--green {
+  background: #e8f1ec;
+}
+
+.feature-card--cream {
+  background: #f4f0e5;
+}
+
+.feature-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 54px;
+  height: 54px;
+
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #356c53;
+}
+
+.feature-icon svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+}
+
+.feature-icon svg {
+  stroke: currentColor;
+}
+
+.feature-number {
+  color: #6f817b;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.feature-card-content h3 {
+  margin: 0 0 12px;
+  color: #263b48;
+  font-family: 'Manrope', sans-serif;
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.feature-card-content p {
+  margin: 0 0 18px;
+  color: #647a73;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.feature-card-content a {
+  color: #173f35;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.feature-card-content a:hover {
+  text-decoration: underline;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .features-section {
+    padding: 80px 0;
+  }
+
+  .features-grid {
+    gap: 14px;
+  }
+
+  .feature-card {
+    padding: 22px;
+  }
+
+  .features-section .container {
+  width: calc(100% - 48px);
+}
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .features-section {
+    padding: 65px 0;
+  }
+
+  .features-section .container {
+    width: calc(100% - 32px);
+  }
+
+  .features-heading {
+    margin-bottom: 36px;
+  }
+
+  .features-heading h2 {
+    font-size: 30px;
+  }
+
+  .features-heading h2 br {
+    display: none;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .feature-card {
+    min-height: 230px;
+  }
+}

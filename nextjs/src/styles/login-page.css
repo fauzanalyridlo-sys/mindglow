@@ -1,0 +1,319 @@
+
+.auth-login {
+  width: 100%;
+  color: #111;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.auth-login-header {
+  margin: 0 0 10px;
+  padding-left: 0;
+}
+
+.auth-login-title {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1.38;
+  font-weight: 400;
+  letter-spacing: -0.8px;
+  color: #000;
+  overflow-wrap: anywhere;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.32);
+}
+
+.auth-login-title span {
+  display: block;
+}
+
+.auth-login-error {
+  margin: 8px 0 12px;
+  color: #c62828;
+  font-size: 14px;
+  line-height: 1.55;
+  text-shadow: none;
+}
+
+.auth-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 0 7px;
+}
+
+.auth-login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.auth-login-field label {
+  padding-left: 14px;
+  font-size: 20px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.auth-login-field input {
+  width: 100%;
+  min-width: 0;
+  height: 56px;
+  padding: 0 15px;
+  border: 1px solid #262626;
+  border-radius: 17px;
+  outline: none;
+  background: #fff;
+  color: #171717;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.auth-login-field input::placeholder {
+  color: #888;
+}
+
+.auth-login-field input:focus-visible {
+  border-color: #709c88;
+  box-shadow: 0 0 0 3px rgba(135, 169, 149, 0.2);
+}
+
+.auth-login-password-wrap {
+  position: relative;
+}
+
+.auth-login-password-wrap input {
+  padding-right: 52px;
+}
+
+.auth-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  padding: 3px;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #111;
+  cursor: pointer;
+}
+
+.auth-password-toggle svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.auth-submit-button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: calc(100% - 16px);
+  min-height: 48px;
+  margin: 8px auto 0;
+  border: 1px solid #829486;
+  border-radius: 999px;
+  background:
+    radial-gradient(ellipse at 15% 40%, rgba(224, 255, 232, 0.75), transparent 7%),
+    radial-gradient(ellipse at 36% 70%, rgba(224, 255, 232, 0.62), transparent 8%),
+    radial-gradient(ellipse at 68% 38%, rgba(224, 255, 232, 0.65), transparent 7%),
+    radial-gradient(ellipse at 85% 72%, rgba(224, 255, 232, 0.65), transparent 7%),
+    #90b09c;
+  color: #111;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.auth-submit-button:hover {
+  filter: brightness(0.97);
+}
+
+.auth-submit-button:active {
+  transform: scale(0.99);
+}
+
+.auth-submit-button:focus-visible,
+.auth-password-toggle:focus-visible {
+  outline: 2px solid #527b66;
+  outline-offset: 3px;
+}
+
+.auth-login-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 14px 14px 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #171717;
+}
+
+.auth-register-prompt {
+  text-align: right;
+}
+
+.auth-inactive-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+@media (max-width: 640px) {
+  .auth-login-title {
+    font-size: clamp(25px, 6vw, 32px);
+    letter-spacing: -0.5px;
+  }
+
+  .auth-login-field label {
+    font-size: 17px;
+  }
+
+  .auth-login-field input {
+    height: 52px;
+    border-radius: 14px;
+  }
+
+  .auth-login-links {
+    margin-right: 4px;
+    margin-left: 4px;
+    font-size: 12px;
+  }
+}
+
+/* Layout halaman Login mengikuti tampilan Register */
+.auth-card--login {
+  position: fixed;
+  z-index: 9999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90%, 400px);
+  max-width: 400px;
+  padding: 30px 40px;
+  border: 1px solid #b5c7b8;
+  border-radius: 25px;
+  background-color: #f9fbf9;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Background Login memenuhi layar */
+body:has(.auth-card--login) {
+  background-color: #f4f7f4;
+  background-image: url('/images/footer_login.png');
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* Sembunyikan navbar dan footer hanya saat Login */
+body:has(.auth-card--login) #top {
+  min-height: 100vh;
+}
+
+body:has(.auth-card--login) #top ~ footer {
+  display: none;
+}
+
+
+@media (max-width: 640px) {
+  .auth-card--login {
+    width: min(92%, 400px);
+    padding: 28px 22px 34px;
+  }
+}
+
+/* Penyempurnaan Login agar konsisten dengan Register */
+body:has(.auth-card--login) {
+  overflow: hidden;
+}
+
+/* Sembunyikan navbar saat halaman Login aktif */
+body:has(.auth-card--login) > header {
+  display: none;
+}
+
+/* Pastikan area Login memenuhi tinggi layar */
+body:has(.auth-card--login) > main#top {
+  min-height: 100vh;
+}
+
+.auth-card--login {
+  width: min(90vw, 400px);
+  max-width: 400px;
+  padding: 30px 32px;
+  box-sizing: border-box;
+}
+
+.auth-card--login .auth-login-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.auth-card--login .auth-login-title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+.auth-card--login .auth-login-form {
+  padding: 0;
+  gap: 12px;
+}
+
+.auth-card--login .auth-login-field {
+  gap: 5px;
+}
+
+.auth-card--login .auth-login-field label {
+  padding-left: 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.auth-card--login .auth-login-field input {
+  height: 42px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.auth-card--login .auth-submit-button {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 15px;
+}
+
+.auth-card--login .auth-login-links {
+  margin: 20px 0 0;
+  font-size: 12px;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .auth-card--login {
+    width: min(92vw, 400px);
+    padding: 26px 22px;
+  }
+
+  .auth-card--login .auth-login-title {
+    font-size: 21px;
+  }
+}
+
+/* Pastikan tautan di dalam kartu Login tetap terlihat */
+body:has(.auth-card--login) .auth-login-links {
+  visibility: visible;
+}
+
