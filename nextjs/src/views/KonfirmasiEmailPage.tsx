@@ -1,4 +1,5 @@
 'use client'
+
 import '../styles/auth-email.css'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
@@ -6,21 +7,55 @@ import AuthCard from '../components/auth/AuthCard'
 
 export default function KonfirmasiEmailPage() {
   const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setMessage('')
+    setError('')
+    setLoading(true)
 
-    // TODO: Hubungkan ke Laravel API setelah endpoint tersedia.
-    // Belum mengirim email atau membuat proses reset palsu.
+    try {
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.message || 'Permintaan gagal. Silakan coba lagi.')
+        return
+      }
+
+      setMessage(
+        data.message ||
+          'Jika email terdaftar, instruksi reset password akan dikirim. Periksa kotak masuk email kamu.'
+      )
+    } catch {
+      setError(
+        'Tidak dapat terhubung ke server. Periksa koneksi dan coba lagi.'
+      )
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <AuthCard variant="email">
       <div className="auth-email">
         <header className="auth-email-header">
-          <h1>Konfirmasi Email</h1>
+          <h1>Lupa Password?</h1>
           <p>
-            Silakan verifikasi email kamu untuk melanjutkan.
+            Masukkan email akun MindGlow kamu. Kami akan mengirimkan
+            tautan untuk mengatur ulang password jika email terdaftar.
           </p>
         </header>
 
@@ -35,12 +70,30 @@ export default function KonfirmasiEmailPage() {
               placeholder="Masukkan email kamu"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
+              maxLength={255}
               required
+              disabled={loading}
             />
           </div>
 
-          <button className="auth-email-submit" type="submit">
-            Kirim Tautan Reset
+          {message && (
+            <p role="status" aria-live="polite">
+              {message}
+            </p>
+          )}
+
+          {error && (
+            <p role="alert">
+              {error}
+            </p>
+          )}
+
+          <button
+            className="auth-email-submit"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? 'Mengirim...' : 'Kirim Tautan Reset'}
           </button>
         </form>
 

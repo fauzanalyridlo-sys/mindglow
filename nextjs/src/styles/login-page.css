@@ -317,3 +317,46 @@ body:has(.auth-card--login) .auth-login-links {
   visibility: visible;
 }
 
+
+/* Google Sign-In */
+.auth-login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0 18px;
+  color: #777;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.auth-login-divider::before,
+.auth-login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e2e2;
+}
+
+.auth-google-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 40px;
+  margin: 0 auto;
+}
+
+.auth-google-button > div {
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .auth-login-divider {
+    margin-top: 18px;
+    margin-bottom: 16px;
+  }
+
+  .auth-google-button {
+    width: 100%;
+  }
+}

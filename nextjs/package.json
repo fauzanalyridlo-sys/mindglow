@@ -11,12 +11,15 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.1",
     "@prisma/client": "^7.10.1",
+    "@react-oauth/google": "^0.13.5",
     "bcryptjs": "^3.0.3",
     "dotenv": "^18.0.8",
+    "google-auth-library": "^11.3.1",
     "next": "16.4.2",
     "pg": "^8.23.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "resend": "^6.34.1",
     "server-only": "^0.0.1",
     "zod": "^4.6.7"
   },

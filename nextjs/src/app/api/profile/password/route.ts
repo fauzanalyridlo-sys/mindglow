@@ -79,6 +79,13 @@ export async function PATCH(request: NextRequest) {
     return errorResponse("Pengguna tidak ditemukan.", 404);
   }
 
+  if (account.password === null) {
+    return errorResponse(
+      "Akun ini belum memiliki password lokal.",
+      403
+    );
+  }
+
   const passwordValid = await compare(
     currentPassword,
     account.password

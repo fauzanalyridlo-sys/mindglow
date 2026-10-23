@@ -1,50 +1,122 @@
-'use client'
-import '../styles/daftar.css'
-import { useState } from 'react';
+"use client";
 
-// 1. Nama diubah jadi RegisterPage agar sesuai dengan nama file dari tim Anda
+import "../styles/daftar.css";
+import { useState, type FormEvent } from "react";
+
+type RegisterResult = {
+  success?: boolean;
+  message?: string;
+};
+
 const RegisterPage = () => {
-  // Membuat "saklar" untuk menampilkan/menyembunyikan notifikasi
   const [showNotif, setShowNotif] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [notifTitle, setNotifTitle] = useState("");
+  const [notifMessage, setNotifMessage] = useState("");
+  const [notifSuccess, setNotifSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); 
-    
-    // Menyalakan saklar notifikasi
-    setShowNotif(true);
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-    // MENGOSONGKAN SEMUA KOTAK ISIAN DATA DIRI
-    e.currentTarget.reset();
+    if (loading) return;
 
-    // Notifikasi akan otomatis tertutup sendiri setelah 3 detik
-    setTimeout(() => {
-      setShowNotif(false);
-    }, 3000);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const email = String(formData.get("email") ?? "").trim();
+    const username = String(formData.get("username") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
+    const confirmPassword = String(
+      formData.get("confirm-password") ?? "",
+    );
+
+    if (password !== confirmPassword) {
+      setNotifSuccess(false);
+      setNotifTitle("Password Tidak Cocok");
+      setNotifMessage("Pastikan password dan konfirmasi password sama.");
+      setShowNotif(true);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          username,
+          password,
+          confirmPassword,
+        }),
+      });
+
+      const result: RegisterResult = await response.json();
+
+      if (!response.ok || !result.success) {
+        setNotifSuccess(false);
+        setNotifTitle("Pendaftaran Belum Berhasil");
+        setNotifMessage(
+          result.message || "Terjadi kesalahan. Silakan coba lagi.",
+        );
+        setShowNotif(true);
+        return;
+      }
+
+      setNotifSuccess(true);
+      setNotifTitle("Pendaftaran Berhasil");
+      setNotifMessage(
+        result.message ||
+          "Silakan periksa email kamu untuk mendapatkan tautan verifikasi.",
+      );
+      setShowNotif(true);
+      form.reset();
+    } catch {
+      setNotifSuccess(false);
+      setNotifTitle("Koneksi Bermasalah");
+      setNotifMessage(
+        "Tidak dapat menghubungi server. Periksa koneksi dan coba lagi.",
+      );
+      setShowNotif(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Fungsi untuk tombol "Tutup" pada notifikasi
   const closeNotif = () => {
     setShowNotif(false);
   };
 
   return (
     <main className="daftar-page-container">
-      
-      {/* --- KOTAK NOTIFIKASI KUSTOM (Hanya muncul jika showNotif = true) --- */}
       {showNotif && (
         <div className="notif-overlay">
-          <div className="notif-box">
-            <div className="notif-icon">✅</div>
-            <h3>Pendaftaran Berhasil</h3>
-            <p>Proses pendaftaran Anda sedang berjalan...</p>
-            <button onClick={closeNotif} className="notif-btn">
+          <div
+            className="notif-box"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="register-notif-title"
+            aria-describedby="register-notif-message"
+          >
+            <div className="notif-icon" aria-hidden="true">
+              {notifSuccess ? "💌" : "⚠️"}
+            </div>
+            <h3 id="register-notif-title">{notifTitle}</h3>
+            <p id="register-notif-message">{notifMessage}</p>
+            <button
+              type="button"
+              onClick={closeNotif}
+              className="notif-btn"
+            >
               Tutup
             </button>
           </div>
         </div>
       )}
 
-      {/* --- KOTAK FORM PENDAFTARAN (Tetap sama seperti sebelumnya) --- */}
       <section className="daftar-card">
         <div className="daftar-header">
           <h1>Mulai Perjalananmu</h1>
@@ -54,32 +126,77 @@ const RegisterPage = () => {
         <form className="daftar-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="kelompok5@gmail.com" required />
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="kelompok5@gmail.com"
+              autoComplete="email"
+              maxLength={255}
+              required
+            />
           </div>
 
           <div className="form-group">
             <label htmlFor="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="kelompok5" required />
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="kelompok5"
+              autoComplete="username"
+              minLength={3}
+              maxLength={50}
+              pattern="[a-zA-Z0-9_]+"
+              title="Gunakan huruf, angka, dan underscore saja."
+              required
+            />
           </div>
 
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="kelompok5" required />
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Minimal 8 karakter"
+              autoComplete="new-password"
+              minLength={8}
+              maxLength={72}
+              required
+            />
           </div>
 
           <div className="form-group">
             <label htmlFor="confirm-password">Konfirmasi Password</label>
-            <input type="password" id="confirm-password" name="confirm-password" placeholder="kelompok5" required />
+            <input
+              type="password"
+              id="confirm-password"
+              name="confirm-password"
+              placeholder="Ulangi password"
+              autoComplete="new-password"
+              minLength={8}
+              maxLength={72}
+              required
+            />
           </div>
 
-          <button type="submit" className="btn-submit">
-            DAFTAR <span className="arrow-icon">→</span>
+          <button
+            type="submit"
+            className="btn-submit"
+            disabled={loading}
+          >
+            {loading ? "MEMPROSES..." : "DAFTAR"}
+            {!loading && <span className="arrow-icon">→</span>}
           </button>
         </form>
 
         <div className="daftar-footer-inside">
           <p>
-            Sudah punya akun? <a href="/login" className="link-login">Masuk di sini</a>
+            Sudah punya akun?{" "}
+            <a href="/login" className="link-login">
+              Masuk di sini
+            </a>
           </p>
           <p className="copyright-text">&copy; 2026 Mindglow</p>
         </div>
@@ -88,5 +205,4 @@ const RegisterPage = () => {
   );
 };
 
-// 2. Ekspor diubah jadi RegisterPage
 export default RegisterPage;
