@@ -126,20 +126,22 @@ model sessions {
 }
 
 model users {
-  id                BigInt              @id @default(autoincrement())
-  name              String              @db.VarChar(255)
-  email             String              @unique(map: "users_email_unique") @db.VarChar(255)
-  email_verified_at DateTime?           @db.Timestamp(0)
-  password          String              @db.VarChar(255)
-  remember_token    String?             @db.VarChar(100)
-  created_at        DateTime?           @db.Timestamp(0)
-  updated_at        DateTime?           @db.Timestamp(0)
-  username          String?             @unique(map: "users_username_unique") @db.VarChar(255)
-  phone             String?             @db.VarChar(255)
-  academic_tasks    academic_tasks[]
-  daily_check_ins   daily_check_ins[]
-  journals          journals[]
-  mindglow_sessions mindglow_sessions[]
+  id                        BigInt                      @id @default(autoincrement())
+  name                      String                      @db.VarChar(255)
+  email                     String                      @unique(map: "users_email_unique") @db.VarChar(255)
+  email_verified_at         DateTime?                   @db.Timestamp(0)
+  password                  String?                     @db.VarChar(255)
+  remember_token            String?                     @db.VarChar(100)
+  created_at                DateTime?                   @db.Timestamp(0)
+  updated_at                DateTime?                   @db.Timestamp(0)
+  username                  String?                     @unique(map: "users_username_unique") @db.VarChar(255)
+  phone                     String?                     @db.VarChar(255)
+  academic_tasks            academic_tasks[]
+  daily_check_ins           daily_check_ins[]
+  journals                  journals[]
+  mindglow_sessions         mindglow_sessions[]
+  email_verification_tokens email_verification_tokens[]
+  oauth_accounts            oauth_accounts[]
 }
 
 model mindglow_sessions {
@@ -184,4 +186,31 @@ model ai_rate_limits {
 
   @@unique([user_id, window_type, window_start])
   @@index([window_start])
+}
+
+model email_verification_tokens {
+  id         BigInt   @id @default(autoincrement())
+  user_id    BigInt
+  token_hash String   @unique @db.VarChar(64)
+  expires_at DateTime @db.Timestamp(0)
+  created_at DateTime @default(now()) @db.Timestamp(0)
+
+  users users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id], map: "email_verification_tokens_user_id_idx")
+  @@index([expires_at], map: "email_verification_tokens_expires_at_idx")
+}
+
+model oauth_accounts {
+  id                  BigInt   @id @default(autoincrement())
+  user_id             BigInt
+  provider            String   @db.VarChar(50)
+  provider_account_id String   @db.VarChar(255)
+  created_at          DateTime @default(now()) @db.Timestamp(0)
+
+  users users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([provider, provider_account_id], map: "oauth_accounts_provider_account_unique")
+  @@unique([user_id, provider], map: "oauth_accounts_user_provider_unique")
+  @@index([user_id], map: "oauth_accounts_user_id_idx")
 }

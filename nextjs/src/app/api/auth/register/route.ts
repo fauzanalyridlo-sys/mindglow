@@ -3,7 +3,7 @@ import { hash } from "bcryptjs";
 import { z } from "zod";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { createSession } from "@/lib/auth";
+import { sendVerificationEmail } from "@/lib/email-verification";
 
 export const runtime = "nodejs";
 
@@ -106,12 +106,34 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    await createSession(user.id);
+    try {
+      await sendVerificationEmail(user.id, user.email);
+    } catch (emailError) {
+      console.error(
+        "Pengiriman verifikasi email gagal:",
+        emailError instanceof Error ? emailError.message : "Unknown error",
+      );
+
+      await prisma.users.deleteMany({
+        where: {
+          id: user.id,
+          email_verified_at: null,
+        },
+      });
+
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Email verifikasi gagal dikirim. Silakan coba mendaftar kembali.",
+        },
+        { status: 503 },
+      );
+    }
 
     return NextResponse.json(
       {
         success: true,
-        message: "Pendaftaran berhasil.",
+        message: "Pendaftaran berhasil. Silakan periksa email untuk memverifikasi akun sebelum login.",
         user: {
           id: user.id.toString(),
           name: user.name,

@@ -3,6 +3,7 @@ import { compare } from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { createSession } from "@/lib/auth";
+import { consumeAuthRateLimit } from "@/lib/auth-rate-limit";
 
 export const runtime = "nodejs";
 
@@ -51,6 +52,19 @@ export async function POST(request: NextRequest) {
   const { emailUsername, password } = parsed.data;
 
   try {
+    const rateLimit = await consumeAuthRateLimit(
+      "email",
+      emailUsername.trim().toLowerCase(),
+      5,
+    );
+
+    if (!rateLimit.allowed) {
+      return jsonError(
+        "Terlalu banyak percobaan login. Coba lagi dalam 15 menit.",
+        429,
+      );
+    }
+
     const user = await prisma.users.findFirst({
       where: {
         OR: [
@@ -64,6 +78,7 @@ export async function POST(request: NextRequest) {
         email: true,
         username: true,
         password: true,
+        email_verified_at: true,
       },
     });
 
@@ -73,10 +88,23 @@ export async function POST(request: NextRequest) {
       return jsonError("Email/username atau password salah.", 401);
     }
 
+    // Akun Google tanpa password lokal tidak dapat login
+    // menggunakan email/username dan password.
+    if (!user.password) {
+      return jsonError("Email/username atau password salah.", 401);
+    }
+
     const passwordValid = await compare(password, user.password);
 
     if (!passwordValid) {
       return jsonError("Email/username atau password salah.", 401);
+    }
+
+    if (!user.email_verified_at) {
+      return jsonError(
+        "Email kamu belum diverifikasi. Silakan periksa kotak masuk email untuk tautan verifikasi.",
+        403,
+      );
     }
 
     await createSession(user.id);
