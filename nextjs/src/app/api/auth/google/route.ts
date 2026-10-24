@@ -1,3 +1,4 @@
+import { generateUniqueUsername } from "@/lib/username";
 import { NextRequest, NextResponse } from "next/server";
 import { OAuth2Client, type TokenPayload } from "google-auth-library";
 import { Prisma } from "@/generated/prisma/client";
@@ -129,10 +130,13 @@ export async function POST(request: NextRequest) {
         );
       }
 
+      const username = await generateUniqueUsername(name);
+
       user = await prisma.$transaction(async (tx) => {
         const createdUser = await tx.users.create({
           data: {
             name,
+            username,
             email,
             email_verified_at: new Date(),
             password: null,
