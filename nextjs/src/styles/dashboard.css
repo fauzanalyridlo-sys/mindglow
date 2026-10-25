@@ -835,23 +835,6 @@
   }
 }
 
-/* FINAL: photographic forest across the entire welcome card */
-.welcome-banner {
-  background-color: #284a31;
-  background-image:
-    linear-gradient(
-      90deg,
-      rgba(15, 37, 22, .76) 0%,
-      rgba(20, 43, 25, .57) 38%,
-      rgba(20, 43, 25, .20) 72%,
-      rgba(18, 38, 22, .38) 100%
-    ),
-    url("https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=2400&q=90");
-  background-size: cover;
-  background-position: center 52%;
-  background-repeat: no-repeat;
-}
-
 /* Remove artificial CSS clouds and hills */
 .welcome-banner::before,
 .welcome-banner::after {

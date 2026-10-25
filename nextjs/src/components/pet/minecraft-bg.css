@@ -1,0 +1,150 @@
+.mc-bg {
+  --mc-b: 32px;                    /* ukuran 1 blok */
+  --mc-floor: calc(var(--mc-b) * 3); /* tinggi tanah (3 baris blok) */
+
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+.mc-bg * {
+  pointer-events: none;
+}
+
+/* Langit */
+.mc-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #5aa7e6 0%, #8ec9f0 55%, #d3ecf3 100%);
+}
+
+.mc-sun {
+  position: absolute;
+  top: 26px;
+  left: 62%;
+  width: 56px;
+  height: 56px;
+  background: #ffe46b;
+  box-shadow:
+    0 0 0 10px rgba(255, 228, 107, .28),
+    0 0 0 22px rgba(255, 228, 107, .14);
+}
+
+.mc-cloud {
+  position: absolute;
+  width: 170px;
+  height: auto;
+  opacity: .88;
+  animation: mc-cloud 14s ease-in-out infinite alternate;
+}
+
+/* Lapisan gunung & bukit (berulang horizontal) */
+.mc-layer {
+  position: absolute;
+  right: 0;
+  bottom: var(--mc-floor);
+  left: 0;
+  background-repeat: repeat-x;
+  background-position: left bottom;
+}
+
+.mc-mountains {
+  height: 160px;
+  background-size: 640px 160px;
+  opacity: .85;
+}
+
+.mc-hills {
+  height: 96px;
+  background-size: 512px 96px;
+}
+
+/* Sprite yang berdiri di atas rumput */
+.mc-prop {
+  position: absolute;
+  bottom: var(--mc-floor);
+  height: auto;
+}
+
+.mc-fence {
+  left: 58%;
+  width: 144px;
+  height: 56px;
+  background-repeat: repeat-x;
+  background-size: 48px 56px;
+  background-position: left bottom;
+}
+
+/* Tanah: rumput, tanah, batu */
+.mc-ground {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: var(--mc-floor);
+  background-repeat: repeat-x;
+  background-size:
+    var(--mc-b) var(--mc-b),
+    var(--mc-b) var(--mc-b),
+    var(--mc-b) var(--mc-b);
+  background-position:
+    0 0,
+    0 var(--mc-b),
+    0 calc(var(--mc-b) * 2);
+}
+
+/* XP orb */
+.mc-orb {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #b6f03a;
+  border: 2px solid #5fae1f;
+  box-sizing: border-box;
+  animation: mc-orb 1.8s ease-in-out infinite;
+}
+
+/* Peredup kiri untuk teks */
+.mc-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(14, 34, 24, .82) 0%,
+    rgba(14, 34, 24, .6) 34%,
+    rgba(14, 34, 24, .18) 56%,
+    rgba(14, 34, 24, 0) 70%
+  );
+}
+
+.mc-flame {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: mc-flame .5s ease-in-out infinite alternate;
+}
+
+@keyframes mc-cloud {
+  from { transform: translateX(-24px); }
+  to   { transform: translateX(24px); }
+}
+
+@keyframes mc-orb {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+@keyframes mc-flame {
+  from { transform: scale(1, 1); opacity: 1; }
+  to   { transform: scale(.85, 1.15); opacity: .85; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-cloud,
+  .mc-orb,
+  .mc-flame {
+    animation: none;
+  }
+}
