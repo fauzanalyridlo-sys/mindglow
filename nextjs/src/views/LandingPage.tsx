@@ -1,3 +1,4 @@
+import LandingAnimationObserver from '../components/landing/LandingAnimationObserver'
 import HeroSection from '../components/landing/HeroSection'
 import StatsSection from '../components/landing/StatsSection'
 import FeaturesSection from '../components/landing/FeaturesSection'
@@ -9,6 +10,7 @@ import ClosingCTASection from '../components/landing/ClosingCTASection'
 export default function LandingPage() {
   return (
     <>
+      <LandingAnimationObserver />
       <HeroSection />
       <StatsSection />
       <FeaturesSection />

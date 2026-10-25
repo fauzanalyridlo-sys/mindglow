@@ -155,8 +155,9 @@ const ProfilePage = () => {
       });
 
       setDisplayName(result.data.name);
-      setMessage(result.message || "Profil berhasil diperbarui.");
-      router.refresh();
+setMessage(result.message || "Profil berhasil diperbarui.");
+window.dispatchEvent(new Event("mindglow:profile-updated"));
+router.refresh();
     } catch (err) {
       setError(
         err instanceof Error

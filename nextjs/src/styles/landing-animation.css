@@ -1,0 +1,177 @@
+/* =========================================
+   MINDGLOW LANDING PAGE ANIMATIONS
+   Tidak mengubah layout responsif yang ada
+========================================= */
+
+@keyframes landingFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes landingFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes landingImageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Hero: animasi awal ketika halaman dibuka */
+.hero .hero-copy > .eyebrow {
+  animation: landingFadeUp 550ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.hero .hero-copy h1 {
+  animation: landingFadeUp 650ms cubic-bezier(0.2, 0.7, 0.2, 1) 100ms both;
+}
+
+.hero .hero-description {
+  animation: landingFadeUp 650ms cubic-bezier(0.2, 0.7, 0.2, 1) 180ms both;
+}
+
+.hero .hero-actions {
+  animation: landingFadeUp 650ms cubic-bezier(0.2, 0.7, 0.2, 1) 260ms both;
+}
+
+.hero .hero-image {
+  animation: landingImageEnter 800ms cubic-bezier(0.2, 0.7, 0.2, 1) 150ms both;
+}
+
+/* Elemen dekoratif hero */
+.hero .decor {
+  animation: landingFadeIn 900ms ease-out both;
+}
+
+/* Hover ringan khusus perangkat yang mendukung hover */
+@media (hover: hover) and (pointer: fine) {
+  .feature-card {
+    transition:
+      transform 220ms ease,
+      box-shadow 220ms ease;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(22, 61, 53, 0.08);
+  }
+
+  .checkin-demo-card,
+  .journal-demo-card,
+  .reflection-demo-card {
+    transition:
+      box-shadow 220ms ease,
+      transform 220ms ease;
+  }
+
+  .checkin-demo-card:hover,
+  .journal-demo-card:hover,
+  .reflection-demo-card:hover {
+    box-shadow: 0 12px 26px rgba(30, 55, 43, 0.12);
+  }
+}
+
+/* Menghormati preferensi pengurangan gerakan */
+@media (prefers-reduced-motion: reduce) {
+  .hero .hero-copy > .eyebrow,
+  .hero .hero-copy h1,
+  .hero .hero-description,
+  .hero .hero-actions,
+  .hero .hero-image,
+  .hero .decor {
+    animation: none !important;
+  }
+
+  .feature-card,
+  .checkin-demo-card,
+  .journal-demo-card,
+  .reflection-demo-card {
+    transition: none !important;
+  }
+}
+
+/* Animasi ketika elemen masuk ke viewport */
+@media (prefers-reduced-motion: no-preference) {
+  .landing-motion-ready .landing-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 600ms ease,
+      transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .landing-motion-ready .landing-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .landing-motion-ready .feature-card:nth-child(2),
+  .landing-motion-ready .stat-item:nth-child(2),
+  .landing-motion-ready .reflection-benefit:nth-child(2) {
+    transition-delay: 80ms;
+  }
+
+  .landing-motion-ready .feature-card:nth-child(3),
+  .landing-motion-ready .stat-item:nth-child(3),
+  .landing-motion-ready .reflection-benefit:nth-child(3) {
+    transition-delay: 160ms;
+  }
+
+  .landing-motion-ready .feature-card:nth-child(4),
+  .landing-motion-ready .stat-item:nth-child(4) {
+    transition-delay: 240ms;
+  }
+}
+
+/* Ilustrasi Hero melayang dengan lembut */
+@keyframes landingFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero .hero-image {
+    animation:
+      landingImageEnter 800ms cubic-bezier(0.2, 0.7, 0.2, 1) 150ms both,
+      landingFloat 5s ease-in-out 1s infinite;
+    will-change: transform;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero .hero-image {
+    animation-duration: 800ms, 6s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .hero-image {
+    animation: none !important;
+  }
+}

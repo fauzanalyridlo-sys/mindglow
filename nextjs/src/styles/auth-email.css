@@ -189,3 +189,71 @@ body:has(.auth-card--email) #top {
   min-height: 100vh;
 }
 
+
+/* Responsivitas tambahan Lupa Sandi */
+body:has(.auth-card--email) {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.auth-card--email {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  margin: 24px auto;
+}
+
+@media (max-width: 640px) {
+  .auth-card--email {
+    width: calc(100% - 28px);
+    max-width: 400px;
+    margin: 16px auto;
+    padding: 26px 20px;
+    border-radius: 22px;
+  }
+
+  .auth-email-header h1 {
+    font-size: clamp(24px, 7vw, 30px);
+    overflow-wrap: anywhere;
+  }
+
+  .auth-email-header p {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .auth-email-form {
+    max-width: 100%;
+  }
+
+  .auth-email-field {
+    gap: 10px;
+  }
+
+  .auth-email-field label {
+    padding-left: 4px;
+    font-size: 15px;
+  }
+
+  .auth-email-field input {
+    box-sizing: border-box;
+    min-width: 0;
+    font-size: 16px;
+  }
+
+  .auth-email-footer {
+    margin-top: 26px;
+  }
+
+  .auth-email-footer a {
+    font-size: 15px;
+  }
+}
+
+@media (max-height: 600px) {
+  .auth-card--email {
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+}
