@@ -658,3 +658,100 @@
     transform: none;
   }
 }
+
+/* Final Momo welcome-card layout */
+.welcome-banner {
+  position: relative;
+  display: block;
+  min-height: 320px;
+  padding: 40px 0 40px 40px;
+  padding-right: 0;
+  overflow: hidden;
+  isolation: isolate;
+  box-sizing: border-box;
+}
+
+.welcome-banner > h1,
+.welcome-banner > p,
+.welcome-banner > .banner-buttons {
+  position: relative;
+  z-index: 2;
+  width: calc(100% - 680px);
+  max-width: 680px;
+}
+
+.welcome-banner > h1 {
+  font-size: clamp(25px, 2.2vw, 36px);
+  line-height: 1.2;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.welcome-banner > p {
+  font-size: 15px;
+  line-height: 1.55;
+  margin-bottom: 24px;
+}
+
+.welcome-banner > .momo-pet {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  right: 18px;
+  width: min(650px, 58%);
+  max-width: none;
+  transform: translateY(-50%);
+}
+
+@media (max-width: 1450px) {
+  .welcome-banner {
+    padding-left: 30px;
+  }
+
+  .welcome-banner > h1,
+  .welcome-banner > p,
+  .welcome-banner > .banner-buttons {
+    width: calc(100% - 570px);
+  }
+
+  .welcome-banner > .momo-pet {
+    width: 540px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .welcome-banner {
+    min-height: 0;
+    padding: 30px;
+  }
+
+  .welcome-banner > h1,
+  .welcome-banner > p,
+  .welcome-banner > .banner-buttons {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .welcome-banner > .momo-pet {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    margin-top: 24px;
+    transform: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .welcome-banner {
+    padding: 21px 17px;
+  }
+
+  .welcome-banner > h1 {
+    font-size: 23px;
+  }
+
+  .welcome-banner > p {
+    font-size: 12px;
+  }
+}

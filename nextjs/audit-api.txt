@@ -1,0 +1,235 @@
+src/app/api/ai/chat/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/ai/chat/route.ts:3:import { getCurrentUser } from "@/lib/auth";
+src/app/api/ai/chat/route.ts:4:import { consumeAiQuota } from "@/lib/ai-rate-limit";
+src/app/api/ai/chat/route.ts:87:    }).safeParse(data);
+src/app/api/ai/chat/route.ts:104:  const user = await getCurrentUser();
+src/app/api/ai/chat/route.ts:107:    return NextResponse.json(
+src/app/api/ai/chat/route.ts:116:    return NextResponse.json(
+src/app/api/ai/chat/route.ts:125:    return NextResponse.json(
+src/app/api/ai/chat/route.ts:134:    return NextResponse.json(
+src/app/api/ai/chat/route.ts:145:    return NextResponse.json(
+src/app/api/ai/chat/route.ts:151:  const parsed = requestSchema.safeParse(body);
+src/app/api/ai/chat/route.ts:154:    return NextResponse.json(
+src/app/api/ai/chat/route.ts:168:    return NextResponse.json(
+src/app/api/ai/chat/route.ts:178:    return NextResponse.json(
+src/app/api/ai/chat/route.ts:208:    return NextResponse.json(
+src/app/api/ai/chat/route.ts:228:    return NextResponse.json({
+src/app/api/ai/chat/route.ts:247:      return NextResponse.json({
+src/app/api/ai/chat/route.ts:254:  return NextResponse.json(
+src/app/api/academic/tasks/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/academic/tasks/route.ts:4:import { getCurrentUser } from "@/lib/auth";
+src/app/api/academic/tasks/route.ts:35:  const user = await getCurrentUser();
+src/app/api/academic/tasks/route.ts:38:    return NextResponse.json(
+src/app/api/academic/tasks/route.ts:44:  const tasks = await prisma.academic_tasks.findMany({
+src/app/api/academic/tasks/route.ts:45:    where: { user_id: user.id },
+src/app/api/academic/tasks/route.ts:53:  return NextResponse.json(
+src/app/api/academic/tasks/route.ts:63:  const user = await getCurrentUser();
+src/app/api/academic/tasks/route.ts:66:    return NextResponse.json(
+src/app/api/academic/tasks/route.ts:75:    return NextResponse.json(
+src/app/api/academic/tasks/route.ts:84:    return NextResponse.json(
+src/app/api/academic/tasks/route.ts:93:    return NextResponse.json(
+src/app/api/academic/tasks/route.ts:104:    return NextResponse.json(
+src/app/api/academic/tasks/route.ts:110:  const parsed = taskSchema.safeParse(body);
+src/app/api/academic/tasks/route.ts:113:    return NextResponse.json(
+src/app/api/academic/tasks/route.ts:125:  const task = await prisma.academic_tasks.create({
+src/app/api/academic/tasks/route.ts:127:      user_id: user.id,
+src/app/api/academic/tasks/route.ts:136:  return NextResponse.json(
+src/app/api/academic/tasks/[id]/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/academic/tasks/[id]/route.ts:4:import { getCurrentUser } from "@/lib/auth";
+src/app/api/academic/tasks/[id]/route.ts:6:const updateTaskSchema = z.object({
+src/app/api/academic/tasks/[id]/route.ts:23:  return NextResponse.json(
+src/app/api/academic/tasks/[id]/route.ts:68:  const user = await getCurrentUser();
+src/app/api/academic/tasks/[id]/route.ts:100:  const parsed = updateTaskSchema.safeParse(body);
+src/app/api/academic/tasks/[id]/route.ts:103:    return NextResponse.json(
+src/app/api/academic/tasks/[id]/route.ts:113:  const existingTask = await prisma.academic_tasks.findFirst({
+src/app/api/academic/tasks/[id]/route.ts:116:      user_id: user.id,
+src/app/api/academic/tasks/[id]/route.ts:127:  const result = await prisma.academic_tasks.updateMany({
+src/app/api/academic/tasks/[id]/route.ts:130:      user_id: user.id,
+src/app/api/academic/tasks/[id]/route.ts:137:      updated_at: new Date(),
+src/app/api/academic/tasks/[id]/route.ts:145:  const updatedTask = await prisma.academic_tasks.findFirst({
+src/app/api/academic/tasks/[id]/route.ts:148:      user_id: user.id,
+src/app/api/academic/tasks/[id]/route.ts:152:  if (!updatedTask) {
+src/app/api/academic/tasks/[id]/route.ts:156:  return NextResponse.json(
+src/app/api/academic/tasks/[id]/route.ts:160:      data: serializeTask(updatedTask),
+src/app/api/academic/tasks/[id]/route.ts:167:  const user = await getCurrentUser();
+src/app/api/academic/tasks/[id]/route.ts:179:  const result = await prisma.academic_tasks.deleteMany({
+src/app/api/academic/tasks/[id]/route.ts:182:      user_id: user.id,
+src/app/api/academic/tasks/[id]/route.ts:190:  return NextResponse.json(
+src/app/api/journal/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/journal/route.ts:4:import { getCurrentUser } from "@/lib/auth";
+src/app/api/journal/route.ts:11:  return NextResponse.json(
+src/app/api/journal/route.ts:27:  updated_at: Date | null;
+src/app/api/journal/route.ts:33:    updatedAt: journal.updated_at?.toISOString() ?? null,
+src/app/api/journal/route.ts:39:  const user = await getCurrentUser();
+src/app/api/journal/route.ts:45:  const journals = await prisma.journals.findMany({
+src/app/api/journal/route.ts:47:      user_id: user.id,
+src/app/api/journal/route.ts:56:  return NextResponse.json(
+src/app/api/journal/route.ts:69:  const user = await getCurrentUser();
+src/app/api/journal/route.ts:99:  const parsed = journalSchema.safeParse(body);
+src/app/api/journal/route.ts:102:    return NextResponse.json(
+src/app/api/journal/route.ts:117:  const journal = await prisma.journals.create({
+src/app/api/journal/route.ts:119:      user_id: user.id,
+src/app/api/journal/route.ts:122:      updated_at: now,
+src/app/api/journal/route.ts:126:  return NextResponse.json(
+src/app/api/journal/[id]/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/journal/[id]/route.ts:3:import { getCurrentUser } from "@/lib/auth";
+src/app/api/journal/[id]/route.ts:10:  return NextResponse.json(
+src/app/api/journal/[id]/route.ts:26:  const user = await getCurrentUser();
+src/app/api/journal/[id]/route.ts:50:  const result = await prisma.journals.deleteMany({
+src/app/api/journal/[id]/route.ts:53:      user_id: user.id,
+src/app/api/journal/[id]/route.ts:61:  return NextResponse.json(
+src/app/api/dashboard/route.ts:1:import { NextResponse } from "next/server";
+src/app/api/dashboard/route.ts:3:import { getCurrentUser } from "@/lib/auth";
+src/app/api/dashboard/route.ts:25:  const user = await getCurrentUser();
+src/app/api/dashboard/route.ts:28:    return NextResponse.json(
+src/app/api/dashboard/route.ts:47:    prisma.daily_check_ins.findUnique({
+src/app/api/dashboard/route.ts:49:        user_id_checkin_date: {
+src/app/api/dashboard/route.ts:50:          user_id: user.id,
+src/app/api/dashboard/route.ts:56:    prisma.academic_tasks.findMany({
+src/app/api/dashboard/route.ts:58:        user_id: user.id,
+src/app/api/dashboard/route.ts:71:    prisma.academic_tasks.findMany({
+src/app/api/dashboard/route.ts:73:        user_id: user.id,
+src/app/api/dashboard/route.ts:104:  return NextResponse.json(
+src/app/api/profile/password/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/profile/password/route.ts:5:import { getCurrentUser } from "@/lib/auth";
+src/app/api/profile/password/route.ts:22:  return NextResponse.json(
+src/app/api/profile/password/route.ts:32:  const user = await getCurrentUser();
+src/app/api/profile/password/route.ts:62:  const parsed = passwordSchema.safeParse(body);
+src/app/api/profile/password/route.ts:70:  const account = await prisma.users.findUnique({
+src/app/api/profile/password/route.ts:108:  const result = await prisma.$transaction(async (tx) => {
+src/app/api/profile/password/route.ts:109:    const updated = await tx.users.updateMany({
+src/app/api/profile/password/route.ts:116:        updated_at: new Date(),
+src/app/api/profile/password/route.ts:120:    if (updated.count !== 1) {
+src/app/api/profile/password/route.ts:124:    // Cabut seluruh session pengguna, termasuk session saat ini.
+src/app/api/profile/password/route.ts:125:    await tx.mindglow_sessions.deleteMany({
+src/app/api/profile/password/route.ts:126:      where: { user_id: account.id },
+src/app/api/profile/password/route.ts:139:  const response = NextResponse.json(
+src/app/api/profile/password/route.ts:150:  response.cookies.delete("mindglow_session");
+src/app/api/profile/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/profile/route.ts:5:import { getCurrentUser } from "@/lib/auth";
+src/app/api/profile/route.ts:19:  return NextResponse.json(
+src/app/api/profile/route.ts:45:  const user = await getCurrentUser();
+src/app/api/profile/route.ts:51:  const profile = await prisma.users.findUnique({
+src/app/api/profile/route.ts:66:  return NextResponse.json(
+src/app/api/profile/route.ts:78:  const user = await getCurrentUser();
+src/app/api/profile/route.ts:108:  const parsed = profileSchema.safeParse(body);
+src/app/api/profile/route.ts:111:    return NextResponse.json(
+src/app/api/profile/route.ts:125:    const updated = await prisma.users.update({
+src/app/api/profile/route.ts:131:        updated_at: new Date(),
+src/app/api/profile/route.ts:142:    return NextResponse.json(
+src/app/api/profile/route.ts:146:        data: formatProfile(updated),
+src/app/api/insights/route.ts:2:import { NextRequest, NextResponse } from "next/server";
+src/app/api/insights/route.ts:4:import { getCurrentUser } from "@/lib/auth";
+src/app/api/insights/route.ts:39:  const user = await getCurrentUser();
+src/app/api/insights/route.ts:42:    return NextResponse.json(
+src/app/api/insights/route.ts:64:  const checkins = await prisma.daily_check_ins.findMany({
+src/app/api/insights/route.ts:66:      user_id: user.id,
+src/app/api/insights/route.ts:186:  return NextResponse.json(
+src/app/api/auth/register/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/auth/register/route.ts:35:    return NextResponse.json(
+src/app/api/auth/register/route.ts:46:    return NextResponse.json(
+src/app/api/auth/register/route.ts:52:  const parsed = registerSchema.safeParse(body);
+src/app/api/auth/register/route.ts:55:    return NextResponse.json(
+src/app/api/auth/register/route.ts:72:    const existingUser = await prisma.users.findFirst({
+src/app/api/auth/register/route.ts:80:      return NextResponse.json(
+src/app/api/auth/register/route.ts:92:    const user = await prisma.users.create({
+src/app/api/auth/register/route.ts:99:        updated_at: now,
+src/app/api/auth/register/route.ts:117:      await prisma.users.deleteMany({
+src/app/api/auth/register/route.ts:124:      return NextResponse.json(
+src/app/api/auth/register/route.ts:133:    return NextResponse.json(
+src/app/api/auth/register/route.ts:154:      return NextResponse.json(
+src/app/api/auth/register/route.ts:165:    return NextResponse.json(
+src/app/api/auth/resend-verification/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/auth/resend-verification/route.ts:16:    return NextResponse.json(
+src/app/api/auth/resend-verification/route.ts:27:    return NextResponse.json(
+src/app/api/auth/resend-verification/route.ts:33:  const parsed = requestSchema.safeParse(body);
+src/app/api/auth/resend-verification/route.ts:36:    return NextResponse.json(
+src/app/api/auth/resend-verification/route.ts:45:    const user = await prisma.users.findUnique({
+src/app/api/auth/resend-verification/route.ts:63:      return NextResponse.json(genericResponse, {
+src/app/api/auth/resend-verification/route.ts:71:    return NextResponse.json(genericResponse, {
+src/app/api/auth/resend-verification/route.ts:81:    return NextResponse.json(
+src/app/api/auth/me/route.ts:1:import { NextResponse } from "next/server";
+src/app/api/auth/me/route.ts:2:import { getCurrentUser } from "@/lib/auth";
+src/app/api/auth/me/route.ts:5:  const user = await getCurrentUser();
+src/app/api/auth/me/route.ts:8:    return NextResponse.json(
+src/app/api/auth/me/route.ts:20:  return NextResponse.json(
+src/app/api/auth/forgot-password/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/auth/forgot-password/route.ts:6:import { consumeAuthRateLimit } from "@/lib/auth-rate-limit";
+src/app/api/auth/forgot-password/route.ts:18:  return NextResponse.json(
+src/app/api/auth/forgot-password/route.ts:49:  const parsed = requestSchema.safeParse(body);
+src/app/api/auth/forgot-password/route.ts:69:    const user = await prisma.users.findUnique({
+src/app/api/auth/forgot-password/route.ts:80:      .update(rawToken)
+src/app/api/auth/forgot-password/route.ts:83:    await prisma.password_reset_tokens.upsert({
+src/app/api/auth/forgot-password/route.ts:90:      update: {
+src/app/api/auth/forgot-password/route.ts:118:      await prisma.password_reset_tokens.deleteMany({
+src/app/api/auth/logout/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/auth/logout/route.ts:2:import { deleteSession } from "@/lib/auth";
+src/app/api/auth/logout/route.ts:10:    return NextResponse.json(
+src/app/api/auth/logout/route.ts:20:    await deleteSession();
+src/app/api/auth/logout/route.ts:22:    return NextResponse.json(
+src/app/api/auth/logout/route.ts:37:    return NextResponse.json(
+src/app/api/auth/login/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/auth/login/route.ts:6:import { consumeAuthRateLimit } from "@/lib/auth-rate-limit";
+src/app/api/auth/login/route.ts:16:  return NextResponse.json(
+src/app/api/auth/login/route.ts:46:  const parsed = loginSchema.safeParse(body);
+src/app/api/auth/login/route.ts:68:    const user = await prisma.users.findFirst({
+src/app/api/auth/login/route.ts:112:    return NextResponse.json(
+src/app/api/auth/verify-email/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/auth/verify-email/route.ts:14:      return NextResponse.json(
+src/app/api/auth/verify-email/route.ts:26:    const result = await prisma.$transaction(async (tx) => {
+src/app/api/auth/verify-email/route.ts:28:        await tx.email_verification_tokens.findUnique({
+src/app/api/auth/verify-email/route.ts:36:      const consumed = await tx.email_verification_tokens.deleteMany({
+src/app/api/auth/verify-email/route.ts:47:      await tx.users.update({
+src/app/api/auth/verify-email/route.ts:48:        where: { id: verificationToken.user_id },
+src/app/api/auth/verify-email/route.ts:52:      await tx.email_verification_tokens.deleteMany({
+src/app/api/auth/verify-email/route.ts:53:        where: { user_id: verificationToken.user_id },
+src/app/api/auth/verify-email/route.ts:60:      return NextResponse.json(
+src/app/api/auth/verify-email/route.ts:69:    return NextResponse.json({
+src/app/api/auth/verify-email/route.ts:79:    return NextResponse.json(
+src/app/api/auth/reset-password/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/auth/reset-password/route.ts:22:  return NextResponse.json(
+src/app/api/auth/reset-password/route.ts:53:  const parsed = resetSchema.safeParse(body);
+src/app/api/auth/reset-password/route.ts:59:  const tokenHash = createHash("sha256").update(token).digest("hex");
+src/app/api/auth/reset-password/route.ts:65:    const result = await prisma.$transaction(async (tx) => {
+src/app/api/auth/reset-password/route.ts:66:      const resetRecord = await tx.password_reset_tokens.findFirst({
+src/app/api/auth/reset-password/route.ts:78:      const user = await tx.users.findUnique({
+src/app/api/auth/reset-password/route.ts:84:        await tx.password_reset_tokens.deleteMany({
+src/app/api/auth/reset-password/route.ts:90:      const deleted = await tx.password_reset_tokens.deleteMany({
+src/app/api/auth/reset-password/route.ts:98:      if (deleted.count !== 1) {
+src/app/api/auth/reset-password/route.ts:102:      await tx.users.update({
+src/app/api/auth/reset-password/route.ts:106:          updated_at: now,
+src/app/api/auth/reset-password/route.ts:110:      await tx.mindglow_sessions.deleteMany({
+src/app/api/auth/reset-password/route.ts:111:        where: { user_id: user.id },
+src/app/api/auth/google/route.ts:2:import { NextRequest, NextResponse } from "next/server";
+src/app/api/auth/google/route.ts:8:import { consumeAuthRateLimit } from "@/lib/auth-rate-limit";
+src/app/api/auth/google/route.ts:19:  return NextResponse.json(
+src/app/api/auth/google/route.ts:49:  const parsed = schema.safeParse(body);
+src/app/api/auth/google/route.ts:99:    const existingOAuth = await prisma.oauth_accounts.findUnique({
+src/app/api/auth/google/route.ts:121:      const existingEmail = await prisma.users.findUnique({
+src/app/api/auth/google/route.ts:135:      user = await prisma.$transaction(async (tx) => {
+src/app/api/auth/google/route.ts:144:            updated_at: new Date(),
+src/app/api/auth/google/route.ts:156:            user_id: createdUser.id,
+src/app/api/auth/google/route.ts:168:    return NextResponse.json(
+src/app/api/checkin/route.ts:1:import { NextRequest, NextResponse } from "next/server";
+src/app/api/checkin/route.ts:4:import { getCurrentUser } from "@/lib/auth";
+src/app/api/checkin/route.ts:32:  return NextResponse.json(
+src/app/api/checkin/route.ts:53:  const user = await getCurrentUser();
+src/app/api/checkin/route.ts:83:  const parsed = checkinSchema.safeParse(body);
+src/app/api/checkin/route.ts:86:    return NextResponse.json(
+src/app/api/checkin/route.ts:111:  const checkin = await prisma.daily_check_ins.upsert({
+src/app/api/checkin/route.ts:113:      user_id_checkin_date: {
+src/app/api/checkin/route.ts:114:        user_id: user.id,
+src/app/api/checkin/route.ts:119:      user_id: user.id,
+src/app/api/checkin/route.ts:126:      updated_at: now,
+src/app/api/checkin/route.ts:128:    update: {
+src/app/api/checkin/route.ts:133:      updated_at: now,
+src/app/api/checkin/route.ts:137:  return NextResponse.json(
+src/app/api/checkin/today/route.ts:1:import { NextResponse } from "next/server";
+src/app/api/checkin/today/route.ts:3:import { getCurrentUser } from "@/lib/auth";
+src/app/api/checkin/today/route.ts:25:  const user = await getCurrentUser();
+src/app/api/checkin/today/route.ts:28:    return NextResponse.json(
+src/app/api/checkin/today/route.ts:42:  const checkin = await prisma.daily_check_ins.findUnique({
+src/app/api/checkin/today/route.ts:44:      user_id_checkin_date: {
+src/app/api/checkin/today/route.ts:45:        user_id: user.id,
+src/app/api/checkin/today/route.ts:52:    return NextResponse.json(
+src/app/api/checkin/today/route.ts:95:  return NextResponse.json(
