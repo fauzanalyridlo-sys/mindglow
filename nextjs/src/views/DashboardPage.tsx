@@ -14,7 +14,7 @@ const DashboardPage = () => {
         <h1>Selamat Datang Kembali, Lambang_seto 👋</h1>
         <p>
           Ingat, kamu tidak perlu menyelesaikan semua masalah sekaligus. 
-          Cukup ambil satu langkah kecil hari ini."
+          Cukup ambil satu langkah kecil hari ini.
         </p>
         <div className="banner-buttons">
           
