@@ -11,22 +11,18 @@ function VerifyEmailContent() {
   const token = searchParams.get("token");
   const hasVerified = useRef(false);
 
-  const [state, setState] = useState<VerificationState>("loading");
+  const [state, setState] = useState<VerificationState>(
+    token ? "loading" : "error",
+  );
   const [message, setMessage] = useState(
-    "Sedang memverifikasi alamat email kamu.",
+    token
+      ? "Sedang memverifikasi alamat email kamu."
+      : "Tautan verifikasi tidak lengkap. Silakan gunakan tautan dari email verifikasi kamu.",
   );
 
   useEffect(() => {
-    if (hasVerified.current) return;
+    if (!token || hasVerified.current) return;
     hasVerified.current = true;
-
-    if (!token) {
-      setState("error");
-      setMessage(
-        "Tautan verifikasi tidak lengkap. Silakan gunakan tautan dari email verifikasi kamu.",
-      );
-      return;
-    }
 
     const verifyEmail = async () => {
       try {
