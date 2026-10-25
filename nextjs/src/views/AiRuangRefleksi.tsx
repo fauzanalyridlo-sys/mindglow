@@ -1,128 +1,136 @@
-'use client'
-import { useState, useRef, useEffect } from 'react'
-import '../styles/ai-ruang-refleksi.css'
-import '../styles/ai-ruang-refleksi-animation.css'
+"use client";
 
-import iconAiAsset from '../icons/iconai.svg'
-import iconGembokAsset from '../icons/gembok.svg'
+import { useState, useRef, useEffect } from "react";
+import "../styles/ai-ruang-refleksi.css";
+import "../styles/ai-ruang-refleksi-animation.css";
 
-const iconAi = iconAiAsset.src
-const iconGembok = iconGembokAsset.src
+import iconAiAsset from "../icons/iconai.svg";
+import iconGembokAsset from "../icons/gembok.svg";
+
+const iconAi = iconAiAsset.src;
+const iconGembok = iconGembokAsset.src;
 
 type Message = {
-  id: number
-  sender: 'ai' | 'user'
-  text: string
-}
+  id: number;
+  sender: "ai" | "user";
+  text: string;
+};
+
+type ApiResponse = {
+  success: boolean;
+  data?: {
+    reply?: string;
+  };
+  message?: string;
+};
 
 export default function AiRuangRefleksi() {
-  const [input, setInput] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
-
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [error, setError] = useState("");
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      sender: 'ai',
-      text: 'Ceritakan apa yang sedang kamu rasakan...',
+      sender: "ai",
+      text: "Hai, aku MindGlow. Ceritakan apa yang sedang kamu rasakan. Aku siap mendengarkan.",
     },
-    {
-      id: 2,
-      sender: 'user',
-      text: 'Aku akhir-akhir ini merasa capek dan kepikiran banyak hal.',
-    },
-  ])
+  ]);
 
-  const nextId = useRef(3)
-  const bottomRef = useRef<HTMLDivElement>(null)
-  const replyTimeoutRef = useRef<number | null>(null)
+  const nextId = useRef(2);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<Message[]>(messages);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, isTyping])
+    messagesRef.current = messages;
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isTyping]);
 
-  // Balasan simulasi berdasarkan kata yang muncul di pesan pengguna
-  function getAiReply(userText: string): string {
-    const text = userText.toLowerCase()
+  async function handleSend() {
+    const text = input.trim();
 
-    if (
-      text.includes('capek') ||
-      text.includes('lelah') ||
-      text.includes('kelelahan')
-    ) {
-      return 'Kedengarannya kamu sedang merasa lelah. Kamu nggak harus menyelesaikan semuanya sekaligus. Hal apa yang paling menguras energimu akhir-akhir ini?'
-    }
-
-    if (
-      text.includes('sedih') ||
-      text.includes('kecewa') ||
-      text.includes('menangis')
-    ) {
-      return 'Aku menangkap kalau ada hal yang membuatmu sedih. Kalau kamu nyaman, mau cerita apa yang terjadi?'
-    }
-
-    if (
-      text.includes('cemas') ||
-      text.includes('khawatir') ||
-      text.includes('takut')
-    ) {
-      return 'Rasa khawatir bisa terasa berat saat dipendam sendiri. Apa ada sesuatu yang paling kamu cemaskan saat ini?'
-    }
-
-    if (
-      text.includes('senang') ||
-      text.includes('bahagia') ||
-      text.includes('lega')
-    ) {
-      return 'Senang mendengar ada hal yang membuatmu merasa lebih baik. Apa yang terjadi hari ini hingga kamu merasakan itu?'
-    }
-
-    return 'Terima kasih sudah berbagi. Apa hal yang paling ingin kamu pahami dari perasaan itu ?'
-  }
-
-  function handleSend() {
-    const text = input.trim()
-
-    if (!text || isTyping) return
+    if (!text || isTyping) return;
 
     const userMessage: Message = {
       id: nextId.current++,
-      sender: 'user',
+      sender: "user",
       text,
-    }
+    };
 
-    setMessages((current) => [...current, userMessage])
-    setInput('')
-    setIsTyping(true)
+    const history = messagesRef.current
+      .filter((message) => message.id !== 1 || message.sender === "user")
+      .slice(-10)
+      .map((message) => ({
+        role:
+          message.sender === "ai" ? ("assistant" as const) : ("user" as const),
+        content: message.text,
+      }));
 
-    // Jeda singkat untuk menampilkan efek AI sedang mengetik
-    replyTimeoutRef.current = window.setTimeout(() => {
+    setMessages((current) => [...current, userMessage]);
+    setInput("");
+    setError("");
+    setIsTyping(true);
+
+    try {
+      const response = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "same-origin",
+        cache: "no-store",
+        body: JSON.stringify({
+          message: text,
+          history,
+        }),
+      });
+
+      const result = (await response
+        .json()
+        .catch(() => null)) as ApiResponse | null;
+
+      if (!response.ok || !result?.success || !result.data?.reply) {
+        if (response.status === 401) {
+          throw new Error(
+            "Sesi login kamu sudah berakhir. Silakan login kembali.",
+          );
+        }
+
+        if (response.status === 429) {
+          throw new Error(
+            result?.message ||
+              "Kuota chat AI kamu sudah mencapai batas. Silakan coba lagi nanti.",
+          );
+        }
+
+        throw new Error(
+          result?.message ||
+            "MindGlow AI sedang mengalami gangguan. Silakan coba lagi.",
+        );
+      }
+
       const aiMessage: Message = {
         id: nextId.current++,
-        sender: 'ai',
-        text: getAiReply(text),
-      }
+        sender: "ai",
+        text: result.data.reply,
+      };
 
-      setMessages((current) => [...current, aiMessage])
-      setIsTyping(false)
-      replyTimeoutRef.current = null
-    }, 700)
+      setMessages((current) => [...current, aiMessage]);
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Terjadi kesalahan. Silakan coba lagi.";
+
+      setError(message);
+    } finally {
+      setIsTyping(false);
+    }
   }
 
-  // Bersihkan timer jika komponen ditutup sebelum balasan muncul
-  useEffect(() => {
-    return () => {
-      if (replyTimeoutRef.current !== null) {
-        window.clearTimeout(replyTimeoutRef.current)
-      }
-    }
-  }, [])
-
-  function handleKeyDown(
-    event: React.KeyboardEvent<HTMLTextAreaElement>,
-  ) {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault()
-      handleSend()
+  function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      void handleSend();
     }
   }
 
@@ -146,10 +154,10 @@ export default function AiRuangRefleksi() {
             <div
               key={message.id}
               className={`reflection-message-row ${
-                message.sender === 'user' ? 'is-user' : 'is-ai'
+                message.sender === "user" ? "is-user" : "is-ai"
               }`}
             >
-              {message.sender === 'ai' && (
+              {message.sender === "ai" && (
                 <div className="reflection-avatar" aria-label="MindGlow">
                   <img src={iconAi} alt="" />
                 </div>
@@ -177,11 +185,17 @@ export default function AiRuangRefleksi() {
           <div ref={bottomRef} />
         </div>
 
+        {error && (
+          <p className="reflection-error" role="alert">
+            {error}
+          </p>
+        )}
+
         <form
           className="reflection-composer"
           onSubmit={(event) => {
-            event.preventDefault()
-            handleSend()
+            event.preventDefault();
+            void handleSend();
           }}
         >
           <div className="reflection-input-wrap">
@@ -224,5 +238,5 @@ export default function AiRuangRefleksi() {
         Kembali
       </button>
     </section>
-  )
+  );
 }
