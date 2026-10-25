@@ -1,6 +1,7 @@
+
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import '../styles/akademik.css'
 import '../styles/akademik-animation.css'
 
@@ -12,7 +13,7 @@ import groupIcon from '../icons/Kelompok.svg'
 import individualIcon from '../icons/Individu.svg'
 
 type Task = {
-  id: number
+  id: string
   name: string
   course: string
   deadline: string
@@ -28,38 +29,50 @@ type Notice = {
   variant: 'success' | 'delete'
 }
 
-const initialTasks: Task[] = [
-  {
-    id: 1,
-    name: 'Makalah Proyek Sistem Web',
-    course: 'Pemrograman Web',
-    deadline: '2026-10-01',
-    priority: 'Tinggi',
-    type: 'Kelompok',
-    completed: false,
-  },
-  {
-    id: 2,
-    name: 'Rekayasa Perangkat Lunak',
-    course: 'Pemrograman Web',
-    deadline: '2026-10-01',
-    priority: 'Tinggi',
-    type: 'Individu',
-    completed: false,
-  },
-]
-
 export default function AkademikPage() {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks)
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [busyTaskId, setBusyTaskId] = useState<string | null>(null)
+  const [error, setError] = useState('')
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [notice, setNotice] = useState<Notice | null>(null)
-  const [deleteId, setDeleteId] = useState<number | null>(null)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
 
   const [name, setName] = useState('')
   const [course, setCourse] = useState('')
   const [deadline, setDeadline] = useState('')
   const [priority, setPriority] = useState<Task['priority'] | ''>('')
   const [type, setType] = useState<Task['type'] | ''>('')
+
+  // Ambil tugas milik pengguna yang sedang login.
+  useEffect(() => {
+    let active = true
+
+    async function loadTasks() {
+      try {
+        const response = await fetch('/api/academic/tasks', {
+          cache: 'no-store',
+        })
+        const result = await response.json()
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Gagal memuat tugas akademik.')
+        }
+
+        if (active) setTasks(result.data ?? [])
+      } catch (err) {
+        if (active) {
+          setError(err instanceof Error ? err.message : 'Gagal memuat tugas.')
+        }
+      } finally {
+        if (active) setLoading(false)
+      }
+    }
+
+    loadTasks()
+    return () => { active = false }
+  }, [])
 
   const resetForm = () => {
     setName('')
@@ -74,70 +87,132 @@ export default function AkademikPage() {
     resetForm()
   }
 
-  const saveTask = (event: FormEvent<HTMLFormElement>) => {
+  // Simpan tugas ke database melalui API.
+  const saveTask = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (!name.trim() || !course.trim() || !deadline || !priority || !type) {
+    if (!name.trim() || !course.trim() || !deadline || !priority || !type || saving) {
       return
     }
 
-    const newTask: Task = {
-      id: Date.now(),
-      name: name.trim(),
-      course: course.trim(),
-      deadline,
-      priority,
-      type,
-      completed: false,
-    }
+    setSaving(true)
+    setError('')
 
-    setTasks((current) => [...current, newTask])
-    closeForm()
+    try {
+      const response = await fetch('/api/academic/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          course: course.trim(),
+          deadline,
+          priority,
+          type,
+        }),
+      })
 
-    setNotice({
-      title: 'Berhasil!',
-      message: 'Tugas berhasil ditambahkan ke daftar.',
-      icon: successIcon.src,
-      variant: 'success',
-    })
-  }
+      const result = await response.json()
 
-  const markCompleted = (task: Task) => {
-    setTasks((current) =>
-      current.map((item) =>
-        item.id === task.id
-          ? { ...item, completed: !item.completed }
-          : item,
-      ),
-    )
+      if (!response.ok) {
+        throw new Error(result.message || 'Gagal menyimpan tugas.')
+      }
 
-    if (!task.completed) {
+      setTasks((current) => [...current, result.data])
+      closeForm()
+
       setNotice({
         title: 'Berhasil!',
-        message: 'Tugas telah ditandai sebagai selesai.',
+        message: 'Tugas berhasil disimpan ke database.',
         icon: successIcon.src,
         variant: 'success',
       })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Gagal menyimpan tugas.')
+    } finally {
+      setSaving(false)
     }
   }
 
-  const confirmDelete = () => {
-    if (deleteId === null) return
+  // Perbarui status selesai di database.
+  const markCompleted = async (task: Task) => {
+    if (busyTaskId) return
 
-    setTasks((current) => current.filter((task) => task.id !== deleteId))
-    setDeleteId(null)
+    setBusyTaskId(task.id)
+    setError('')
 
-    setNotice({
-      title: 'Berhasil dihapus!',
-      message: 'Tugas telah dihapus dari daftar.',
-      icon: deleteIcon.src,
-      variant: 'delete',
-    })
+    try {
+      const response = await fetch(
+        `/api/academic/tasks/${encodeURIComponent(task.id)}`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ completed: !task.completed }),
+        }
+      )
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Gagal memperbarui status tugas.')
+      }
+
+      setTasks((current) =>
+        current.map((item) => item.id === task.id ? result.data : item)
+      )
+
+      if (!task.completed) {
+        setNotice({
+          title: 'Berhasil!',
+          message: 'Tugas telah ditandai sebagai selesai.',
+          icon: successIcon.src,
+          variant: 'success',
+        })
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Gagal memperbarui tugas.')
+    } finally {
+      setBusyTaskId(null)
+    }
+  }
+
+  // Hapus tugas dari database.
+  const confirmDelete = async () => {
+    if (deleteId === null || busyTaskId) return
+
+    const id = deleteId
+    setBusyTaskId(id)
+    setError('')
+
+    try {
+      const response = await fetch(
+        `/api/academic/tasks/${encodeURIComponent(id)}`,
+        { method: 'DELETE' }
+      )
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Gagal menghapus tugas.')
+      }
+
+      setTasks((current) => current.filter((task) => task.id !== id))
+      setDeleteId(null)
+
+      setNotice({
+        title: 'Berhasil dihapus!',
+        message: 'Tugas telah dihapus dari daftar akademik.',
+        icon: deleteIcon.src,
+        variant: 'delete',
+      })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Gagal menghapus tugas.')
+    } finally {
+      setBusyTaskId(null)
+    }
   }
 
   const formatDate = (date: string) => {
     if (!date) return ''
-
     const [year, month, day] = date.split('-')
     return `${day}-${month}-${year}`
   }
@@ -163,9 +238,7 @@ export default function AkademikPage() {
             onClick={() => setIsFormOpen(true)}
           >
             {buttonShine}
-            <span className="academic-plus" aria-hidden="true">
-              ＋
-            </span>
+            <span className="academic-plus" aria-hidden="true">＋</span>
             <span>Tambah Tugas Baru</span>
           </button>
         </div>
@@ -177,8 +250,14 @@ export default function AkademikPage() {
         />
       </section>
 
+      {error && (
+        <p role="alert" className="academic-error">{error}</p>
+      )}
+
       <section className="academic-task-list" aria-label="Daftar tugas">
-        {tasks.length === 0 ? (
+        {loading ? (
+          <p className="academic-empty">Memuat tugas akademik...</p>
+        ) : tasks.length === 0 ? (
           <p className="academic-empty">
             Belum ada tugas. Tambahkan tugas pertamamu!
           </p>
@@ -189,9 +268,7 @@ export default function AkademikPage() {
               key={task.id}
             >
               <div className="academic-task-top">
-                <span
-                  className={`academic-priority priority-${task.priority.toLowerCase()}`}
-                >
+                <span className={`academic-priority priority-${task.priority.toLowerCase()}`}>
                   {task.priority}
                 </span>
 
@@ -209,7 +286,6 @@ export default function AkademikPage() {
 
               <div className="academic-task-meta">
                 <span>{task.course}</span>
-
                 <time dateTime={task.deadline}>
                   <img src={calendarIcon.src} alt="" />
                   {formatDate(task.deadline)}
@@ -220,6 +296,7 @@ export default function AkademikPage() {
                 <button
                   className="academic-button academic-complete"
                   type="button"
+                  disabled={busyTaskId !== null}
                   onClick={() => markCompleted(task)}
                 >
                   {buttonShine}
@@ -231,6 +308,7 @@ export default function AkademikPage() {
                 <button
                   className="academic-button academic-delete"
                   type="button"
+                  disabled={busyTaskId !== null}
                   onClick={() => setDeleteId(task.id)}
                 >
                   {buttonShine}
@@ -299,9 +377,7 @@ export default function AkademikPage() {
                 Prioritas
                 <select
                   value={priority}
-                  onChange={(event) =>
-                    setPriority(event.target.value as Task['priority'] | '')
-                  }
+                  onChange={(event) => setPriority(event.target.value as Task['priority'] | '')}
                   required
                 >
                   <option value="">Pilih Prioritas</option>
@@ -315,9 +391,7 @@ export default function AkademikPage() {
                 Jenis Tugas
                 <select
                   value={type}
-                  onChange={(event) =>
-                    setType(event.target.value as Task['type'] | '')
-                  }
+                  onChange={(event) => setType(event.target.value as Task['type'] | '')}
                   required
                 >
                   <option value="">Pilih jenis tugas</option>
@@ -326,6 +400,8 @@ export default function AkademikPage() {
                 </select>
               </label>
             </div>
+
+            {error && <p role="alert">{error}</p>}
 
             <div className="academic-form-actions">
               <button
@@ -340,9 +416,10 @@ export default function AkademikPage() {
               <button
                 className="academic-button academic-primary"
                 type="submit"
+                disabled={saving}
               >
                 {buttonShine}
-                <span>Simpan Tugas</span>
+                <span>{saving ? 'Menyimpan...' : 'Simpan Tugas'}</span>
               </button>
             </div>
           </form>
@@ -369,6 +446,8 @@ export default function AkademikPage() {
             <h2 id="academic-delete-title">Hapus Tugas?</h2>
             <p>Tugas ini akan dihapus dari daftar akademikmu.</p>
 
+            {error && <p role="alert">{error}</p>}
+
             <div className="academic-form-actions">
               <button
                 className="academic-button academic-secondary"
@@ -383,10 +462,11 @@ export default function AkademikPage() {
                 className="academic-button academic-delete"
                 type="button"
                 onClick={confirmDelete}
+                disabled={busyTaskId !== null}
               >
                 {buttonShine}
                 <img src={deleteIcon.src} alt="" />
-                <span>Hapus</span>
+                <span>{busyTaskId === deleteId ? 'Menghapus...' : 'Hapus'}</span>
               </button>
             </div>
           </div>
@@ -401,21 +481,16 @@ export default function AkademikPage() {
             aria-modal="true"
             aria-labelledby="academic-notice-title"
           >
-            <div
-              className={`academic-popup-icon ${
-                notice.variant === 'delete'
-                  ? 'academic-popup-delete'
-                  : 'academic-popup-success'
-              }`}
-            >
+            <div className={`academic-popup-icon ${notice.variant === 'delete'
+                ? 'academic-popup-delete'
+                : 'academic-popup-success'
+              }`}>
               <img
                 src={notice.icon}
                 alt=""
-                className={
-                  notice.variant === 'delete'
-                    ? 'academic-popup-delete-image'
-                    : undefined
-                }
+                className={notice.variant === 'delete'
+                  ? 'academic-popup-delete-image'
+                  : undefined}
               />
             </div>
 
