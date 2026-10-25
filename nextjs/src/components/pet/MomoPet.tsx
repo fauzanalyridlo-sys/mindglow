@@ -5,11 +5,135 @@ import './momo-pet.css'
 
 type Action = 'idle' | 'happy' | 'eat' | 'play'
 type Particle = { id: number; emoji: string; dx: number }
+type EyeState = 'open' | 'happy' | 'sleep'
 
 const MIN_X = 18
 const MAX_X = 82
 const clamp = (v: number, min = 0, max = 100) => Math.min(max, Math.max(min, v))
 
+/* =====================================================
+   KARAKTER MOMO (gaya blok Minecraft)
+   ===================================================== */
+const EDGE = 'rgba(50, 60, 45, .5)'
+const FUR = '#fffdf3'
+const SHADE = '#e3e8da'
+const MINT = '#a9d4a4'
+const MINT_D = '#7fb98a'
+const DARK = '#3b4a40'
+
+function CatSprite({ eyes, eating }: { eyes: EyeState; eating: boolean }) {
+  return (
+    <svg
+      className="momo-sprite"
+      viewBox="0 0 160 150"
+      shapeRendering="crispEdges"
+      aria-hidden="true"
+    >
+      {/* ekor */}
+      <g className="momo-tail">
+        <rect x="108" y="114" width="26" height="16" fill={MINT} stroke={EDGE} strokeWidth="2" />
+        <rect x="124" y="84" width="16" height="36" fill={MINT} stroke={EDGE} strokeWidth="2" />
+        <rect x="124" y="98" width="16" height="6" fill={MINT_D} />
+        <rect x="124" y="84" width="16" height="10" fill={FUR} stroke={EDGE} strokeWidth="2" />
+      </g>
+
+      {/* badan */}
+      <rect x="48" y="92" width="64" height="44" fill={FUR} stroke={EDGE} strokeWidth="2" />
+      <rect x="50" y="124" width="60" height="10" fill={SHADE} />
+      <rect x="66" y="100" width="28" height="24" fill="#fff" opacity=".7" />
+      <rect x="52" y="98" width="10" height="10" fill={MINT} />
+      <rect x="98" y="106" width="10" height="10" fill={MINT} />
+
+      {/* kaki depan */}
+      <rect x="50" y="132" width="22" height="14" fill={FUR} stroke={EDGE} strokeWidth="2" />
+      <rect x="88" y="132" width="22" height="14" fill={FUR} stroke={EDGE} strokeWidth="2" />
+      <g fill={EDGE} opacity=".35">
+        <rect x="58" y="138" width="2" height="8" />
+        <rect x="64" y="138" width="2" height="8" />
+        <rect x="96" y="138" width="2" height="8" />
+        <rect x="102" y="138" width="2" height="8" />
+      </g>
+
+      {/* telinga */}
+      <rect x="40" y="22" width="22" height="24" fill={FUR} stroke={EDGE} strokeWidth="2" />
+      <rect x="45" y="28" width="10" height="14" fill="#f6b9c0" />
+      <rect x="98" y="22" width="22" height="24" fill={FUR} stroke={EDGE} strokeWidth="2" />
+      <rect x="105" y="28" width="10" height="14" fill="#f6b9c0" />
+
+      {/* kepala */}
+      <rect x="40" y="40" width="80" height="60" fill={FUR} stroke={EDGE} strokeWidth="2" />
+      <rect x="96" y="42" width="22" height="14" fill={MINT} />
+      <rect x="42" y="92" width="76" height="6" fill={SHADE} />
+
+      {/* tunas daun */}
+      <rect x="78" y="30" width="4" height="12" fill="#5f9d54" />
+      <rect x="66" y="24" width="14" height="8" fill="#8fd18c" stroke={EDGE} strokeWidth="1.5" />
+      <rect x="82" y="20" width="14" height="8" fill="#8fd18c" stroke={EDGE} strokeWidth="1.5" />
+
+      {/* pipi */}
+      <rect x="44" y="80" width="12" height="6" fill="#f7b0b4" opacity=".8" />
+      <rect x="104" y="80" width="12" height="6" fill="#f7b0b4" opacity=".8" />
+
+      {/* mata */}
+      {eyes === 'open' && (
+        <g className="momo-eyes">
+          <rect x="54" y="60" width="12" height="14" fill={DARK} />
+          <rect x="94" y="60" width="12" height="14" fill={DARK} />
+          <rect x="54" y="60" width="5" height="5" fill="#fff" />
+          <rect x="94" y="60" width="5" height="5" fill="#fff" />
+          <rect x="62" y="70" width="3" height="3" fill="#fff" opacity=".6" />
+          <rect x="102" y="70" width="3" height="3" fill="#fff" opacity=".6" />
+        </g>
+      )}
+      {eyes === 'happy' && (
+        <g fill={DARK}>
+          <rect x="54" y="70" width="4" height="4" />
+          <rect x="58" y="66" width="4" height="4" />
+          <rect x="62" y="70" width="4" height="4" />
+          <rect x="94" y="70" width="4" height="4" />
+          <rect x="98" y="66" width="4" height="4" />
+          <rect x="102" y="70" width="4" height="4" />
+        </g>
+      )}
+      {eyes === 'sleep' && (
+        <g fill={DARK}>
+          <rect x="54" y="68" width="12" height="4" />
+          <rect x="94" y="68" width="12" height="4" />
+        </g>
+      )}
+
+      {/* hidung */}
+      <rect x="74" y="76" width="12" height="6" fill="#f08fa0" />
+
+      {/* mulut */}
+      {eating ? (
+        <g>
+          <rect x="72" y="82" width="16" height="14" fill="#6b3a40" />
+          <rect x="76" y="90" width="8" height="6" fill="#f08fa0" />
+        </g>
+      ) : (
+        <g fill="#5a4044">
+          <rect x="78" y="82" width="4" height="6" />
+          <rect x="70" y="84" width="4" height="4" />
+          <rect x="86" y="84" width="4" height="4" />
+          <rect x="74" y="88" width="12" height="4" />
+        </g>
+      )}
+
+      {/* kumis */}
+      <g fill="#9aa294">
+        <rect x="20" y="76" width="20" height="2" />
+        <rect x="20" y="84" width="20" height="2" />
+        <rect x="120" y="76" width="20" height="2" />
+        <rect x="120" y="84" width="20" height="2" />
+      </g>
+    </svg>
+  )
+}
+
+/* =====================================================
+   KOMPONEN UTAMA
+   ===================================================== */
 export default function MomoPet() {
   const [happiness, setHappiness] = useState(70)
   const [fullness, setFullness] = useState(65)
@@ -31,12 +155,16 @@ export default function MomoPet() {
   const xRef = useRef(50)
   const wasSleeping = useRef(false)
 
-  // Sinkronkan ref setelah render (bukan saat render)
   useEffect(() => {
     xRef.current = x
   }, [x])
 
   const sleeping = energy < 20
+  const eyes: EyeState = sleeping
+    ? 'sleep'
+    : action === 'happy' || action === 'play'
+      ? 'happy'
+      : 'open'
 
   /* ---------- helpers ---------- */
   const say = useCallback((text: string) => setMessage(text), [])
@@ -88,7 +216,7 @@ export default function MomoPet() {
   useEffect(() => {
     const t = window.setInterval(() => {
       if (dragRef.current.active || sleeping) return
-      if (Math.random() < 0.35) return // kadang diam saja
+      if (Math.random() < 0.35) return
 
       const current = xRef.current
       const target = clamp(current + (Math.random() * 50 - 25), MIN_X, MAX_X)
@@ -214,6 +342,8 @@ export default function MomoPet() {
 
           {sleeping && <span className="momo-zzz">Zzz</span>}
 
+          <span className="momo-ground" />
+
           <button
             type="button"
             className={cls}
@@ -230,24 +360,9 @@ export default function MomoPet() {
             }}
           >
             <span className="momo-flip" style={{ transform: `scaleX(${facing})` }}>
-              <span className="momo-tail" />
-              <span className="momo-torso" />
-              <span className="momo-ear momo-ear-left" />
-              <span className="momo-ear momo-ear-right" />
-              <span className="momo-body">
-                <span className="momo-patch" />
-                <span className="momo-eye eye-left" />
-                <span className="momo-eye eye-right" />
-                <span className="momo-cheek cheek-left" />
-                <span className="momo-cheek cheek-right" />
-                <span className="momo-mouth">{action === 'eat' ? 'o' : 'ᴗ'}</span>
-              </span>
-              <span className="momo-foot foot-left" />
-              <span className="momo-foot foot-right" />
+              <CatSprite eyes={eyes} eating={action === 'eat'} />
             </span>
           </button>
-
-          <span className="momo-ground" />
         </div>
       </div>
 
