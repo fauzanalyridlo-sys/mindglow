@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 
 export const runtime = "nodejs";
-
-const DAYS = 7;
+export const dynamic = "force-dynamic";
 
 const moodLabels = [
   "Lelah/Down",
@@ -22,6 +22,7 @@ function getTodayWIB(): Date {
     day: "2-digit",
   }).format(new Date());
 
+  // Tanggal kalender WIB direpresentasikan sebagai tanggal UTC.
   return new Date(`${dateString}T00:00:00.000Z`);
 }
 
@@ -30,7 +31,11 @@ function round(value: number, digits = 1): number {
   return Math.round(value * factor) / factor;
 }
 
-export async function GET() {
+function getDateString(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
+export async function GET(request: NextRequest) {
   const user = await getCurrentUser();
 
   if (!user) {
@@ -41,17 +46,17 @@ export async function GET() {
       },
       {
         status: 401,
-        headers: {
-          "Cache-Control": "no-store",
-        },
-      }
+        headers: { "Cache-Control": "no-store" },
+      },
     );
   }
 
-  const today = getTodayWIB();
+  const requestedPeriod = request.nextUrl.searchParams.get("period");
+  const days = requestedPeriod === "30" ? 30 : 7;
 
+  const today = getTodayWIB();
   const startDate = new Date(today);
-  startDate.setUTCDate(startDate.getUTCDate() - (DAYS - 1));
+  startDate.setUTCDate(startDate.getUTCDate() - (days - 1));
 
   const tomorrow = new Date(today);
   tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
@@ -79,16 +84,16 @@ export async function GET() {
 
   const checkinByDate = new Map(
     checkins.map((checkin) => [
-      checkin.checkin_date.toISOString().slice(0, 10),
+      getDateString(checkin.checkin_date),
       checkin,
-    ])
+    ]),
   );
 
-  const moodTrend = Array.from({ length: DAYS }, (_, index) => {
+  const moodTrend = Array.from({ length: days }, (_, index) => {
     const date = new Date(startDate);
     date.setUTCDate(startDate.getUTCDate() + index);
 
-    const dateString = date.toISOString().slice(0, 10);
+    const dateString = getDateString(date);
     const checkin = checkinByDate.get(dateString);
 
     return {
@@ -98,9 +103,7 @@ export async function GET() {
         ? moodLabels[checkin.mood - 1] ?? "Tidak diketahui"
         : null,
       energy: checkin?.energy ?? null,
-      sleepHours: checkin
-        ? Number(checkin.sleep_hours)
-        : null,
+      sleepHours: checkin ? Number(checkin.sleep_hours) : null,
     };
   });
 
@@ -108,55 +111,73 @@ export async function GET() {
 
   const averageMood = totalCheckins
     ? round(
-        checkins.reduce((sum, item) => sum + item.mood, 0) /
-          totalCheckins
-      )
+      checkins.reduce((sum, item) => sum + item.mood, 0) /
+      totalCheckins,
+    )
     : null;
 
   const averageEnergy = totalCheckins
     ? round(
-        checkins.reduce((sum, item) => sum + item.energy, 0) /
-          totalCheckins
-      )
+      checkins.reduce((sum, item) => sum + item.energy, 0) /
+      totalCheckins,
+    )
     : null;
 
   const averageSleepHours = totalCheckins
     ? round(
-        checkins.reduce(
-          (sum, item) => sum + Number(item.sleep_hours),
-          0
-        ) / totalCheckins
-      )
+      checkins.reduce(
+        (sum, item) => sum + Number(item.sleep_hours),
+        0,
+      ) / totalCheckins,
+    )
     : null;
+
+  const moodCounts = new Map<number, number>();
+
+  checkins.forEach((item) => {
+    moodCounts.set(item.mood, (moodCounts.get(item.mood) ?? 0) + 1);
+  });
+
+  let dominantMood: number | null = null;
+  let highestMoodCount = 0;
+
+  moodCounts.forEach((count, mood) => {
+    if (count > highestMoodCount) {
+      dominantMood = mood;
+      highestMoodCount = count;
+    }
+  });
+
+  const dominantMoodLabel =
+    dominantMood === null
+      ? null
+      : moodLabels[dominantMood - 1] ?? "Tidak diketahui";
 
   const insights: string[] = [];
 
   if (totalCheckins === 0) {
     insights.push(
-      "Belum ada data check-in dalam 7 hari terakhir. Mulai isi check-in harian untuk melihat pola keseharianmu."
+      `Belum ada data check-in dalam ${days} hari terakhir. Mulai isi check-in harian untuk melihat pola keseharianmu.`,
     );
   } else {
     insights.push(
-      `Kamu sudah melakukan check-in ${totalCheckins} dari ${DAYS} hari terakhir.`
+      `Kamu sudah melakukan check-in ${totalCheckins} dari ${days} hari terakhir.`,
     );
 
     if (totalCheckins >= 3) {
       if (averageMood !== null && averageMood >= 4) {
         insights.push(
-          "Rata-rata mood yang kamu catat berada pada kategori positif selama periode ini."
+          "Rata-rata mood yang kamu catat berada pada kategori positif selama periode ini.",
         );
       } else if (averageMood !== null && averageMood <= 2) {
         insights.push(
-          "Beberapa catatan mood menunjukkan kamu sedang menghadapi hari-hari yang cukup berat. Pertimbangkan untuk beristirahat atau berbagi cerita dengan orang yang kamu percaya."
+          "Beberapa catatan mood menunjukkan hari-hari yang cukup berat. Pertimbangkan untuk beristirahat atau berbagi cerita dengan orang yang kamu percaya.",
         );
       }
 
-      if (
-        averageSleepHours !== null &&
-        averageSleepHours < 7
-      ) {
+      if (averageSleepHours !== null && averageSleepHours < 7) {
         insights.push(
-          "Rata-rata tidur yang kamu catat kurang dari 7 jam. Coba perhatikan apakah waktu istirahatmu sudah cukup."
+          "Rata-rata tidur yang kamu catat kurang dari 7 jam. Coba perhatikan apakah waktu istirahatmu sudah cukup.",
         );
       }
     }
@@ -166,22 +187,21 @@ export async function GET() {
     {
       success: true,
       data: {
-        period: "7d",
-        startDate: startDate.toISOString().slice(0, 10),
-        endDate: today.toISOString().slice(0, 10),
+        period: `${days}d`,
+        startDate: getDateString(startDate),
+        endDate: getDateString(today),
         totalCheckins,
-        totalDays: DAYS,
+        totalDays: days,
         averageMood,
         averageEnergy,
         averageSleepHours,
+        dominantMood: dominantMoodLabel,
         moodTrend,
         insights,
       },
     },
     {
-      headers: {
-        "Cache-Control": "no-store",
-      },
-    }
+      headers: { "Cache-Control": "no-store" },
+    },
   );
 }

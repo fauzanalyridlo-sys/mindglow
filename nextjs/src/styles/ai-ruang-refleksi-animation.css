@@ -1,14 +1,17 @@
-
-/* Animasi indikator AI sedang mengetik */
 .isTyping {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+  gap: 4px;
+  min-height: 16px;
+  vertical-align: middle;
 }
 
 .isTyping span {
-  width: 6px;
-  height: 6px;
+  display: block;
+  width: 5px;
+  height: 5px;
+  flex: 0 0 5px;
   border-radius: 50%;
   background: currentColor;
   animation: typingBounce 1.2s infinite ease-in-out;
@@ -23,6 +26,7 @@
 }
 
 @keyframes typingBounce {
+
   0%,
   60%,
   100% {
@@ -32,19 +36,18 @@
 
   30% {
     opacity: 1;
-    transform: translateY(-4px);
+    transform: translateY(-3px);
   }
 }
 
-/* Animasi pesan saat muncul */
 .reflection-message-row {
-  animation: messageFadeIn 0.25s ease-out both;
+  animation: messageFadeIn 220ms ease-out both;
 }
 
 @keyframes messageFadeIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(4px);
   }
 
   to {
@@ -53,10 +56,169 @@
   }
 }
 
-/* Hormati pengaturan pengguna yang mengurangi animasi */
+/* Tombol hijau glossy */
+.reflection-send-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  max-width: 100%;
+  padding: 10px 16px;
+  box-sizing: border-box;
+  border: 1px solid #7e9f8e;
+  border-radius: 999px;
+
+  background-color: #91b5a1;
+  background-image:
+    radial-gradient(circle at 15% 25%,
+      rgba(255, 255, 255, 0.55) 0%,
+      transparent 24%),
+    radial-gradient(circle at 62% 18%,
+      rgba(255, 255, 255, 0.5) 0%,
+      transparent 22%),
+    radial-gradient(circle at 42% 80%,
+      rgba(255, 255, 255, 0.5) 0%,
+      transparent 24%),
+    radial-gradient(circle at 88% 75%,
+      rgba(255, 255, 255, 0.55) 0%,
+      transparent 22%);
+
+  color: #2e394c;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  cursor: pointer;
+
+  box-shadow:
+    inset 0 2px 5px rgba(255, 255, 255, 0.35),
+    0 3px 0 rgba(67, 105, 81, 0.12);
+
+  transition:
+    transform 180ms ease,
+    box-shadow 200ms ease,
+    filter 200ms ease;
+}
+
+.reflection-send-button:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 2px 5px rgba(255, 255, 255, 0.45),
+    0 4px 7px rgba(67, 105, 81, 0.16);
+}
+
+.reflection-send-button:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow:
+    inset 0 2px 5px rgba(255, 255, 255, 0.35),
+    0 1px 2px rgba(67, 105, 81, 0.12);
+}
+
+.reflection-send-button:focus-visible {
+  outline: 2px solid #315e49;
+  outline-offset: 3px;
+}
+
+.reflection-send-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .isTyping {
+    gap: 4px;
+    min-height: 15px;
+  }
+
+  .isTyping span {
+    width: 5px;
+    height: 5px;
+    flex-basis: 5px;
+  }
+
+  .reflection-message-row {
+    animation-duration: 220ms;
+  }
+
+  .reflection-send-button {
+    min-height: 40px;
+    padding: 9px 14px;
+    gap: 7px;
+    font-size: 12px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .isTyping {
+    gap: 3px;
+    min-height: 13px;
+  }
+
+  .isTyping span {
+    width: 4px;
+    height: 4px;
+    flex-basis: 4px;
+  }
+
+  .reflection-message-row {
+    animation-duration: 200ms;
+  }
+
+  .reflection-send-button {
+    min-height: 38px;
+    padding: 9px 12px;
+    gap: 6px;
+    font-size: 12px;
+    border-radius: 999px;
+  }
+}
+
+/* HP kecil */
+@media (max-width: 360px) {
+  .isTyping {
+    gap: 3px;
+    min-height: 12px;
+  }
+
+  .isTyping span {
+    width: 4px;
+    height: 4px;
+    flex-basis: 4px;
+  }
+
+  .reflection-message-row {
+    animation-duration: 180ms;
+  }
+
+  .reflection-send-button {
+    min-height: 36px;
+    padding: 8px 10px;
+    gap: 5px;
+    font-size: 11px;
+  }
+}
+
+/* Pengaturan aksesibilitas */
 @media (prefers-reduced-motion: reduce) {
+
   .isTyping span,
   .reflection-message-row {
-    animation: none;
+    animation: none !important;
+    transform: none;
+  }
+
+  .reflection-send-button {
+    transition: none;
+  }
+
+  .reflection-send-button:hover,
+  .reflection-send-button:active {
+    transform: none;
   }
 }

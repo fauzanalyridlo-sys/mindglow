@@ -1,0 +1,588 @@
+.momo-pet {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 265px;
+  align-items: stretch;
+  gap: 10px;
+  width: 650px;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: transparent;
+  color: #344a40;
+  box-shadow: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+/* Taman Momo */
+.momo-garden {
+  position: relative;
+  min-width: 0;
+  min-height: 280px;
+  overflow: hidden;
+  border-radius: 18px;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 45% 100%, #c5d9a8 0 13%, transparent 14%),
+    radial-gradient(ellipse at 80% 90%, #b3cd9b 0 18%, transparent 19%),
+    linear-gradient(180deg, #aebfa6 0%, #d0d9b9 64%, #b3c795 100%);
+}
+
+.momo-garden::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: .48;
+  background:
+    radial-gradient(ellipse at 20% 30%, #e2e6c9 0 5%, transparent 5.5%),
+    radial-gradient(ellipse at 28% 24%, #e2e6c9 0 7%, transparent 7.5%),
+    radial-gradient(ellipse at 36% 30%, #e2e6c9 0 5%, transparent 5.5%),
+    radial-gradient(ellipse at 85% 18%, #e4e6c6 0 8%, transparent 8.5%);
+}
+
+.momo-garden::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: -10%;
+  bottom: -20px;
+  left: -10%;
+  height: 105px;
+  border-radius: 50% 50% 0 0;
+  background: #a9c18d;
+}
+
+.garden-cloud {
+  position: absolute;
+  width: 72px;
+  height: 22px;
+  border-radius: 30px;
+  background: rgba(246, 246, 220, .65);
+  filter: blur(1px);
+}
+
+.cloud-one {
+  top: 30px;
+  left: 24px;
+}
+
+.cloud-two {
+  top: 57px;
+  left: 68px;
+  transform: scale(.65);
+}
+
+.garden-tree {
+  position: absolute;
+  bottom: 60px;
+  width: 17px;
+  border-radius: 8px 8px 2px 2px;
+  background: #8b8e6e;
+  opacity: .8;
+}
+
+.garden-tree::before {
+  content: "";
+  position: absolute;
+  top: -29px;
+  left: -15px;
+  width: 46px;
+  height: 43px;
+  border-radius: 50%;
+  background: #a0b18b;
+}
+
+.tree-one {
+  right: 12px;
+  height: 80px;
+}
+
+.tree-two {
+  right: 48px;
+  height: 53px;
+  transform: scale(.8);
+}
+
+.garden-fence {
+  position: absolute;
+  right: 4px;
+  bottom: 49px;
+  left: 0;
+  height: 25px;
+  opacity: .45;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 17px,
+    #817f65 18px 25px,
+    transparent 26px 35px
+  );
+}
+
+.garden-hill {
+  position: absolute;
+  right: -20px;
+  bottom: -38px;
+  left: -20px;
+  height: 95px;
+  border-radius: 50% 50% 0 0;
+  background: #b7cb98;
+}
+
+.garden-flower {
+  position: absolute;
+  z-index: 1;
+  bottom: 35px;
+  font-size: 22px;
+}
+
+.flower-one {
+  left: 12%;
+}
+
+.flower-two {
+  right: 9%;
+  bottom: 30px;
+}
+
+.garden-heart {
+  position: absolute;
+  z-index: 3;
+  top: 38%;
+  left: 36%;
+  color: #e98c9c;
+  font-size: 27px;
+  animation: momo-float 2s ease-in-out infinite;
+}
+
+/* Karakter Momo */
+.momo-character {
+  position: absolute;
+  z-index: 3;
+  bottom: 25px;
+  left: 50%;
+  width: 125px;
+  height: 132px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transform: translateX(-50%);
+  transform-origin: center bottom;
+  animation: momo-breathe 2.2s ease-in-out infinite;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.momo-character:focus-visible {
+  outline: 3px solid #6caa7c;
+  outline-offset: 3px;
+  border-radius: 28px;
+}
+
+.momo-body {
+  position: absolute;
+  z-index: 2;
+  left: 19px;
+  bottom: 9px;
+  width: 87px;
+  height: 82px;
+  box-sizing: border-box;
+  border: 3px solid #9aaa8a;
+  border-radius: 45% 45% 38% 38%;
+  background: #fffdf3;
+  box-shadow: inset -7px -5px 0 #e3ead8;
+}
+
+.momo-ear {
+  position: absolute;
+  z-index: 1;
+  top: 14px;
+  width: 36px;
+  height: 44px;
+  border: 3px solid #9aaa8a;
+  border-radius: 65% 65% 25% 25%;
+  background: #fffdf3;
+}
+
+.momo-ear-left {
+  left: 23px;
+  transform: rotate(-15deg);
+}
+
+.momo-ear-right {
+  right: 23px;
+  transform: rotate(15deg);
+}
+
+.momo-ear-left::after,
+.momo-ear-right::after {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: 8px;
+  width: 15px;
+  height: 22px;
+  border-radius: 60%;
+  background: #f1bfc1;
+}
+
+.momo-patch {
+  position: absolute;
+  top: 0;
+  right: 3px;
+  width: 31px;
+  height: 33px;
+  border-radius: 40% 60% 50% 40%;
+  background: #a9cda9;
+  transform: rotate(20deg);
+}
+
+.momo-eye {
+  position: absolute;
+  top: 39px;
+  width: 8px;
+  height: 11px;
+  border-radius: 50%;
+  background: #46564a;
+}
+
+.eye-left { left: 20px; }
+.eye-right { right: 20px; }
+
+.momo-cheek {
+  position: absolute;
+  top: 49px;
+  width: 14px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f4bdb8;
+}
+
+.cheek-left { left: 7px; }
+.cheek-right { right: 7px; }
+
+.momo-mouth {
+  position: absolute;
+  top: 46px;
+  left: 37px;
+  color: #68796b;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.momo-foot {
+  position: absolute;
+  z-index: 4;
+  bottom: 3px;
+  width: 29px;
+  height: 18px;
+  border: 3px solid #9aaa8a;
+  border-radius: 50%;
+  background: #fffdf3;
+}
+
+.foot-left { left: 24px; }
+.foot-right { right: 24px; }
+
+.momo-tail {
+  position: absolute;
+  right: 0;
+  bottom: 29px;
+  width: 27px;
+  height: 35px;
+  border: 7px solid #a9cda9;
+  border-left-color: transparent;
+  border-radius: 50%;
+  transform: rotate(-20deg);
+}
+
+.momo-ground {
+  position: absolute;
+  z-index: 1;
+  bottom: 19px;
+  left: 50%;
+  width: 112px;
+  height: 13px;
+  border-radius: 50%;
+  background: rgba(83, 111, 73, .2);
+  transform: translateX(-50%);
+  animation: momo-shadow .9s ease-in-out infinite alternate;
+}
+
+.momo-bubble {
+  position: absolute;
+  z-index: 5;
+  top: 17px;
+  left: 12px;
+  max-width: 155px;
+  padding: 10px 12px;
+  border-radius: 15px 15px 15px 4px;
+  background: #fff;
+  color: #526354;
+  font-size: 11px;
+  line-height: 1.45;
+  box-shadow: 0 3px 10px rgba(55, 85, 62, .1);
+  animation: momo-message-in .25s ease-out;
+}
+
+/* Panel kontrol */
+.momo-panel {
+  position: relative;
+  z-index: 4;
+  align-self: center;
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid rgba(255, 255, 255, .9);
+  border-radius: 19px;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 9px 22px rgba(55, 75, 55, .13);
+  box-sizing: border-box;
+}
+
+.momo-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e8eee4;
+}
+
+.momo-heading-icon {
+  font-size: 23px;
+}
+
+.momo-heading strong {
+  color: #344a40;
+  font-size: 14px;
+}
+
+.momo-level {
+  margin-left: auto;
+  padding: 4px 7px;
+  border-radius: 20px;
+  background: #e6f3e8;
+  color: #628c70;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.momo-stats {
+  display: grid;
+  gap: 13px;
+  padding: 15px 0;
+}
+
+.momo-stat {
+  display: grid;
+  grid-template-columns: 23px 80px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.momo-stat-icon {
+  font-size: 17px;
+}
+
+.momo-stat-label {
+  color: #66776a;
+  font-size: 10px;
+}
+
+.momo-progress {
+  height: 9px;
+  overflow: hidden;
+  border: 1px solid #dce5d8;
+  border-radius: 10px;
+  background: #edf1eb;
+}
+
+.momo-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #9ecb69;
+  transition: width .35s ease;
+}
+
+.momo-stat:nth-child(2) .momo-progress span {
+  background: #efc44f;
+}
+
+.momo-stat:nth-child(3) .momo-progress span {
+  background: #78b1ee;
+}
+
+.momo-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.momo-actions button {
+  display: flex;
+  min-width: 0;
+  min-height: 67px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 5px 2px;
+  border: 1px solid #dbe5d9;
+  border-radius: 13px;
+  background: #f8fbf6;
+  color: #455b4b;
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease;
+}
+
+.momo-actions button span {
+  font-size: 23px;
+}
+
+.momo-actions button:hover {
+  transform: translateY(-2px);
+  background: #eaf5e8;
+}
+
+.momo-actions button:active {
+  transform: scale(.96);
+}
+
+.momo-score {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px solid #edf1eb;
+  color: #819083;
+  font-size: 10px;
+}
+
+.momo-score strong {
+  color: #729b75;
+  font-size: 14px;
+}
+
+.momo-character.happy {
+  animation: momo-happy .45s ease-in-out 2;
+}
+
+.momo-character.eat {
+  animation: momo-eat .25s ease-in-out 4;
+}
+
+.momo-character.play {
+  animation: momo-jump .42s ease-in-out 2;
+}
+
+@keyframes momo-breathe {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -4px; }
+}
+
+@keyframes momo-shadow {
+  from { scale: 1 1; opacity: .8; }
+  to { scale: .8 1; opacity: .45; }
+}
+
+@keyframes momo-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -7px; }
+}
+
+@keyframes momo-message-in {
+  from { opacity: 0; translate: 0 5px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes momo-happy {
+  0%, 100% { rotate: 0deg; }
+  50% { rotate: -8deg; }
+}
+
+@keyframes momo-eat {
+  0%, 100% { scale: 1 1; }
+  50% { scale: 1 .88; }
+}
+
+@keyframes momo-jump {
+  0%, 100% { translate: 0 0; rotate: 0deg; }
+  50% { translate: 0 -20px; rotate: 8deg; }
+}
+
+@media (max-width: 1250px) {
+  .momo-pet {
+    grid-template-columns: minmax(145px, 1fr) 240px;
+    width: 540px;
+  }
+
+  .momo-stat {
+    grid-template-columns: 21px 72px minmax(0, 1fr);
+  }
+
+  .momo-garden {
+    min-height: 265px;
+  }
+}
+
+@media (max-width: 900px) {
+  .momo-pet {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) minmax(225px, 265px);
+  }
+
+  .momo-garden {
+    min-height: 280px;
+  }
+}
+
+@media (max-width: 600px) {
+  .momo-pet {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .momo-garden {
+    min-height: 235px;
+  }
+
+  .momo-character {
+    bottom: 18px;
+  }
+
+  .momo-panel {
+    width: 100%;
+  }
+
+  .momo-stat {
+    grid-template-columns: 25px 90px minmax(0, 1fr);
+  }
+
+  .momo-stat-label {
+    font-size: 11px;
+  }
+
+  .momo-actions button {
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .momo-character,
+  .momo-ground,
+  .garden-heart,
+  .momo-bubble {
+    animation: none;
+  }
+
+  .momo-progress span,
+  .momo-actions button {
+    transition: none;
+  }
+}

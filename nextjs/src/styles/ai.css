@@ -1,4 +1,3 @@
-
 .ai-page {
   position: relative;
   min-height: calc(100vh - 80px);
@@ -74,28 +73,20 @@
   overflow: hidden;
   border: 1px solid #91aa99;
   border-radius: 999px;
-  background:
-    radial-gradient(
-      ellipse 15% 30% at 18% 40%,
-      rgb(255 255 255 / 78%),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 13% 27% at 54% 20%,
-      rgb(255 255 255 / 68%),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 16% 32% at 78% 70%,
-      rgb(255 255 255 / 75%),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 12% 25% at 35% 82%,
-      rgb(255 255 255 / 58%),
-      transparent 100%
-    ),
-    linear-gradient(135deg, #c5d9ca, #a4c1ad 52%, #87a895);
+  background-color: #91b5a1;
+  background-image:
+    radial-gradient(circle at 15% 25%,
+      rgb(255 255 255 / 55%) 0%,
+      transparent 24%),
+    radial-gradient(circle at 62% 18%,
+      rgb(255 255 255 / 50%) 0%,
+      transparent 22%),
+    radial-gradient(circle at 42% 80%,
+      rgb(255 255 255 / 50%) 0%,
+      transparent 24%),
+    radial-gradient(circle at 88% 75%,
+      rgb(255 255 255 / 55%) 0%,
+      transparent 22%);
   color: #2e394c;
   font-size: 14px;
   font-weight: 700;
@@ -104,9 +95,8 @@
   text-decoration: none;
   cursor: pointer;
   box-shadow:
-    inset 0 2px 4px rgb(255 255 255 / 80%),
-    inset 0 -2px 4px rgb(46 57 76 / 10%),
-    0 3px 6px rgb(46 57 76 / 12%);
+    inset 0 2px 5px rgb(255 255 255 / 35%),
+    0 3px 0 rgb(67 105 81 / 12%);
   transition:
     background 250ms ease,
     border-color 250ms ease,
@@ -117,40 +107,30 @@
 
 .ai-button:hover {
   border-color: #a9cbb3;
-  background:
-    radial-gradient(
-      ellipse 18% 34% at 20% 40%,
-      rgb(255 255 255 / 95%),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 15% 30% at 55% 25%,
-      rgb(255 255 255 / 82%),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 18% 34% at 80% 70%,
-      rgb(255 255 255 / 88%),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 12% 25% at 35% 82%,
-      rgb(255 255 255 / 72%),
-      transparent 100%
-    ),
-    linear-gradient(135deg, #e1f0e5, #c9e5d1 52%, #b3d7be);
+  background-color: #b6d5c0;
+  background-image:
+    radial-gradient(circle at 15% 25%,
+      rgb(255 255 255 / 75%) 0%,
+      transparent 24%),
+    radial-gradient(circle at 62% 18%,
+      rgb(255 255 255 / 68%) 0%,
+      transparent 22%),
+    radial-gradient(circle at 42% 80%,
+      rgb(255 255 255 / 68%) 0%,
+      transparent 24%),
+    radial-gradient(circle at 88% 75%,
+      rgb(255 255 255 / 75%) 0%,
+      transparent 22%);
   transform: translateY(-2px);
   box-shadow:
-    inset 0 2px 4px rgb(255 255 255 / 90%),
-    inset 0 -2px 4px rgb(46 57 76 / 8%),
+    inset 0 2px 5px rgb(255 255 255 / 50%),
     0 5px 10px rgb(46 57 76 / 14%);
 }
 
 .ai-button:active {
-  background: linear-gradient(135deg, #e8f5eb, #c4e8cf);
   transform: scale(0.98);
   box-shadow:
-    inset 0 2px 5px rgb(255 255 255 / 90%),
+    inset 0 2px 5px rgb(255 255 255 / 50%),
     0 2px 4px rgb(46 57 76 / 10%);
 }
 
@@ -193,18 +173,16 @@
   height: 140px;
   overflow: hidden;
   background: #d9ece1;
-  clip-path: polygon(
-    0 12%,
-    12% 24%,
-    28% 75%,
-    40% 68%,
-    58% 18%,
-    70% 14%,
-    86% 65%,
-    100% 28%,
-    100% 100%,
-    0 100%
-  );
+  clip-path: polygon(0 12%,
+      12% 24%,
+      28% 75%,
+      40% 68%,
+      58% 18%,
+      70% 14%,
+      86% 65%,
+      100% 28%,
+      100% 100%,
+      0 100%);
   animation: ai-landscape-enter 900ms 150ms ease-out both;
 }
 
@@ -234,6 +212,7 @@
   animation-delay: 700ms;
 }
 
+/* Tablet */
 @media (max-width: 1000px) {
   .ai-page {
     padding: 40px 24px 120px;
@@ -261,6 +240,7 @@
   }
 }
 
+/* Mobile dan tablet kecil */
 @media (max-width: 768px) {
   .ai-page {
     min-height: calc(100vh - 72px);
@@ -268,24 +248,24 @@
   }
 
   .ai-hero {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
-    min-height: auto;
-    padding: 26px 24px 20px;
+    grid-template-columns: minmax(0, 1fr) 100px;
+    align-items: center;
+    gap: 10px;
+    min-height: 245px;
+    padding: 24px 20px;
     border-width: 1.5px;
-    border-radius: 24px;
+    border-radius: 22px;
   }
 
   .ai-hero-content {
-    text-align: center;
+    text-align: left;
   }
 
   .ai-hero-content h1 {
-    max-width: 540px;
-    margin: 0 auto 14px;
-    font-size: clamp(29px, 5.5vw, 38px);
+    margin: 0 0 12px;
+    font-size: clamp(23px, 4.5vw, 29px);
     line-height: 1.2;
-    letter-spacing: -0.6px;
+    letter-spacing: -0.5px;
   }
 
   .ai-break {
@@ -293,70 +273,15 @@
   }
 
   .ai-hero-content p {
-    max-width: 480px;
-    margin: 0 auto 20px;
-    font-size: 16px;
-    line-height: 1.65;
-  }
-
-  .ai-button {
-    min-height: 42px;
-    padding: 10px 16px;
-    gap: 7px;
-    font-size: 13px;
-  }
-
-  .ai-button span {
-    font-size: 16px;
-  }
-
-  .ai-hero-image img {
-    width: 100%;
-    max-width: 230px;
-    max-height: 180px;
-  }
-
-  .ai-landscape {
-    height: 88px;
-  }
-
-  .ai-leaf {
-    bottom: -22px;
-    font-size: 82px;
-  }
-}
-
-@media (max-width: 480px) {
-  .ai-page {
-    min-height: calc(100vh - 64px);
-    padding: 22px 14px 84px;
-  }
-
-  .ai-hero {
-    gap: 10px;
-    padding: 22px 18px 16px;
-    border-radius: 20px;
-    box-shadow: 0 5px 12px rgb(46 57 76 / 10%);
-  }
-
-  .ai-hero-content h1 {
-    margin-bottom: 12px;
-    font-size: clamp(26px, 7vw, 32px);
-    line-height: 1.22;
-    letter-spacing: -0.5px;
-  }
-
-  .ai-hero-content p {
-    margin-bottom: 17px;
-    font-size: 15px;
-    line-height: 1.6;
-  }
-
-  .ai-button {
-    width: auto;
-    min-height: 39px;
     max-width: 100%;
-    padding: 9px 14px;
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .ai-button {
+    min-height: 39px;
+    padding: 9px 13px;
     gap: 6px;
     font-size: 12px;
   }
@@ -366,17 +291,76 @@
   }
 
   .ai-hero-image img {
-    max-width: 180px;
+    width: 100%;
+    max-width: 120px;
     max-height: 140px;
   }
 
   .ai-landscape {
-    height: 68px;
+    height: 80px;
+  }
+
+  .ai-leaf {
+    bottom: -22px;
+    font-size: 75px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .ai-page {
+    min-height: calc(100vh - 64px);
+    padding: 22px 14px 84px;
+  }
+
+  .ai-hero {
+    grid-template-columns: minmax(0, 1fr) 82px;
+    align-items: center;
+    gap: 7px;
+    min-height: 220px;
+    padding: 21px 15px;
+    border-radius: 20px;
+    box-shadow: 0 5px 12px rgb(46 57 76 / 10%);
+  }
+
+  .ai-hero-content h1 {
+    margin-bottom: 10px;
+    font-size: 23px;
+    line-height: 1.22;
+    letter-spacing: -0.5px;
+  }
+
+  .ai-hero-content p {
+    margin-bottom: 14px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .ai-button {
+    width: auto;
+    min-height: 37px;
+    max-width: 100%;
+    padding: 8px 11px;
+    gap: 5px;
+    font-size: 11px;
+  }
+
+  .ai-button span {
+    font-size: 14px;
+  }
+
+  .ai-hero-image img {
+    max-width: 95px;
+    max-height: 115px;
+  }
+
+  .ai-landscape {
+    height: 65px;
   }
 
   .ai-leaf {
     bottom: -18px;
-    font-size: 64px;
+    font-size: 60px;
   }
 
   .ai-leaf-left {
@@ -388,35 +372,44 @@
   }
 }
 
+/* Mobile sangat kecil */
 @media (max-width: 360px) {
   .ai-page {
     padding: 18px 12px 74px;
   }
 
   .ai-hero {
-    gap: 8px;
-    padding: 19px 14px 13px;
+    grid-template-columns: minmax(0, 1fr) 68px;
+    min-height: 205px;
+    gap: 5px;
+    padding: 18px 12px;
     border-radius: 18px;
   }
 
   .ai-hero-content h1 {
-    font-size: 25px;
+    font-size: 21px;
   }
 
   .ai-hero-content p {
-    margin-bottom: 15px;
-    font-size: 14px;
+    margin-bottom: 13px;
+    font-size: 12px;
+    line-height: 1.5;
   }
 
   .ai-button {
-    min-height: 37px;
-    padding: 8px 12px;
-    font-size: 12px;
+    min-height: 36px;
+    padding: 8px 9px;
+    gap: 4px;
+    font-size: 10px;
+  }
+
+  .ai-button span {
+    font-size: 13px;
   }
 
   .ai-hero-image img {
-    max-width: 155px;
-    max-height: 120px;
+    max-width: 78px;
+    max-height: 100px;
   }
 
   .ai-landscape {
@@ -428,6 +421,7 @@
   }
 }
 
+/* Animasi */
 @keyframes ai-hero-enter {
   from {
     opacity: 0;
@@ -474,7 +468,9 @@
   }
 }
 
+/* Aksesibilitas */
 @media (prefers-reduced-motion: reduce) {
+
   .ai-hero,
   .ai-hero-content h1,
   .ai-hero-content p,

@@ -1,10 +1,28 @@
+
 'use client'
-import { useState } from 'react'
+
+import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 type Mood = {
   image: string
   label: string
+}
+
+type CheckinData = {
+  id: string
+  date: string
+  mood: string
+  energyLevel: number
+  sleepHours: number
+  activities: string[]
+  otherActivity: string
+}
+
+type ApiResponse = {
+  success: boolean
+  message?: string
+  data?: CheckinData | null
 }
 
 const moods: Mood[] = [
@@ -40,71 +58,167 @@ export default function CheckinForm() {
   const [otherActivity, setOtherActivity] = useState('')
   const [message, setMessage] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+
+  const loadTodayCheckin = useCallback(async (signal: AbortSignal) => {
+    setIsLoading(true)
+
+    try {
+      const response = await fetch('/api/checkin/today', {
+        method: 'GET',
+        cache: 'no-store',
+        signal,
+      })
+
+      const result = (await response.json()) as ApiResponse
+
+      if (!response.ok || !result.success) {
+        if (response.status === 401) {
+          setMessage('Silakan login terlebih dahulu untuk menggunakan Check-in.')
+        } else {
+          setMessage(result.message ?? 'Data Check-in gagal dimuat.')
+        }
+        return
+      }
+
+      if (!result.data) {
+        return
+      }
+
+      setSelectedMood(result.data.mood)
+      setEnergyLevel(result.data.energyLevel)
+      setSleepHours(String(result.data.sleepHours))
+      setActivities(result.data.activities ?? [])
+      setOtherActivity(result.data.otherActivity ?? '')
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        return
+      }
+
+      setMessage('Tidak dapat memuat Check-in. Periksa koneksi lalu coba lagi.')
+    } finally {
+      if (!signal.aborted) {
+        setIsLoading(false)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    const controller = new AbortController()
+    void loadTodayCheckin(controller.signal)
+
+    return () => controller.abort()
+  }, [loadTodayCheckin])
 
   function toggleActivity(activity: string) {
-    setActivities((previous) =>
-      previous.includes(activity)
-        ? previous.filter((item) => item !== activity)
-        : [...previous, activity]
-    )
+    setActivities((previous) => {
+      if (previous.includes(activity)) {
+        return previous.filter((item) => item !== activity)
+      }
 
-    setMessage('')
+      if (previous.length >= 3) {
+        return previous
+      }
+
+      return [...previous, activity]
+    })
+
+    setMessage((previous) =>
+      activities.length >= 3 && !activities.includes(activity)
+        ? 'Pilih maksimal 3 aktivitas utama.'
+        : ''
+    )
   }
 
-  function handleSave() {
+  async function handleSave() {
+    if (isSaving || isLoading) return
+
     if (!selectedMood) {
       setMessage('Pilih suasana hatimu terlebih dahulu, ya 💚')
       return
     }
 
-    const hours = sleepHours.trim() === '' ? null : Number(sleepHours)
+    if (sleepHours.trim() === '') {
+      setMessage('Masukkan durasi tidurmu terlebih dahulu.')
+      return
+    }
 
-    if (
-      hours !== null &&
-      (!Number.isFinite(hours) || hours < 0 || hours > 24)
-    ) {
+    const hours = Number(sleepHours)
+
+    if (!Number.isFinite(hours) || hours < 0 || hours > 24) {
       setMessage('Jam istirahat harus antara 0 sampai 24 jam, ya.')
       return
     }
 
-    const checkin = {
-      mood: selectedMood,
-      energyLevel,
-      sleepHours: hours,
-      activities,
-      otherActivity: otherActivity.trim(),
-      createdAt: new Date().toISOString(),
+    if (!Number.isInteger(hours * 2)) {
+      setMessage('Durasi tidur harus dalam kelipatan 0,5 jam.')
+      return
     }
 
-    try {
-      localStorage.setItem(
-        'mindglow-checkin',
-        JSON.stringify(checkin)
-      )
+    if (activities.length > 3) {
+      setMessage('Pilih maksimal 3 aktivitas utama.')
+      return
+    }
 
-      setMessage('')
+    if (otherActivity.trim().length > 255) {
+      setMessage('Aktivitas lainnya maksimal 255 karakter.')
+      return
+    }
+
+    setIsSaving(true)
+    setMessage('')
+
+    try {
+      const response = await fetch('/api/checkin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mood: selectedMood,
+          energyLevel,
+          sleepHours: hours,
+          activities,
+          otherActivity: otherActivity.trim(),
+        }),
+      })
+
+      const result = (await response.json()) as ApiResponse
+
+      if (!response.ok || !result.success) {
+        if (response.status === 401) {
+          setMessage('Sesi login tidak ditemukan. Silakan login kembali.')
+        } else {
+          setMessage(result.message ?? 'Check-in gagal disimpan. Coba lagi.')
+        }
+        return
+      }
+
       setShowSuccess(true)
     } catch {
-      setMessage('Check-in belum berhasil disimpan. Coba lagi, ya.')
+      setMessage('Tidak dapat terhubung ke server. Periksa koneksi lalu coba lagi.')
+    } finally {
+      setIsSaving(false)
     }
   }
 
   return (
     <>
       <div className="checkin-demo-card">
-        <div className="checkin-moods">
+        <div className="checkin-moods" aria-busy={isLoading}>
           {moods.map((mood) => (
             <button
               key={mood.label}
               type="button"
-              className={`mood-option ${
-                selectedMood === mood.label ? 'selected' : ''
-              }`}
+              className={`mood-option ${selectedMood === mood.label ? 'selected' : ''
+                }`}
               onClick={() => {
                 setSelectedMood(mood.label)
                 setMessage('')
               }}
               aria-pressed={selectedMood === mood.label}
+              disabled={isLoading || isSaving}
             >
               <img
                 src={mood.image}
@@ -137,10 +251,9 @@ export default function CheckinForm() {
             max={5}
             step={1}
             value={energyLevel}
-            onChange={(event) =>
-              setEnergyLevel(Number(event.target.value))
-            }
+            onChange={(event) => setEnergyLevel(Number(event.target.value))}
             aria-valuetext={energyLabels[energyLevel]}
+            disabled={isLoading || isSaving}
           />
         </div>
 
@@ -163,6 +276,7 @@ export default function CheckinForm() {
                   setSleepHours(event.target.value)
                   setMessage('')
                 }}
+                disabled={isLoading || isSaving}
               />
 
               <span>Jam</span>
@@ -184,6 +298,7 @@ export default function CheckinForm() {
                   }
                   onClick={() => toggleActivity(activity)}
                   aria-pressed={activities.includes(activity)}
+                  disabled={isLoading || isSaving}
                 >
                   {activity}
                 </button>
@@ -191,22 +306,21 @@ export default function CheckinForm() {
             </div>
 
             <div className="checkin-other-activity">
-              <label
-                htmlFor="daily-other-activity"
-                className="sr-only"
-              >
+              <label htmlFor="daily-other-activity" className="sr-only">
                 Aktivitas lainnya
               </label>
 
               <input
                 id="daily-other-activity"
                 type="text"
+                maxLength={255}
                 placeholder="Tulis aktivitas lainnya..."
                 value={otherActivity}
                 onChange={(event) => {
                   setOtherActivity(event.target.value)
                   setMessage('')
                 }}
+                disabled={isLoading || isSaving}
               />
             </div>
           </div>
@@ -216,8 +330,13 @@ export default function CheckinForm() {
           className="checkin-save"
           type="button"
           onClick={handleSave}
+          disabled={isLoading || isSaving}
         >
-          Simpan Check-in Hari Ini
+          {isLoading
+            ? 'Memuat Check-in...'
+            : isSaving
+              ? 'Menyimpan...'
+              : 'Simpan Check-in Hari Ini'}
         </button>
 
         {message && (
@@ -228,10 +347,7 @@ export default function CheckinForm() {
       </div>
 
       {showSuccess && (
-        <div
-          className="daily-checkin-overlay"
-          role="presentation"
-        >
+        <div className="daily-checkin-overlay" role="presentation">
           <div
             className="daily-checkin-modal"
             role="dialog"
@@ -239,10 +355,7 @@ export default function CheckinForm() {
             aria-labelledby="daily-checkin-success-title"
             aria-describedby="daily-checkin-success-description"
           >
-            <div
-              className="daily-checkin-success-icon"
-              aria-hidden="true"
-            >
+            <div className="daily-checkin-success-icon" aria-hidden="true">
               ✓
             </div>
 
@@ -251,12 +364,16 @@ export default function CheckinForm() {
             </h2>
 
             <p id="daily-checkin-success-description">
-              Check harian berhasil disimpan!
+              Check-in harian berhasil disimpan ke database.
             </p>
 
             <button
               type="button"
-              onClick={() => router.push('/dashboard')}
+              onClick={() => {
+                setShowSuccess(false)
+                router.push('/dashboard')
+                router.refresh()
+              }}
               autoFocus
             >
               Oke

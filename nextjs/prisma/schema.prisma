@@ -137,10 +137,11 @@ model users {
   username                  String?                     @unique(map: "users_username_unique") @db.VarChar(255)
   phone                     String?                     @db.VarChar(255)
   academic_tasks            academic_tasks[]
+  ai_rate_limits            ai_rate_limits[]
   daily_check_ins           daily_check_ins[]
+  email_verification_tokens email_verification_tokens[]
   journals                  journals[]
   mindglow_sessions         mindglow_sessions[]
-  email_verification_tokens email_verification_tokens[]
   oauth_accounts            oauth_accounts[]
 }
 
@@ -183,8 +184,9 @@ model ai_rate_limits {
   request_count Int      @default(0)
   created_at    DateTime @default(now()) @db.Timestamptz(6)
   updated_at    DateTime @default(now()) @db.Timestamptz(6)
+  users         users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@unique([user_id, window_type, window_start])
+  @@unique([user_id, window_type, window_start], map: "ai_rate_limits_unique_window")
   @@index([window_start])
 }
 
@@ -194,11 +196,10 @@ model email_verification_tokens {
   token_hash String   @unique @db.VarChar(64)
   expires_at DateTime @db.Timestamp(0)
   created_at DateTime @default(now()) @db.Timestamp(0)
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "email_verification_tokens_user_id_foreign")
 
-  users users @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@index([user_id], map: "email_verification_tokens_user_id_idx")
-  @@index([expires_at], map: "email_verification_tokens_expires_at_idx")
+  @@index([user_id])
+  @@index([expires_at])
 }
 
 model oauth_accounts {
@@ -207,10 +208,19 @@ model oauth_accounts {
   provider            String   @db.VarChar(50)
   provider_account_id String   @db.VarChar(255)
   created_at          DateTime @default(now()) @db.Timestamp(0)
-
-  users users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  users               users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "oauth_accounts_user_id_foreign")
 
   @@unique([provider, provider_account_id], map: "oauth_accounts_provider_account_unique")
   @@unique([user_id, provider], map: "oauth_accounts_user_provider_unique")
-  @@index([user_id], map: "oauth_accounts_user_id_idx")
+  @@index([user_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model auth_rate_limits {
+  rate_key      String   @id @db.VarChar(64)
+  window_start  DateTime @db.Timestamptz(6)
+  request_count Int      @default(1)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([window_start])
 }

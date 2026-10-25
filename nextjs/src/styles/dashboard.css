@@ -1,4 +1,3 @@
-/* Container Utama */
 .dashboard-container {
   width: 100%;
   max-width: 1200px;
@@ -6,54 +5,82 @@
   padding: 40px 30px;
   box-sizing: border-box;
   font-family: inherit;
+  min-width: 0;
 }
 
-/* --- BANNER SELAMAT DATANG --- */
+.dashboard-container *,
+.dashboard-container *::before,
+.dashboard-container *::after {
+  box-sizing: border-box;
+}
+
+.dashboard-container h1,
+.dashboard-container h2,
+.dashboard-container h3,
+.dashboard-container p {
+  overflow-wrap: anywhere;
+}
+
 .welcome-banner {
-  background-color: #82A392; /* <--- DIPERBARUI: Menggunakan Hijau Tua */
+  background-color: #82a392;
   border-radius: 24px;
   padding: 40px 50px;
   color: #ffffff;
   margin-bottom: 30px;
-  box-shadow: 0 10px 30px rgba(130, 163, 146, 0.2); /* Bayangan disesuaikan dengan warna baru */
+  box-shadow: 0 10px 30px rgba(130, 163, 146, 0.2);
+  min-width: 0;
 }
 
 .welcome-banner h1 {
   font-size: 36px;
   font-weight: 700;
-  margin: 0 0 10px 0;
+  line-height: 1.25;
+  margin: 0 0 10px;
   letter-spacing: 0.5px;
 }
 
 .welcome-banner p {
   font-size: 16px;
   line-height: 1.5;
-  margin: 0 0 30px 0;
+  margin: 0 0 30px;
   opacity: 0.9;
   max-width: 600px;
 }
 
 .banner-buttons {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 15px;
+  min-width: 0;
 }
 
-/* Tombol Kaca (Glassmorphism) */
 .btn-glass {
+  min-height: 44px;
+  max-width: 100%;
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.4);
-  color: white;
+  color: #ffffff;
   padding: 12px 24px;
   border-radius: 50px;
+  font-family: inherit;
   font-weight: 600;
   font-size: 14px;
+  line-height: 1.4;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  text-align: center;
+  overflow-wrap: anywhere;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .btn-glass:hover {
@@ -62,36 +89,38 @@
   box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
 }
 
-/* --- GRID 3 KOTAK INFO --- */
+.btn-glass:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 4px;
+}
+
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
   margin-bottom: 30px;
+  min-width: 0;
 }
 
 .stat-card {
+  min-width: 0;
   background-color: #ffffff;
   border-radius: 20px;
   padding: 24px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   border: 1px solid #f3f4f6;
 }
 
-.stat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
-}
-
-/* Ikon Bulat */
 .icon-circle {
   width: 60px;
   height: 60px;
-  background-color: #82A392; /* <--- DIPERBARUI: Menggunakan Hijau Tua */
+  background-color: #82a392;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -99,14 +128,24 @@
   flex-shrink: 0;
 }
 
+.icon-circle svg,
+.icon-circle img {
+  max-width: 60%;
+  max-height: 60%;
+  object-fit: contain;
+}
+
 .stat-content {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex: 1;
+  min-width: 0;
 }
 
 .stat-title {
   font-size: 13px;
+  line-height: 1.5;
   color: #9ca3af;
   font-weight: 500;
   margin: 0;
@@ -114,23 +153,38 @@
 
 .stat-value {
   font-size: 16px;
+  line-height: 1.45;
   color: #1f2937;
   font-weight: 700;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .stat-subtext {
   font-size: 13px;
+  line-height: 1.5;
   color: #6b7280;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
-.text-red { color: #ef4444; }
-.text-blue { color: #3b82f6; text-decoration: none; font-weight: 600; }
-.text-blue:hover { text-decoration: underline; }
+.text-red {
+  color: #ef4444;
+}
 
-/* --- BAGIAN TUGAS --- */
+.text-blue {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.text-blue:hover {
+  text-decoration: underline;
+}
+
 .tasks-section {
+  min-width: 0;
   background-color: #ffffff;
   border-radius: 24px;
   padding: 30px 40px;
@@ -142,18 +196,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-bottom: 24px;
 }
 
 .tasks-header h2 {
+  min-width: 0;
   font-size: 20px;
+  line-height: 1.4;
   color: #111827;
   margin: 0;
   font-weight: 700;
 }
 
 .link-all {
+  flex-shrink: 0;
   font-size: 13px;
+  line-height: 1.5;
   color: #9ca3af;
   text-decoration: none;
   font-weight: 500;
@@ -163,53 +223,535 @@
   color: #6b7280;
 }
 
+.link-all:focus-visible,
+.text-blue:focus-visible {
+  outline: 2px solid #82a392;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
 .tasks-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 0;
 }
 
 .task-item {
+  min-width: 0;
   display: flex;
   align-items: center;
-  background-color: #f3f4f6; /* <-- Dikembalikan ke abu-abu muda yang bersih */
+  background-color: #f3f4f6;
   border-radius: 12px;
   padding: 16px 20px;
   gap: 15px;
-  border: none; /* Garis tepi dihilangkan agar menyatu rapi seperti desain asli */
+  border: none;
 }
 
 .task-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
   width: 22px;
   height: 22px;
+  margin: 0;
   border-radius: 6px;
-  border: 2px solid #82A392; /* <--- DIPERBARUI: Border checkbox pakai Hijau Tua */
+  border: 2px solid #82a392;
   background-color: #ffffff;
   cursor: pointer;
-  appearance: none;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .task-checkbox:checked {
-  background-color: #82A392; /* <--- DIPERBARUI: Warna saat dicentang pakai Hijau Tua */
-  border-color: #82A392;
+  background-color: #82a392;
+  border-color: #82a392;
+}
+
+.task-checkbox:checked::after {
+  content: "";
+  width: 6px;
+  height: 10px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+.task-checkbox:focus-visible {
+  outline: 2px solid #527865;
+  outline-offset: 3px;
 }
 
 .task-name {
+  min-width: 0;
+  flex: 1;
   font-size: 15px;
-  color: #2c363f; /* Sedikit digelapkan agar terbaca jelas di atas hijau muda */
+  line-height: 1.5;
+  color: #2c363f;
   font-weight: 500;
-  flex-grow: 1;
+  overflow-wrap: anywhere;
+}
+
+.task-checkbox:checked+.task-name {
+  color: #6b7280;
+  text-decoration: line-through;
 }
 
 .task-date {
+  flex-shrink: 0;
   font-size: 13px;
+  line-height: 1.5;
   color: #ef4444;
   font-weight: 500;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
-/* Responsif untuk layar kecil */
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
+  .dashboard-container {
+    padding: 28px 22px;
+  }
+
+  .welcome-banner {
+    padding: 30px 32px;
+  }
+
+  .welcome-banner h1 {
+    font-size: 30px;
+  }
+
   .stats-grid {
-    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .stat-card {
+    padding: 18px 14px;
+    gap: 12px;
+  }
+
+  .icon-circle {
+    width: 48px;
+    height: 48px;
+  }
+
+  .tasks-section {
+    padding: 26px 28px;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-container {
+    padding: 22px 18px;
+  }
+
+  .welcome-banner {
+    padding: 26px 28px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+  }
+
+  .welcome-banner h1 {
+    font-size: 28px;
+  }
+
+  .welcome-banner p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    padding: 16px;
+    gap: 12px;
+    border-radius: 16px;
+  }
+
+  .icon-circle {
+    width: 42px;
+    height: 42px;
+  }
+
+  .stat-title {
+    font-size: 11px;
+  }
+
+  .stat-value {
+    font-size: 14px;
+  }
+
+  .stat-subtext {
+    font-size: 11px;
+  }
+
+  .tasks-section {
+    padding: 22px;
+    border-radius: 20px;
+  }
+
+  .tasks-header {
+    margin-bottom: 16px;
+  }
+
+  .tasks-header h2 {
+    font-size: 18px;
+  }
+
+  .task-item {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .task-checkbox {
+    width: 19px;
+    height: 19px;
+  }
+
+  .task-name {
+    font-size: 13px;
+  }
+
+  .task-date {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-container {
+    padding: 14px 12px 22px;
+  }
+
+  .welcome-banner {
+    padding: 21px 17px;
+    margin-bottom: 14px;
+    border-radius: 17px;
+  }
+
+  .welcome-banner h1 {
+    font-size: 23px;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    letter-spacing: 0;
+  }
+
+  .welcome-banner p {
+    font-size: 12px;
+    line-height: 1.55;
+    margin-bottom: 16px;
+  }
+
+  .banner-buttons {
+    gap: 8px;
+  }
+
+  .btn-glass {
+    min-height: 36px;
+    padding: 9px 13px;
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  .stats-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+    margin-bottom: 14px;
+  }
+
+  .stat-card {
+    padding: 13px 14px;
+    gap: 11px;
+    border-radius: 14px;
+  }
+
+  .icon-circle {
+    width: 37px;
+    height: 37px;
+  }
+
+  .stat-content {
+    gap: 3px;
+  }
+
+  .stat-title {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .stat-value {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .stat-subtext {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .tasks-section {
+    padding: 17px 13px;
+    border-radius: 17px;
+  }
+
+  .tasks-header {
+    gap: 8px;
+    margin-bottom: 13px;
+  }
+
+  .tasks-header h2 {
+    font-size: 16px;
+  }
+
+  .link-all {
+    font-size: 11px;
+  }
+
+  .tasks-list {
+    gap: 8px;
+  }
+
+  .task-item {
+    padding: 10px;
+    gap: 9px;
+    border-radius: 9px;
+  }
+
+  .task-checkbox {
+    width: 17px;
+    height: 17px;
+    border-radius: 4px;
+  }
+
+  .task-checkbox:checked::after {
+    width: 5px;
+    height: 8px;
+  }
+
+  .task-name {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .task-date {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 380px) {
+  .dashboard-container {
+    padding: 10px 8px 18px;
+  }
+
+  .welcome-banner {
+    padding: 17px 13px;
+    border-radius: 14px;
+  }
+
+  .welcome-banner h1 {
+    font-size: 20px;
+  }
+
+  .welcome-banner p {
+    font-size: 11px;
+    margin-bottom: 13px;
+  }
+
+  .banner-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 7px;
+  }
+
+  .btn-glass {
+    width: 100%;
+    min-height: 34px;
+    padding: 8px 11px;
+    font-size: 11px;
+  }
+
+  .stat-card {
+    padding: 11px;
+    gap: 9px;
+  }
+
+  .icon-circle {
+    width: 33px;
+    height: 33px;
+  }
+
+  .stat-title {
+    font-size: 9px;
+  }
+
+  .stat-value {
+    font-size: 12px;
+  }
+
+  .stat-subtext {
+    font-size: 9px;
+  }
+
+  .tasks-section {
+    padding: 14px 10px;
+  }
+
+  .tasks-header {
+    gap: 8px;
+  }
+
+  .tasks-header h2 {
+    font-size: 15px;
+  }
+
+  .task-item {
+    flex-wrap: wrap;
+    padding: 9px;
+    gap: 7px;
+  }
+
+  .task-name {
+    flex-basis: calc(100% - 26px);
+    font-size: 11px;
+  }
+
+  .task-date {
+    max-width: calc(100% - 26px);
+    margin-left: 24px;
+    font-size: 9px;
+    text-align: left;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+  }
+}
+
+@media (hover: none) {
+  .stat-card:hover {
+    transform: none;
+  }
+
+  .btn-glass:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .btn-glass,
+  .stat-card,
+  .task-checkbox {
+    transition: none;
+  }
+
+  .btn-glass:hover,
+  .stat-card:hover {
+    transform: none;
+  }
+}
+
+/* Final Momo welcome-card layout */
+.welcome-banner {
+  position: relative;
+  display: block;
+  min-height: 320px;
+  padding: 40px 0 40px 40px;
+  padding-right: 0;
+  overflow: hidden;
+  isolation: isolate;
+  box-sizing: border-box;
+}
+
+.welcome-banner > h1,
+.welcome-banner > p,
+.welcome-banner > .banner-buttons {
+  position: relative;
+  z-index: 2;
+  width: calc(100% - 680px);
+  max-width: 680px;
+}
+
+.welcome-banner > h1 {
+  font-size: clamp(25px, 2.2vw, 36px);
+  line-height: 1.2;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.welcome-banner > p {
+  font-size: 15px;
+  line-height: 1.55;
+  margin-bottom: 24px;
+}
+
+.welcome-banner > .momo-pet {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  right: 18px;
+  width: min(650px, 58%);
+  max-width: none;
+  transform: translateY(-50%);
+}
+
+@media (max-width: 1450px) {
+  .welcome-banner {
+    padding-left: 30px;
+  }
+
+  .welcome-banner > h1,
+  .welcome-banner > p,
+  .welcome-banner > .banner-buttons {
+    width: calc(100% - 570px);
+  }
+
+  .welcome-banner > .momo-pet {
+    width: 540px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .welcome-banner {
+    min-height: 0;
+    padding: 30px;
+  }
+
+  .welcome-banner > h1,
+  .welcome-banner > p,
+  .welcome-banner > .banner-buttons {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .welcome-banner > .momo-pet {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    margin-top: 24px;
+    transform: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .welcome-banner {
+    padding: 21px 17px;
+  }
+
+  .welcome-banner > h1 {
+    font-size: 23px;
+  }
+
+  .welcome-banner > p {
+    font-size: 12px;
   }
 }

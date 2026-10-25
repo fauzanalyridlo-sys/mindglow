@@ -1,4 +1,6 @@
+
 'use client'
+
 import { useEffect, useRef, useState } from 'react'
 
 import '../styles/wawasan.css'
@@ -40,57 +42,72 @@ const akademikIcon = akademikAsset.src
 
 type MoodPoint = {
   day: string
-  mood: string
-  label: string
-  value: number
+  date: string
+  mood: string | null
+  label: string | null
+  value: number | null
 }
 
-// Pemetaan nilai contoh ke kategori mood.
+type InsightData = {
+  period: string
+  startDate: string
+  endDate: string
+  totalCheckins: number
+  totalDays: number
+  averageMood: number | null
+  averageEnergy: number | null
+  averageSleepHours: number | null
+  dominantMood: string | null
+  moodTrend: {
+    date: string
+    mood: number | null
+    moodLabel: string | null
+    energy: number | null
+    sleepHours: number | null
+  }[]
+  insights: string[]
+}
+
 const getMood = (
   value: number,
-): Pick<MoodPoint, 'mood' | 'label'> => {
-  if (value <= 2) {
+): { mood: string; label: string } => {
+  if (value <= 1.5) {
     return { mood: moodSad, label: 'Lelah/Down' }
   }
 
-  if (value < 2.5) {
+  if (value <= 2.5) {
     return { mood: moodDepressed, label: 'Cemas' }
   }
 
-  if (value < 3.5) {
+  if (value <= 3.5) {
     return { mood: moodNeutral, label: 'Biasa aja' }
   }
 
-  if (value < 4.3) {
+  if (value <= 4.5) {
     return { mood: moodHappy, label: 'Tenang' }
   }
 
   return { mood: moodOverjoyed, label: 'Semangat!' }
 }
 
-const moodJourney7: MoodPoint[] = [
-  { day: 'Sen', value: 4.5, ...getMood(4.5) },
-  { day: 'Sel', value: 3.8, ...getMood(3.8) },
-  { day: 'Rab', value: 2.2, ...getMood(2.2) },
-  { day: 'Kam', value: 2.5, ...getMood(2.5) },
-  { day: 'Jum', value: 3.4, ...getMood(3.4) },
-  { day: 'Sab', value: 4.8, ...getMood(4.8) },
-  { day: 'Min', value: 4.0, ...getMood(4.0) },
-]
+function formatDay(dateString: string): string {
+  const date = new Date(`${dateString}T00:00:00.000Z`)
 
-const moodValues30 = [
-  3.2, 3.8, 4.1, 2.7, 3.0, 4.3, 3.7,
-  2.4, 2.8, 3.5, 4.0, 4.4, 3.6, 3.1,
-  2.5, 3.3, 3.9, 4.6, 4.2, 3.4, 3.0,
-  2.2, 2.9, 3.7, 4.1, 4.5, 3.8, 3.2,
-  4.0, 4.3,
-]
+  return new Intl.DateTimeFormat('id-ID', {
+    weekday: 'short',
+    timeZone: 'UTC',
+  }).format(date)
+}
 
-const moodJourney30: MoodPoint[] = moodValues30.map((value, index) => ({
-  day: `${index + 1}`,
-  value,
-  ...getMood(value),
-}))
+function formatDate(dateString: string): string {
+  const date = new Date(`${dateString}T00:00:00.000Z`)
+
+  return new Intl.DateTimeFormat('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    timeZone: 'UTC',
+  }).format(date)
+}
 
 function MoodChart({ data }: { data: MoodPoint[] }) {
   const left = 24
@@ -99,17 +116,34 @@ function MoodChart({ data }: { data: MoodPoint[] }) {
   const bottom = 155
 
   const x = (index: number) =>
-    left + (index / (data.length - 1)) * (right - left)
+    data.length <= 1
+      ? (left + right) / 2
+      : left + (index / (data.length - 1)) * (right - left)
 
   const y = (value: number) =>
-    bottom - (value / 5) * (bottom - top)
+    bottom - ((value - 1) / 4) * (bottom - top)
 
-  const path = data
-    .map(
-      (point, index) =>
-        `${index === 0 ? 'M' : 'L'} ${x(index)} ${y(point.value)}`,
+  // Putuskan garis pada hari yang tidak memiliki check-in.
+  const segments: string[] = []
+  let currentSegment: string[] = []
+
+  data.forEach((point, index) => {
+    if (point.value === null) {
+      if (currentSegment.length) {
+        segments.push(currentSegment.join(' '))
+        currentSegment = []
+      }
+      return
+    }
+
+    currentSegment.push(
+      `${currentSegment.length === 0 ? 'M' : 'L'} ${x(index)} ${y(point.value)}`,
     )
-    .join(' ')
+  })
+
+  if (currentSegment.length) {
+    segments.push(currentSegment.join(' '))
+  }
 
   const legendItems = [
     { icon: moodSad, label: 'Lelah/Down' },
@@ -136,18 +170,27 @@ function MoodChart({ data }: { data: MoodPoint[] }) {
           role="img"
           aria-label={`Grafik perjalanan mood selama ${data.length} hari`}
         >
-          {[0, 1, 2, 3].map((index) => {
-            const gridY = top + index * ((bottom - top) / 3)
+          {[1, 2, 3, 4, 5].map((value) => {
+            const gridY = y(value)
 
             return (
-              <line
-                key={index}
-                x1={left}
-                x2={right}
-                y1={gridY}
-                y2={gridY}
-                className="mood-gridline"
-              />
+              <g key={value}>
+                <line
+                  x1={left}
+                  x2={right}
+                  y1={gridY}
+                  y2={gridY}
+                  className="mood-gridline"
+                />
+                <text
+                  x={left - 7}
+                  y={gridY + 4}
+                  textAnchor="end"
+                  className="mood-day"
+                >
+                  {value}
+                </text>
+              </g>
             )
           })}
 
@@ -156,43 +199,63 @@ function MoodChart({ data }: { data: MoodPoint[] }) {
             className="mood-axis"
           />
 
-          <path d={path} className="mood-line" />
+          {segments.map((segment, index) => (
+            <path
+              key={index}
+              d={segment}
+              className="mood-line"
+            />
+          ))}
 
           {data.map((point, index) => (
-            <g key={`${point.day}-${index}`}>
-              <line
-                x1={x(index)}
-                x2={x(index)}
-                y1={y(point.value)}
-                y2={bottom}
-                className="mood-guide"
-              />
+            <g key={point.date}>
+              {point.value !== null && (
+                <>
+                  <line
+                    x1={x(index)}
+                    x2={x(index)}
+                    y1={y(point.value)}
+                    y2={bottom}
+                    className="mood-guide"
+                  />
 
-              <circle
-                cx={x(index)}
-                cy={y(point.value)}
-                r="4"
-                className="mood-dot"
-              />
+                  <circle
+                    cx={x(index)}
+                    cy={y(point.value)}
+                    r="4"
+                    className="mood-dot"
+                  />
 
-              <image
-                href={point.mood}
-                x={x(index) - 10}
-                y={y(point.value) - 29}
-                width="20"
-                height="20"
-              >
-                <title>{`${point.day}: ${point.label}`}</title>
-              </image>
+                  {point.mood && (
+                    <image
+                      href={point.mood}
+                      x={x(index) - 10}
+                      y={y(point.value) - 29}
+                      width="20"
+                      height="20"
+                    >
+                      <title>{`${point.day}: ${point.label ?? ''}`}</title>
+                    </image>
+                  )}
+                </>
+              )}
 
-              <text
-                x={x(index)}
-                y="178"
-                textAnchor="middle"
-                className="mood-day"
-              >
-                {data.length === 7 ? point.day : index + 1}
-              </text>
+              {(data.length <= 7 ||
+                index % 3 === 0 ||
+                index === data.length - 1) && (
+                  <text
+                    x={x(index)}
+                    y="178"
+                    textAnchor="middle"
+                    className="mood-day"
+                  >
+                    {data.length === 7
+                      ? point.day
+                      : new Date(
+                        `${point.date}T00:00:00.000Z`,
+                      ).getUTCDate()}
+                  </text>
+                )}
             </g>
           ))}
         </svg>
@@ -203,15 +266,67 @@ function MoodChart({ data }: { data: MoodPoint[] }) {
 
 export default function Wawasan() {
   const [period, setPeriod] = useState<7 | 30>(7)
+  const [data, setData] = useState<InsightData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const habitGridRef = useRef<HTMLDivElement>(null)
 
-  const chartData = period === 7 ? moodJourney7 : moodJourney30
+  useEffect(() => {
+    const controller = new AbortController()
+
+    async function loadInsights() {
+      setLoading(true)
+      setError('')
+
+      try {
+        const response = await fetch(`/api/insights?period=${period}`, {
+          method: 'GET',
+          cache: 'no-store',
+          signal: controller.signal,
+        })
+
+        const result = await response.json()
+
+        if (!response.ok || !result.success) {
+          throw new Error(
+            result.message ?? 'Gagal mengambil data Wawasan.',
+          )
+        }
+
+        setData(result.data as InsightData)
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') {
+          return
+        }
+
+        setError(
+          err instanceof Error
+            ? err.message
+            : 'Terjadi kesalahan saat mengambil data Wawasan.',
+        )
+        setData(null)
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    void loadInsights()
+
+    return () => controller.abort()
+  }, [period])
 
   useEffect(() => {
     const grid = habitGridRef.current
     if (!grid) return
 
     const cards = grid.querySelectorAll('.habit-card')
+
+    if (typeof IntersectionObserver === 'undefined') {
+      cards.forEach((card) => card.classList.add('is-visible'))
+      return
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -228,11 +343,32 @@ export default function Wawasan() {
     cards.forEach((card) => observer.observe(card))
 
     return () => observer.disconnect()
-  }, [])
+  }, [data])
+
+  const chartData: MoodPoint[] = (data?.moodTrend ?? []).map((point) => {
+    const moodInfo =
+      point.mood === null ? null : getMood(point.mood)
+
+    return {
+      date: point.date,
+      day: period === 7 ? formatDay(point.date) : formatDate(point.date),
+      value: point.mood,
+      mood: moodInfo?.mood ?? null,
+      label: point.moodLabel ?? moodInfo?.label ?? null,
+    }
+  })
+
+  const summaryDescription =
+    loading
+      ? 'Memuat ringkasan check-in kamu...'
+      : error
+        ? 'Ringkasan belum dapat dimuat.'
+        : !data || data.totalCheckins === 0
+          ? `Belum ada check-in dalam ${period} hari terakhir.`
+          : `Kamu mencatat ${data.totalCheckins} check-in dalam ${period} hari terakhir.`
 
   return (
     <main className="insight-page">
-      {/* Ringkasan emosi */}
       <section className="emotion-summary">
         <div className="summary-heading">
           <div className="summary-icon" aria-hidden="true">
@@ -241,35 +377,65 @@ export default function Wawasan() {
 
           <div>
             <h2>Ringkasan Emosimu</h2>
-            <p>
-              Dalam {period} hari terakhir, kamu lebih sering merasa tenang.
-            </p>
+            <p>{summaryDescription}</p>
           </div>
         </div>
 
         <div className="summary-bottom">
           <div className="summary-stats">
             <article className="summary-stat">
-              <img src={emojiIcon} alt="" className="summary-mood-icon" />
+              <img
+                src={emojiIcon}
+                alt=""
+                className="summary-mood-icon"
+              />
               <div>
                 <small>Mood dominan</small>
-                <strong>Tenang</strong>
+                <strong>
+                  {loading
+                    ? 'Memuat...'
+                    : error
+                      ? 'Tidak tersedia'
+                      : data?.dominantMood ?? 'Belum ada data'}
+                </strong>
               </div>
             </article>
 
             <article className="summary-stat">
-              <img src={energyIcon} alt="" className="summary-mood-icon" />
+              <img
+                src={energyIcon}
+                alt=""
+                className="summary-mood-icon"
+              />
               <div>
                 <small>Rata-rata energi</small>
-                <strong>7/10</strong>
+                <strong>
+                  {loading
+                    ? 'Memuat...'
+                    : data?.averageEnergy !== null &&
+                      data?.averageEnergy !== undefined
+                      ? `${data.averageEnergy}/5`
+                      : 'Belum ada data'}
+                </strong>
               </div>
             </article>
 
             <article className="summary-stat">
-              <img src={sleepIcon} alt="" className="summary-mood-icon" />
+              <img
+                src={sleepIcon}
+                alt=""
+                className="summary-mood-icon"
+              />
               <div>
                 <small>Rata-rata tidur</small>
-                <strong>7 jam</strong>
+                <strong>
+                  {loading
+                    ? 'Memuat...'
+                    : data?.averageSleepHours !== null &&
+                      data?.averageSleepHours !== undefined
+                      ? `${data.averageSleepHours} jam`
+                      : 'Belum ada data'}
+                </strong>
               </div>
             </article>
           </div>
@@ -284,7 +450,6 @@ export default function Wawasan() {
         </div>
       </section>
 
-      {/* Grafik perjalanan mood */}
       <section className="insight-panel">
         <div className="panel-heading">
           <div className="panel-icon" aria-hidden="true">
@@ -317,10 +482,17 @@ export default function Wawasan() {
           </div>
         </div>
 
-        <MoodChart data={chartData} />
+        {loading ? (
+          <p role="status">Memuat grafik mood...</p>
+        ) : error ? (
+          <p role="alert">{error}</p>
+        ) : data?.totalCheckins === 0 ? (
+          <p>Belum ada data Check-in untuk periode ini. Isi Check-in Harian untuk mulai melihat grafik mood.</p>
+        ) : (
+          <MoodChart data={chartData} />
+        )}
       </section>
 
-      {/* Pola kebiasaan */}
       <section className="insight-panel">
         <div className="panel-heading">
           <div className="panel-icon" aria-hidden="true">
@@ -345,31 +517,54 @@ export default function Wawasan() {
             </div>
 
             <p>
-              Pada hari-hari ketika kamu tidur lebih dari 7 jam, kamu lebih
-              sering mencatat suasana hati yang tenang.
+              {loading
+                ? 'Memuat data tidur dan suasana hati...'
+                : data && data.totalCheckins > 0
+                  ? `Rata-rata durasi tidurmu selama ${period} hari terakhir adalah ${data.averageSleepHours ?? 'belum tersedia'} jam.`
+                  : 'Belum ada data tidur yang cukup untuk melihat pola kebiasaan.'}
             </p>
 
             <div className="habit-insight">
               <div className="habit-insight-label">
-                <span>Tidur &gt; 7 jam</span>
-                <strong>Mood tenang</strong>
+                <span>Rata-rata tidur</span>
+                <strong>
+                  {data?.averageSleepHours !== null &&
+                    data?.averageSleepHours !== undefined
+                    ? `${data.averageSleepHours} jam`
+                    : 'Belum ada data'}
+                </strong>
               </div>
 
               <div className="habit-progress-row">
                 <div
                   className="habit-progress"
                   role="progressbar"
-                  aria-label="Contoh persentase mood tenang"
-                  aria-valuenow={80}
+                  aria-label="Rata-rata durasi tidur dibandingkan 8 jam"
+                  aria-valuenow={Math.min(
+                    100,
+                    ((data?.averageSleepHours ?? 0) / 8) * 100,
+                  )}
                   aria-valuemin={0}
                   aria-valuemax={100}
                 >
                   <div
                     className="habit-progress-fill sleep-progress"
-                    style={{ width: '80%' }}
+                    style={{
+                      width: `${Math.min(
+                        100,
+                        ((data?.averageSleepHours ?? 0) / 8) * 100,
+                      )}%`,
+                    }}
                   />
                 </div>
-                <strong className="habit-percent">80%</strong>
+                <strong className="habit-percent">
+                  {data?.averageSleepHours !== null &&
+                    data?.averageSleepHours !== undefined
+                    ? `${Math.round(
+                      Math.min(100, (data.averageSleepHours / 8) * 100),
+                    )}%`
+                    : '—'}
+                </strong>
               </div>
             </div>
           </article>
@@ -383,38 +578,74 @@ export default function Wawasan() {
             </div>
 
             <p>
-              Kamu lebih sering mencatat rasa cemas pada hari dengan banyak
-              tugas kuliah.
+              {loading
+                ? 'Memuat ringkasan check-in...'
+                : data && data.totalCheckins > 0
+                  ? `Kamu telah mengisi ${data.totalCheckins} dari ${period} hari dalam periode ini.`
+                  : 'Isi Check-in Harian untuk mulai menemukan pola aktivitasmu.'}
             </p>
 
             <div className="habit-insight">
               <div className="habit-insight-label">
-                <span>Banyak tugas</span>
-                <strong>Mood cemas</strong>
+                <span>Konsistensi check-in</span>
+                <strong>
+                  {data && data.totalDays > 0
+                    ? `${Math.round(
+                      (data.totalCheckins / data.totalDays) * 100,
+                    )}%`
+                    : 'Belum ada data'}
+                </strong>
               </div>
 
               <div className="habit-progress-row">
                 <div
                   className="habit-progress"
                   role="progressbar"
-                  aria-label="Contoh persentase mood cemas"
-                  aria-valuenow={60}
+                  aria-label="Persentase hari dengan check-in"
+                  aria-valuenow={
+                    data && data.totalDays > 0
+                      ? Math.round(
+                        (data.totalCheckins / data.totalDays) * 100,
+                      )
+                      : 0
+                  }
                   aria-valuemin={0}
                   aria-valuemax={100}
                 >
                   <div
                     className="habit-progress-fill academic-progress"
-                    style={{ width: '60%' }}
+                    style={{
+                      width: `${data && data.totalDays > 0
+                        ? Math.min(
+                          100,
+                          (data.totalCheckins / data.totalDays) * 100,
+                        )
+                        : 0
+                        }%`,
+                    }}
                   />
                 </div>
-                <strong className="habit-percent">60%</strong>
+                <strong className="habit-percent">
+                  {data && data.totalDays > 0
+                    ? `${Math.round(
+                      (data.totalCheckins / data.totalDays) * 100,
+                    )}%`
+                    : '—'}
+                </strong>
               </div>
             </div>
           </article>
         </div>
+
+        {data?.insights && data.insights.length > 0 && (
+          <div className="insight-observations">
+            {data.insights.map((insight, index) => (
+              <p key={`${index}-${insight}`}>{insight}</p>
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* Ajakan menuju Ruang Refleksi AI */}
       <section className="reflection-prompt">
         <div className="prompt-icon" aria-hidden="true">
           <img src={aiIcon} alt="" />

@@ -1,74 +1,212 @@
+
 'use client'
 
 import '../styles/JournalPage.css'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-// Cetakan data sekarang kita tambah 'time'
 interface JournalEntry {
-  id: number;
-  date: string;
-  time: string; // <-- Tambahan untuk waktu
-  text: string;
+  id: string
+  content: string
+  createdAt: string | null
+  updatedAt: string | null
+}
+
+function formatDate(dateString: string | null) {
+  if (!dateString) return '-'
+
+  const date = new Date(dateString)
+
+  if (Number.isNaN(date.getTime())) return '-'
+
+  return date.toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
+}
+
+function formatTime(dateString: string | null) {
+  if (!dateString) return '--:--'
+
+  const date = new Date(dateString)
+
+  if (Number.isNaN(date.getTime())) return '--:--'
+
+  return date.toLocaleTimeString('id-ID', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
 }
 
 const JournalPage = () => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [inputText, setInputText] = useState("");
-  
-  const [journals, setJournals] = useState<JournalEntry[]>([
-    {
-      id: 1,
-      date: "21 Sep 2026",
-      time: "10:30", // Waktu contoh
-      text: "Hari ini merasa agak tertekan karena anggota kelompok tugas proyek belum mulai pengerjaan padahal deadline makin dekat."
-    }
-  ]);
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInputText(e.target.value); 
+  const [inputText, setInputText] = useState('')
+  const [journals, setJournals] = useState<JournalEntry[]>([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
+
+  // Ambil riwayat jurnal dari database melalui API.
+  useEffect(() => {
+    let active = true
+
+    async function loadJournals() {
+      try {
+        const response = await fetch('/api/journal', {
+          method: 'GET',
+          cache: 'no-store',
+        })
+
+        const result = await response.json()
+
+        if (!response.ok) {
+          throw new Error(
+            result.message || 'Gagal mengambil riwayat jurnal.'
+          )
+        }
+
+        if (active) {
+          setJournals(result.data ?? [])
+        }
+      } catch (err) {
+        if (active) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : 'Terjadi kesalahan saat mengambil jurnal.'
+          )
+        }
+      } finally {
+        if (active) {
+          setLoading(false)
+        }
+      }
+    }
+
+    loadJournals()
+
+    return () => {
+      active = false
+    }
+  }, [])
+
+  const handleInput = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setInputText(e.target.value)
+    setError('')
+    setNotice('')
+
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+      textareaRef.current.style.height = 'auto'
+      textareaRef.current.style.height =
+        `${textareaRef.current.scrollHeight}px`
     }
-  };
+  }
 
-  const handleSave = () => {
-    if (inputText.trim() === "") return;
+  // Simpan jurnal ke Supabase melalui API POST.
+  const handleSave = async () => {
+    const content = inputText.trim()
 
-    const now = new Date();
-    // Format Tanggal (Contoh: 18 Okt 2026)
-    const dateString = now.toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    });
-    // Format Waktu (Contoh: 15:35)
-    const timeString = now.toLocaleTimeString('id-ID', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-
-    const newEntry: JournalEntry = {
-      id: Date.now(), 
-      date: dateString,
-      time: timeString, // Simpan waktu
-      text: inputText
-    };
-
-    setJournals([newEntry, ...journals]);
-    setInputText("");
-
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
+    if (!content) {
+      setError('Tuliskan isi jurnal terlebih dahulu.')
+      return
     }
-  };
 
-  // --- FUNGSI BARU: Menghapus Jurnal ---
-  const handleDelete = (idToRemove: number) => {
-    // Menyaring (membuang) jurnal yang ID-nya cocok dengan yang diklik
-    const filteredJournals = journals.filter(journal => journal.id !== idToRemove);
-    setJournals(filteredJournals);
-  };
+    if (saving) return
+
+    setSaving(true)
+    setError('')
+    setNotice('')
+
+    try {
+      const response = await fetch('/api/journal', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || 'Jurnal gagal disimpan.'
+        )
+      }
+
+      setJournals((current) => [
+        result.data,
+        ...current,
+      ])
+
+      setInputText('')
+      setNotice('Jurnal berhasil disimpan.')
+
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto'
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Terjadi kesalahan saat menyimpan jurnal.'
+      )
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  // Hapus jurnal dari database melalui API DELETE.
+  const handleDelete = async (id: string) => {
+    if (deletingId) return
+
+    const confirmed = window.confirm(
+      'Apakah kamu yakin ingin menghapus jurnal ini?'
+    )
+
+    if (!confirmed) return
+
+    setDeletingId(id)
+    setError('')
+    setNotice('')
+
+    try {
+      const response = await fetch(
+        `/api/journal/${encodeURIComponent(id)}`,
+        {
+          method: 'DELETE',
+        }
+      )
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || 'Jurnal gagal dihapus.'
+        )
+      }
+
+      setJournals((current) =>
+        current.filter((journal) => journal.id !== id)
+      )
+
+      setNotice('Jurnal berhasil dihapus.')
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Terjadi kesalahan saat menghapus jurnal.'
+      )
+    } finally {
+      setDeletingId(null)
+    }
+  }
 
   return (
     <main className="journal-page-container">
@@ -79,55 +217,98 @@ const JournalPage = () => {
 
       <section className="journal-input-section">
         <div className="journal-input-card">
-          <textarea 
+          <textarea
             ref={textareaRef}
-            className="journal-textarea" 
+            className="journal-textarea"
             placeholder="Bagaimana harimu? Apa hal yang paling menyita pikiranmu saat ini?..."
-            value={inputText} 
-            onChange={handleInput} 
+            value={inputText}
+            onChange={handleInput}
             rows={3}
-          ></textarea>
-          
+            maxLength={10000}
+            disabled={saving}
+          />
+
           <div className="journal-input-footer">
-            <span className="auto-save-text">Otomatis tersimpan lokal</span>
-            <button className="btn-simpan-journal" onClick={handleSave}>
-              Simpan Jurnal
+            <span className="auto-save-text">
+              {saving
+                ? 'Menyimpan jurnal...'
+                : 'Jurnal tersimpan ke database saat disimpan'}
+            </span>
+
+            <button
+              className="btn-simpan-journal"
+              onClick={handleSave}
+              disabled={saving || !inputText.trim()}
+            >
+              {saving ? 'Menyimpan...' : 'Simpan Jurnal'}
             </button>
           </div>
         </div>
+
+        {error && (
+          <p role="alert" className="journal-error">
+            {error}
+          </p>
+        )}
+
+        {notice && (
+          <p role="status" className="journal-notice">
+            {notice}
+          </p>
+        )}
       </section>
 
       <section className="journal-riwayat-section">
         <h2>Riwayat Catatan Jurnal</h2>
-        <div className="journal-history-list">
-          
-          {journals.map((journal) => (
-            <div className="journal-history-card" key={journal.id}>
-              {/* Bagian Atas Kartu (Tanggal, Waktu, dan Tombol X) */}
-              <div className="journal-card-header">
-                <div className="journal-date-time">
-                  <span className="journal-date">{journal.date}</span>
-                  <span className="journal-time">• {journal.time}</span>
-                </div>
-                
-                <button 
-                  className="btn-delete-journal" 
-                  onClick={() => handleDelete(journal.id)}
-                  title="Hapus Curhatan"
-                >
-                  &times; {/* Ini adalah kode HTML untuk simbol silang (X) yang rapi */}
-                </button>
-              </div>
-              
-              {/* Bagian Isi Curhatan */}
-              <p className="journal-text">{journal.text}</p>
-            </div>
-          ))}
 
+        <div className="journal-history-list">
+          {loading ? (
+            <p>Memuat riwayat jurnal...</p>
+          ) : journals.length === 0 ? (
+            <p>
+              Belum ada catatan jurnal. Mulai tuliskan
+              ceritamu di atas.
+            </p>
+          ) : (
+            journals.map((journal) => (
+              <div
+                className="journal-history-card"
+                key={journal.id}
+              >
+                <div className="journal-card-header">
+                  <div className="journal-date-time">
+                    <span className="journal-date">
+                      {formatDate(journal.createdAt)}
+                    </span>
+
+                    <span className="journal-time">
+                      • {formatTime(journal.createdAt)}
+                    </span>
+                  </div>
+
+                  <button
+                    className="btn-delete-journal"
+                    onClick={() => handleDelete(journal.id)}
+                    title="Hapus Jurnal"
+                    aria-label="Hapus jurnal"
+                    disabled={deletingId !== null}
+                  >
+                    {deletingId === journal.id
+                      ? '...'
+                      : '×'}
+                  </button>
+                </div>
+
+                <p className="journal-text">
+                  {journal.content}
+                </p>
+              </div>
+            ))
+          )}
         </div>
       </section>
     </main>
-  );
-};
+  )
+}
 
-export default JournalPage;
+export default JournalPage
