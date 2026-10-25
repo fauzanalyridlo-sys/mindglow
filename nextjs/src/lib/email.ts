@@ -17,7 +17,17 @@ export async function sendEmail({
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
 
-  if (!host || !user || !pass || !Number.isInteger(port)) {
+  const missingConfig = [
+    !host && "SMTP_HOST",
+    !process.env.SMTP_PORT && "SMTP_PORT (kosong; default 465 digunakan)",
+    !user && "SMTP_USER",
+    !pass && "SMTP_PASS",
+    !Number.isInteger(port) && "SMTP_PORT (bukan bilangan bulat)",
+    (port < 1 || port > 65535) && "SMTP_PORT (di luar rentang valid)",
+  ].filter(Boolean);
+
+  if (!host || !user || !pass || !Number.isInteger(port) || port < 1 || port > 65535) {
+    console.error("Konfigurasi SMTP bermasalah:", missingConfig);
     throw new Error("Konfigurasi SMTP belum lengkap.");
   }
 
