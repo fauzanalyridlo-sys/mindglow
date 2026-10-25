@@ -8,171 +8,55 @@
   max-width: 100%;
   padding: 0;
   border: 0;
-  border-radius: 20px;
   background: transparent;
   color: #344a40;
-  box-shadow: none;
   font-family: inherit;
   box-sizing: border-box;
 }
 
-/* Taman Momo */
+/* ===== Stage: transparan, menyatu dengan scene card ===== */
 .momo-garden {
   position: relative;
   min-width: 0;
   min-height: 280px;
-  overflow: hidden;
-  border-radius: 18px;
-  isolation: isolate;
-  background:
-    radial-gradient(ellipse at 45% 100%, #c5d9a8 0 13%, transparent 14%),
-    radial-gradient(ellipse at 80% 90%, #b3cd9b 0 18%, transparent 19%),
-    linear-gradient(180deg, #aebfa6 0%, #d0d9b9 64%, #b3c795 100%);
+  background: transparent;
+  border: 0;
+  overflow: visible;
 }
 
-.momo-garden::before {
-  content: "";
+/* ===== Walker: posisi horizontal Momo ===== */
+.momo-walker {
   position: absolute;
-  z-index: -1;
-  inset: 0;
-  opacity: .48;
-  background:
-    radial-gradient(ellipse at 20% 30%, #e2e6c9 0 5%, transparent 5.5%),
-    radial-gradient(ellipse at 28% 24%, #e2e6c9 0 7%, transparent 7.5%),
-    radial-gradient(ellipse at 36% 30%, #e2e6c9 0 5%, transparent 5.5%),
-    radial-gradient(ellipse at 85% 18%, #e4e6c6 0 8%, transparent 8.5%);
-}
-
-.momo-garden::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  right: -10%;
-  bottom: -20px;
-  left: -10%;
-  height: 105px;
-  border-radius: 50% 50% 0 0;
-  background: #a9c18d;
-}
-
-.garden-cloud {
-  position: absolute;
-  width: 72px;
-  height: 22px;
-  border-radius: 30px;
-  background: rgba(246, 246, 220, .65);
-  filter: blur(1px);
-}
-
-.cloud-one {
-  top: 30px;
-  left: 24px;
-}
-
-.cloud-two {
-  top: 57px;
-  left: 68px;
-  transform: scale(.65);
-}
-
-.garden-tree {
-  position: absolute;
-  bottom: 60px;
-  width: 17px;
-  border-radius: 8px 8px 2px 2px;
-  background: #8b8e6e;
-  opacity: .8;
-}
-
-.garden-tree::before {
-  content: "";
-  position: absolute;
-  top: -29px;
-  left: -15px;
-  width: 46px;
-  height: 43px;
-  border-radius: 50%;
-  background: #a0b18b;
-}
-
-.tree-one {
-  right: 12px;
-  height: 80px;
-}
-
-.tree-two {
-  right: 48px;
-  height: 53px;
-  transform: scale(.8);
-}
-
-.garden-fence {
-  position: absolute;
-  right: 4px;
-  bottom: 49px;
-  left: 0;
-  height: 25px;
-  opacity: .45;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0 17px,
-    #817f65 18px 25px,
-    transparent 26px 35px
-  );
-}
-
-.garden-hill {
-  position: absolute;
-  right: -20px;
-  bottom: -38px;
-  left: -20px;
-  height: 95px;
-  border-radius: 50% 50% 0 0;
-  background: #b7cb98;
-}
-
-.garden-flower {
-  position: absolute;
-  z-index: 1;
-  bottom: 35px;
-  font-size: 22px;
-}
-
-.flower-one {
-  left: 12%;
-}
-
-.flower-two {
-  right: 9%;
-  bottom: 30px;
-}
-
-.garden-heart {
-  position: absolute;
+  bottom: 14px;
+  width: 164px;
+  height: 166px;
+  transform: translateX(-50%);
+  transition: left 1.6s ease-in-out;
   z-index: 3;
-  top: 38%;
-  left: 36%;
-  color: #e98c9c;
-  font-size: 27px;
-  animation: momo-float 2s ease-in-out infinite;
 }
 
-/* Karakter Momo */
+.momo-walker.is-dragging {
+  transition: none;
+}
+
+/* ===== Karakter ===== */
 .momo-character {
   position: absolute;
-  z-index: 3;
-  bottom: 25px;
-  left: 50%;
-  width: 125px;
-  height: 132px;
+  inset: 0;
   padding: 0;
   border: 0;
   background: transparent;
-  cursor: pointer;
-  transform: translateX(-50%);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
   transform-origin: center bottom;
-  animation: momo-breathe 2.2s ease-in-out infinite;
+  animation: momo-breathe 2.4s ease-in-out infinite;
   -webkit-tap-highlight-color: transparent;
+}
+
+.momo-character:active,
+.momo-character.dragging {
+  cursor: grabbing;
 }
 
 .momo-character:focus-visible {
@@ -181,43 +65,58 @@
   border-radius: 28px;
 }
 
+.momo-flip {
+  position: absolute;
+  inset: 0;
+  transition: transform .25s ease;
+}
+
+.momo-torso {
+  position: absolute;
+  z-index: 1;
+  left: 27px;
+  bottom: 7px;
+  width: 111px;
+  height: 71px;
+  border: 3px solid #a4b296;
+  border-radius: 48% 48% 36% 36%;
+  background: linear-gradient(145deg, #fffef5 0%, #f8f7e9 72%, #e0e9d5 100%);
+  box-shadow: inset -10px -7px 0 #e1ead7, 0 2px 2px rgba(37, 58, 35, .12);
+  box-sizing: border-box;
+}
+
 .momo-body {
   position: absolute;
-  z-index: 2;
-  left: 19px;
-  bottom: 9px;
-  width: 87px;
-  height: 82px;
+  z-index: 3;
+  left: 38px;
+  bottom: 43px;
+  width: 88px;
+  height: 81px;
   box-sizing: border-box;
-  border: 3px solid #9aaa8a;
-  border-radius: 45% 45% 38% 38%;
+  border: 3px solid #a4b296;
+  border-radius: 47% 47% 43% 43%;
   background: #fffdf3;
-  box-shadow: inset -7px -5px 0 #e3ead8;
+  box-shadow: inset -7px -5px 0 #e6eddb;
 }
 
 .momo-ear {
   position: absolute;
-  z-index: 1;
-  top: 14px;
+  z-index: 2;
+  top: 15px;
   width: 36px;
-  height: 44px;
-  border: 3px solid #9aaa8a;
+  height: 46px;
+  box-sizing: border-box;
+  border: 3px solid #a4b296;
   border-radius: 65% 65% 25% 25%;
   background: #fffdf3;
+  transform-origin: center bottom;
+  animation: momo-ear-twitch 5s ease-in-out infinite;
 }
 
-.momo-ear-left {
-  left: 23px;
-  transform: rotate(-15deg);
-}
+.momo-ear-left { left: 39px; transform: rotate(-15deg); }
+.momo-ear-right { right: 39px; transform: rotate(15deg); animation-delay: 1.3s; }
 
-.momo-ear-right {
-  right: 23px;
-  transform: rotate(15deg);
-}
-
-.momo-ear-left::after,
-.momo-ear-right::after {
+.momo-ear::after {
   content: "";
   position: absolute;
   top: 9px;
@@ -246,6 +145,8 @@
   height: 11px;
   border-radius: 50%;
   background: #46564a;
+  transform-origin: center;
+  animation: momo-blink 4.5s infinite;
 }
 
 .eye-left { left: 20px; }
@@ -275,59 +176,114 @@
 .momo-foot {
   position: absolute;
   z-index: 4;
-  bottom: 3px;
-  width: 29px;
-  height: 18px;
-  border: 3px solid #9aaa8a;
+  bottom: 2px;
+  width: 34px;
+  height: 20px;
+  box-sizing: border-box;
+  border: 3px solid #a4b296;
   border-radius: 50%;
   background: #fffdf3;
 }
 
-.foot-left { left: 24px; }
-.foot-right { right: 24px; }
+.foot-left { left: 31px; }
+.foot-right { right: 31px; }
 
 .momo-tail {
   position: absolute;
+  z-index: 2;
   right: 0;
-  bottom: 29px;
-  width: 27px;
-  height: 35px;
-  border: 7px solid #a9cda9;
+  bottom: 30px;
+  width: 37px;
+  height: 45px;
+  box-sizing: border-box;
+  border: 9px solid #a9cda9;
   border-left-color: transparent;
-  border-radius: 50%;
-  transform: rotate(-20deg);
+  border-radius: 48%;
+  transform-origin: 30% 90%;
+  transform: rotate(-28deg);
+  animation: momo-tail-wag 1.8s ease-in-out infinite;
 }
 
 .momo-ground {
   position: absolute;
-  z-index: 1;
-  bottom: 19px;
+  z-index: 0;
+  bottom: 4px;
   left: 50%;
-  width: 112px;
-  height: 13px;
+  width: 118px;
+  height: 14px;
   border-radius: 50%;
-  background: rgba(83, 111, 73, .2);
+  background: rgba(20, 37, 19, .3);
+  filter: blur(2px);
   transform: translateX(-50%);
-  animation: momo-shadow .9s ease-in-out infinite alternate;
 }
 
+/* ===== State animasi ===== */
+.momo-character.happy { animation: momo-happy .45s ease-in-out 2; }
+.momo-character.eat   { animation: momo-eat .25s ease-in-out 4; }
+.momo-character.play  { animation: momo-jump .42s ease-in-out 2; }
+
+.momo-character.walking { animation: momo-walk .35s ease-in-out infinite; }
+.momo-character.walking .momo-tail { animation-duration: .6s; }
+
+.momo-character.dragging { animation: none; translate: 0 -16px; }
+
+/* Tidur: mata jadi garis, tidak berkedip, napas pelan */
+.momo-character.sleeping { animation: momo-sleep 3.2s ease-in-out infinite; }
+.momo-character.sleeping .momo-eye {
+  height: 3px;
+  top: 44px;
+  border-radius: 3px;
+  animation: none;
+}
+.momo-character.sleeping .momo-tail,
+.momo-character.sleeping .momo-ear { animation: none; }
+
+/* ===== Bubble ===== */
 .momo-bubble {
   position: absolute;
-  z-index: 5;
-  top: 17px;
-  left: 12px;
-  max-width: 155px;
+  z-index: 6;
+  bottom: 150px;
+  left: 50%;
+  width: max-content;
+  max-width: 160px;
   padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, .7);
   border-radius: 15px 15px 15px 4px;
   background: #fff;
   color: #526354;
   font-size: 11px;
   line-height: 1.45;
-  box-shadow: 0 3px 10px rgba(55, 85, 62, .1);
+  box-shadow: 0 5px 16px rgba(15, 35, 18, .18);
+  transform: translateX(-30%);
+  pointer-events: none;
   animation: momo-message-in .25s ease-out;
 }
 
-/* Panel kontrol */
+/* ===== Partikel & Zzz ===== */
+.momo-particle {
+  position: absolute;
+  z-index: 7;
+  bottom: 120px;
+  left: 50%;
+  font-size: 20px;
+  pointer-events: none;
+  animation: momo-particle 1.1s ease-out forwards;
+}
+
+.momo-zzz {
+  position: absolute;
+  z-index: 7;
+  top: 6px;
+  right: 14px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-shadow: 0 1px 4px rgba(20, 37, 19, .5);
+  pointer-events: none;
+  animation: momo-zzz 2.2s ease-in-out infinite;
+}
+
+/* ===== Panel ===== */
 .momo-panel {
   position: relative;
   z-index: 4;
@@ -336,8 +292,8 @@
   padding: 13px;
   border: 1px solid rgba(255, 255, 255, .9);
   border-radius: 19px;
-  background: rgba(255, 255, 255, .94);
-  box-shadow: 0 9px 22px rgba(55, 75, 55, .13);
+  background: rgba(250, 252, 247, .96);
+  box-shadow: 0 8px 20px rgba(42, 65, 45, .16);
   box-sizing: border-box;
 }
 
@@ -349,14 +305,8 @@
   border-bottom: 1px solid #e8eee4;
 }
 
-.momo-heading-icon {
-  font-size: 23px;
-}
-
-.momo-heading strong {
-  color: #344a40;
-  font-size: 14px;
-}
+.momo-heading-icon { font-size: 23px; }
+.momo-heading strong { color: #344a40; font-size: 14px; }
 
 .momo-level {
   margin-left: auto;
@@ -368,11 +318,7 @@
   font-weight: 700;
 }
 
-.momo-stats {
-  display: grid;
-  gap: 13px;
-  padding: 15px 0;
-}
+.momo-stats { display: grid; gap: 13px; padding: 15px 0; }
 
 .momo-stat {
   display: grid;
@@ -382,14 +328,8 @@
   min-width: 0;
 }
 
-.momo-stat-icon {
-  font-size: 17px;
-}
-
-.momo-stat-label {
-  color: #66776a;
-  font-size: 10px;
-}
+.momo-stat-icon { font-size: 17px; }
+.momo-stat-label { color: #66776a; font-size: 10px; }
 
 .momo-progress {
   height: 9px;
@@ -407,13 +347,8 @@
   transition: width .35s ease;
 }
 
-.momo-stat:nth-child(2) .momo-progress span {
-  background: #efc44f;
-}
-
-.momo-stat:nth-child(3) .momo-progress span {
-  background: #78b1ee;
-}
+.momo-stat:nth-child(2) .momo-progress span { background: #efc44f; }
+.momo-stat:nth-child(3) .momo-progress span { background: #78b1ee; }
 
 .momo-actions {
   display: grid;
@@ -440,18 +375,9 @@
   transition: transform .15s ease, background .15s ease;
 }
 
-.momo-actions button span {
-  font-size: 23px;
-}
-
-.momo-actions button:hover {
-  transform: translateY(-2px);
-  background: #eaf5e8;
-}
-
-.momo-actions button:active {
-  transform: scale(.96);
-}
+.momo-actions button span { font-size: 23px; }
+.momo-actions button:hover { transform: translateY(-2px); background: #eaf5e8; }
+.momo-actions button:active { transform: scale(.96); }
 
 .momo-score {
   display: flex;
@@ -464,36 +390,37 @@
   font-size: 10px;
 }
 
-.momo-score strong {
-  color: #729b75;
-  font-size: 14px;
-}
+.momo-score strong { color: #729b75; font-size: 14px; }
 
-.momo-character.happy {
-  animation: momo-happy .45s ease-in-out 2;
-}
-
-.momo-character.eat {
-  animation: momo-eat .25s ease-in-out 4;
-}
-
-.momo-character.play {
-  animation: momo-jump .42s ease-in-out 2;
-}
-
+/* ===== Keyframes ===== */
 @keyframes momo-breathe {
   0%, 100% { translate: 0 0; }
-  50% { translate: 0 -4px; }
+  50% { translate: 0 -3px; }
 }
 
-@keyframes momo-shadow {
-  from { scale: 1 1; opacity: .8; }
-  to { scale: .8 1; opacity: .45; }
+@keyframes momo-sleep {
+  0%, 100% { scale: 1 1; }
+  50% { scale: 1 .96; }
 }
 
-@keyframes momo-float {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -7px; }
+@keyframes momo-walk {
+  0%, 100% { translate: 0 0; rotate: -1.5deg; }
+  50% { translate: 0 -6px; rotate: 1.5deg; }
+}
+
+@keyframes momo-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(.1); }
+}
+
+@keyframes momo-tail-wag {
+  0%, 100% { transform: rotate(-28deg); }
+  50% { transform: rotate(-10deg); }
+}
+
+@keyframes momo-ear-twitch {
+  0%, 90%, 100% { translate: 0 0; }
+  94% { translate: 0 -2px; }
 }
 
 @keyframes momo-message-in {
@@ -513,76 +440,47 @@
 
 @keyframes momo-jump {
   0%, 100% { translate: 0 0; rotate: 0deg; }
-  50% { translate: 0 -20px; rotate: 8deg; }
+  50% { translate: 0 -24px; rotate: 8deg; }
 }
 
+@keyframes momo-particle {
+  0%   { opacity: 0; transform: translate(0, 0) scale(.6); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx, 0), -70px) scale(1.2); }
+}
+
+@keyframes momo-zzz {
+  0%, 100% { opacity: .3; translate: 0 0; }
+  50% { opacity: 1; translate: 6px -8px; }
+}
+
+/* ===== Responsive ===== */
 @media (max-width: 1250px) {
-  .momo-pet {
-    grid-template-columns: minmax(145px, 1fr) 240px;
-    width: 540px;
-  }
-
-  .momo-stat {
-    grid-template-columns: 21px 72px minmax(0, 1fr);
-  }
-
-  .momo-garden {
-    min-height: 265px;
-  }
+  .momo-pet { grid-template-columns: minmax(145px, 1fr) 240px; width: 540px; }
+  .momo-stat { grid-template-columns: 21px 72px minmax(0, 1fr); }
 }
 
 @media (max-width: 900px) {
-  .momo-pet {
-    width: 100%;
-    grid-template-columns: minmax(0, 1fr) minmax(225px, 265px);
-  }
-
-  .momo-garden {
-    min-height: 280px;
-  }
+  .momo-pet { width: 100%; grid-template-columns: minmax(0, 1fr) minmax(225px, 265px); }
 }
 
 @media (max-width: 600px) {
-  .momo-pet {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 10px;
-  }
-
-  .momo-garden {
-    min-height: 235px;
-  }
-
-  .momo-character {
-    bottom: 18px;
-  }
-
-  .momo-panel {
-    width: 100%;
-  }
-
-  .momo-stat {
-    grid-template-columns: 25px 90px minmax(0, 1fr);
-  }
-
-  .momo-stat-label {
-    font-size: 11px;
-  }
-
-  .momo-actions button {
-    font-size: 11px;
-  }
+  .momo-pet { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .momo-garden { min-height: 210px; }
+  .momo-walker { transform: translateX(-50%) scale(.9); transform-origin: center bottom; }
+  .momo-panel { width: 100%; }
+  .momo-stat { grid-template-columns: 25px 90px minmax(0, 1fr); }
+  .momo-stat-label { font-size: 11px; }
+  .momo-actions button { font-size: 11px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .momo-walker { transition: none; }
   .momo-character,
-  .momo-ground,
-  .garden-heart,
-  .momo-bubble {
-    animation: none;
-  }
-
+  .momo-tail,
+  .momo-ear,
+  .momo-eye,
+  .momo-zzz { animation: none !important; }
   .momo-progress span,
-  .momo-actions button {
-    transition: none;
-  }
+  .momo-actions button { transition: none; }
 }

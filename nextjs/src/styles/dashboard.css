@@ -659,67 +659,133 @@
   }
 }
 
-/* Final Momo welcome-card layout */
+/* FOREST WELCOME CARD — Momo integrated into the background */
 .welcome-banner {
   position: relative;
-  display: block;
-  min-height: 320px;
-  padding: 40px 0 40px 40px;
-  padding-right: 0;
-  overflow: hidden;
   isolation: isolate;
+  overflow: hidden;
+  min-height: 350px;
+  padding: 42px 40px;
+  border: 1px solid rgba(232, 242, 218, .22);
+  border-radius: 26px;
   box-sizing: border-box;
+  background:
+    radial-gradient(ellipse at 80% 0%, rgba(205, 220, 165, .32), transparent 36%),
+    radial-gradient(ellipse at 70% 100%, rgba(184, 207, 143, .42), transparent 43%),
+    linear-gradient(115deg, #6f8f7d 0%, #7f9b83 48%, #718d70 100%);
+  box-shadow: 0 16px 38px rgba(54, 83, 62, .18);
+}
+
+.welcome-banner::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  opacity: .58;
+  background:
+    radial-gradient(ellipse at 69% 8%, #c4d1a0 0 5%, transparent 5.6%),
+    radial-gradient(ellipse at 75% 2%, #c4d1a0 0 8%, transparent 8.6%),
+    radial-gradient(ellipse at 83% 12%, #b4c99b 0 9%, transparent 9.6%),
+    radial-gradient(ellipse at 93% 23%, #a5bd91 0 8%, transparent 8.6%),
+    radial-gradient(ellipse at 61% 34%, rgba(200, 216, 177, .45) 0 7%, transparent 7.6%),
+    linear-gradient(0deg, rgba(191, 210, 150, .3), transparent 45%);
+}
+
+.welcome-banner::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: -3%;
+  bottom: -46px;
+  left: 35%;
+  height: 135px;
+  border-radius: 50% 50% 0 0;
+  background: linear-gradient(180deg, rgba(191, 211, 151, .62), #a9c18d);
+  pointer-events: none;
 }
 
 .welcome-banner > h1,
 .welcome-banner > p,
 .welcome-banner > .banner-buttons {
   position: relative;
-  z-index: 2;
-  width: calc(100% - 680px);
-  max-width: 680px;
+  z-index: 5;
+  width: 45%;
+  max-width: 650px;
 }
 
 .welcome-banner > h1 {
-  font-size: clamp(25px, 2.2vw, 36px);
+  margin: 0 0 14px;
+  color: #fff;
+  font-size: clamp(27px, 2.3vw, 38px);
+  font-weight: 750;
   line-height: 1.2;
-  letter-spacing: 0;
+  letter-spacing: -.5px;
   overflow-wrap: anywhere;
 }
 
 .welcome-banner > p {
+  margin: 0 0 25px;
+  color: rgba(255, 255, 255, .94);
   font-size: 15px;
-  line-height: 1.55;
-  margin-bottom: 24px;
+  line-height: 1.65;
+}
+
+.welcome-banner > .banner-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 11px;
+}
+
+.welcome-banner > .banner-buttons .btn-glass {
+  min-height: 44px;
+  padding: 10px 19px;
+  border: 1px solid rgba(255,255,255,.58);
+  border-radius: 999px;
+  background: rgba(255,255,255,.13);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 650;
+  backdrop-filter: blur(6px);
+}
+
+.welcome-banner > .banner-buttons .btn-glass:hover {
+  background: rgba(255,255,255,.24);
 }
 
 .welcome-banner > .momo-pet {
   position: absolute;
-  z-index: 1;
+  z-index: 4;
   top: 50%;
   right: 18px;
-  width: min(650px, 58%);
-  max-width: none;
+  width: 56%;
+  max-width: 680px;
   transform: translateY(-50%);
 }
 
-@media (max-width: 1450px) {
+.stats-grid {
+  position: relative;
+  z-index: 0;
+}
+
+@media (max-width: 1250px) {
   .welcome-banner {
-    padding-left: 30px;
+    padding: 34px 28px;
   }
 
   .welcome-banner > h1,
   .welcome-banner > p,
   .welcome-banner > .banner-buttons {
-    width: calc(100% - 570px);
+    width: 42%;
   }
 
   .welcome-banner > .momo-pet {
-    width: 540px;
+    width: 56%;
+    right: 12px;
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 950px) {
   .welcome-banner {
     min-height: 0;
     padding: 30px;
@@ -729,7 +795,7 @@
   .welcome-banner > p,
   .welcome-banner > .banner-buttons {
     width: 100%;
-    max-width: 100%;
+    max-width: 680px;
   }
 
   .welcome-banner > .momo-pet {
@@ -737,6 +803,7 @@
     top: auto;
     right: auto;
     width: 100%;
+    max-width: none;
     margin-top: 24px;
     transform: none;
   }
@@ -744,14 +811,75 @@
 
 @media (max-width: 600px) {
   .welcome-banner {
-    padding: 21px 17px;
+    padding: 22px 17px;
+    border-radius: 19px;
   }
 
   .welcome-banner > h1 {
-    font-size: 23px;
+    font-size: 24px;
   }
 
   .welcome-banner > p {
     font-size: 12px;
+    margin-bottom: 17px;
   }
+
+  .welcome-banner > .banner-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .welcome-banner > .banner-buttons .btn-glass {
+    width: 100%;
+  }
+}
+
+/* FINAL: photographic forest across the entire welcome card */
+.welcome-banner {
+  background-color: #284a31;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(15, 37, 22, .76) 0%,
+      rgba(20, 43, 25, .57) 38%,
+      rgba(20, 43, 25, .20) 72%,
+      rgba(18, 38, 22, .38) 100%
+    ),
+    url("https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=2400&q=90");
+  background-size: cover;
+  background-position: center 52%;
+  background-repeat: no-repeat;
+}
+
+/* Remove artificial CSS clouds and hills */
+.welcome-banner::before,
+.welcome-banner::after {
+  content: none;
+}
+
+/* Keep the garden transparent so the real photo remains visible */
+.momo-garden {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.momo-garden::before,
+.momo-garden::after {
+  content: none !important;
+}
+
+.garden-cloud {
+  display: none;
+}
+
+.garden-tree,
+.garden-fence,
+.garden-hill {
+  display: none;
+}
+
+.garden-flower {
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
 }
