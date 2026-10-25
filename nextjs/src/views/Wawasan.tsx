@@ -616,11 +616,11 @@ export default function Wawasan() {
                     className="habit-progress-fill academic-progress"
                     style={{
                       width: `${data && data.totalDays > 0
-                          ? Math.min(
-                            100,
-                            (data.totalCheckins / data.totalDays) * 100,
-                          )
-                          : 0
+                        ? Math.min(
+                          100,
+                          (data.totalCheckins / data.totalDays) * 100,
+                        )
+                        : 0
                         }%`,
                     }}
                   />

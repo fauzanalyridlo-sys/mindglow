@@ -1,66 +1,69 @@
-/* Container Utama Halaman Journal */
 .journal-page-container {
   width: 100%;
-  max-width: 1100px; 
+  max-width: 1100px;
   margin: 0 auto;
-  /* Urutan padding: atas(40px) kiri-kanan(30px) bawah(120px) */
-  padding: 40px 30px 120px; 
-  background-color: transparent; 
+  padding: 40px 30px 120px;
+  background-color: transparent;
   box-sizing: border-box;
-  min-height: 80vh; /* Memastikan halaman cukup tinggi meskipun isinya kosong */
+  min-height: 80vh;
 }
 
-/* --- BAGIAN JUDUL --- */
+.journal-page-container *,
+.journal-page-container *::before,
+.journal-page-container *::after {
+  box-sizing: border-box;
+}
+
 .journal-header {
-  margin-bottom: 40px; /* Jarak ke kotak form diperbesar agar lebih lega */
+  margin-bottom: 40px;
 }
 
 .journal-header h1 {
-  font-size: 48px; /* Diperbesar agar sesuai proporsi desain asli */
-  color: #2c363f; /* Warna biru dongker keabu-abuan gelap */
+  font-size: 48px;
+  color: #2c363f;
   font-weight: 800;
-  margin-bottom: 5px;
+  margin: 0 0 5px;
   letter-spacing: 0.5px;
+  overflow-wrap: anywhere;
 }
 
 .journal-header p {
   font-size: 18px;
   color: #5a6673;
   margin-top: 0;
+  line-height: 1.6;
 }
 
-/* --- KOTAK UTAMA JURNAL --- */
 .journal-input-card {
   background-color: transparent;
-  border: 1px solid #2c363f; /* Garis tepi disamakan dengan warna teks judul */
-  border-radius: 24px; /* Lengkungan luar diperhalus */
-  padding: 40px; /* Ruang dalam diperluas agar tulisan tidak menempel ke garis */
+  border: 1px solid #2c363f;
+  border-radius: 24px;
+  padding: 40px;
   margin-bottom: 60px;
+  min-width: 0;
 }
 
-/* --- AREA KETIK (TEXTAREA) --- */
 .journal-textarea {
+  display: block;
   width: 100%;
-  min-height: 120px; /* Awalnya dibuat lebih pendek agar tidak makan tempat */
+  min-height: 120px;
   background-color: transparent;
-  border: 1px solid #aebac1; 
-  border-radius: 16px; 
+  border: 1px solid #aebac1;
+  border-radius: 16px;
   padding: 24px;
   font-size: 16px;
-  line-height: 1.6; 
+  line-height: 1.6;
   color: #333;
-  font-family: inherit; 
-  resize: none; /* Dihilangkan karena sekarang sudah otomatis memanjang */
-  overflow: hidden; /* Sembunyikan scrollbar di dalam kotak teks */
+  font-family: inherit;
+  resize: none;
+  overflow: hidden;
   outline: none;
-  box-sizing: border-box;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Efek saat pengguna mulai mengetik di dalam kotak */
 .journal-textarea:focus {
-  border-color: #8db298; 
-  box-shadow: 0 0 0 3px rgba(141, 178, 152, 0.2); /* Nyala hijau sangat tipis di sekitar garis */
+  border-color: #8db298;
+  box-shadow: 0 0 0 3px rgba(141, 178, 152, 0.2);
 }
 
 .journal-textarea::placeholder {
@@ -68,38 +71,46 @@
   font-size: 17px;
 }
 
-/* --- BAGIAN BAWAH KOTAK (FOOTER KOTAK) --- */
 .journal-input-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 24px; /* Jarak ditata ulang agar tombol pas */
+  gap: 16px;
+  margin-top: 24px;
 }
 
 .auto-save-text {
   font-size: 14px;
   color: #8b96a5;
+  line-height: 1.5;
 }
 
-/* --- TOMBOL SIMPAN --- */
 .btn-simpan-journal {
-  padding: 12px 36px; /* Dibuat sedikit lebih panjang (bentuk pil) */
+  flex-shrink: 0;
+  padding: 12px 36px;
   background: linear-gradient(180deg, #b6d3c3 0%, #8db298 100%);
   color: #1a3442;
   font-weight: 700;
   font-size: 15px;
-  border: none; /* Garis dihilangkan agar terlihat bersih seperti desain */
-  border-radius: 50px; 
+  font-family: inherit;
+  border: none;
+  border-radius: 50px;
   cursor: pointer;
-  /* Bayangan hijau untuk memberi efek menyatu dengan tema */
-  box-shadow: 0 6px 12px rgba(141, 178, 152, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.6);
-  transition: all 0.3s ease;
+  box-shadow:
+    0 6px 12px rgba(141, 178, 152, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6);
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .btn-simpan-journal:hover {
   background: linear-gradient(180deg, #c4e0d0 0%, #97bea3 100%);
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(141, 178, 152, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 8px 16px rgba(141, 178, 152, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.7);
 }
 
 .btn-simpan-journal:active {
@@ -107,81 +118,95 @@
   box-shadow: 0 2px 6px rgba(141, 178, 152, 0.2);
 }
 
-/* --- RIWAYAT --- */
+.btn-simpan-journal:focus-visible,
+.btn-delete-journal:focus-visible {
+  outline: 2px solid #526b57;
+  outline-offset: 3px;
+}
+
+.journal-riwayat-section {
+  min-width: 0;
+}
+
 .journal-riwayat-section h2 {
   font-size: 28px;
   color: #2c363f;
   font-weight: normal;
-  font-family: 'Times New Roman', Times, serif; 
-  border-bottom: 1px solid #e2e8f0; /* Tambahan garis bawah tipis sebagai pembatas elegan */
+  font-family: "Times New Roman", Times, serif;
+  border-bottom: 1px solid #e2e8f0;
   padding-bottom: 12px;
+  margin-bottom: 0;
+  overflow-wrap: anywhere;
 }
 
-/* --- DAFTAR & KARTU RIWAYAT --- */
 .journal-history-list {
   display: flex;
   flex-direction: column;
-  gap: 24px; /* Jarak antar kotak curhatan */
+  gap: 24px;
   margin-top: 30px;
+  min-width: 0;
 }
 
 .journal-history-card {
-  background-color: #ffffff; /* Latar belakang putih solid agar tidak tembus pandang */
-  border: 1px solid #d1d5db; /* Garis tepi abu-abu lembut */
-  border-radius: 20px; 
+  min-width: 0;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
   padding: 24px 30px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); /* Bayangan sangat halus */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .journal-history-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06); /* Bayangan membesar saat disentuh mouse */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
 }
 
-/* Teks Curhatan di dalam Kartu */
 .journal-text {
   font-size: 16px;
   color: #1f2937;
   line-height: 1.7;
   margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
-/* --- HEADER KARTU RIWAYAT (Tanggal, Waktu & Tombol Hapus) --- */
 .journal-card-header {
   display: flex;
-  justify-content: space-between; /* Memisahkan tanggal ke kiri, X ke kanan */
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px; /* Jarak antara header kartu ke teks curhatan */
+  gap: 12px;
+  margin-bottom: 15px;
+  min-width: 0;
 }
 
-/* Bungkus Tanggal & Waktu */
 .journal-date-time {
   display: flex;
   align-items: center;
-  gap: 8px; /* Jarak antara tanggal dan waktu */
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
 }
 
-/* Teks Tanggal */
 .journal-date {
   font-size: 14px;
-  color: #5a6673; /* Warna abu-abu gelap */
+  color: #5a6673;
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
-/* Teks Waktu (Ukurannya dibuat sedikit lebih kecil/sedang) */
 .journal-time {
   font-size: 13px;
-  color: #9ca3af; /* Warna abu-abu yang lebih terang dari tanggal */
+  color: #9ca3af;
   font-weight: 400;
 }
 
-/* Tombol Hapus (Silang X) */
 .btn-delete-journal {
+  flex-shrink: 0;
   background: transparent;
   border: none;
-  color: #aebac1; /* Warna awal abu-abu pudar */
-  font-size: 26px; /* Ukuran X cukup besar tapi tipis */
+  color: #aebac1;
+  font-size: 26px;
   cursor: pointer;
   padding: 0;
   line-height: 1;
@@ -191,12 +216,381 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: all 0.2s ease;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
-/* Efek saat kursor diarahkan ke tombol Hapus */
 .btn-delete-journal:hover {
-  color: #ef4444; /* Berubah menjadi merah cerah */
-  background-color: #fee2e2; /* Latar belakang merah sangat pudar */
-  transform: scale(1.1); /* Sedikit membesar */
+  color: #ef4444;
+  background-color: #fee2e2;
+  transform: scale(1.1);
+}
+
+@media (max-width: 1024px) {
+  .journal-page-container {
+    padding: 32px 24px 80px;
+  }
+
+  .journal-header {
+    margin-bottom: 28px;
+  }
+
+  .journal-header h1 {
+    font-size: 40px;
+  }
+
+  .journal-header p {
+    font-size: 16px;
+  }
+
+  .journal-input-card {
+    padding: 30px;
+    margin-bottom: 44px;
+  }
+
+  .journal-textarea {
+    min-height: 110px;
+    padding: 18px;
+    font-size: 15px;
+  }
+
+  .journal-textarea::placeholder {
+    font-size: 15px;
+  }
+
+  .journal-input-footer {
+    margin-top: 18px;
+  }
+
+  .journal-riwayat-section h2 {
+    font-size: 25px;
+  }
+
+  .journal-history-list {
+    gap: 18px;
+    margin-top: 22px;
+  }
+
+  .journal-history-card {
+    padding: 20px 24px;
+  }
+
+  .journal-text {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .journal-page-container {
+    padding: 24px 18px 56px;
+    min-height: 0;
+  }
+
+  .journal-header {
+    margin-bottom: 22px;
+  }
+
+  .journal-header h1 {
+    font-size: 32px;
+    letter-spacing: 0;
+  }
+
+  .journal-header p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .journal-input-card {
+    padding: 22px;
+    margin-bottom: 34px;
+    border-radius: 18px;
+  }
+
+  .journal-textarea {
+    min-height: 100px;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .journal-textarea::placeholder {
+    font-size: 14px;
+  }
+
+  .journal-input-footer {
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .auto-save-text {
+    font-size: 12px;
+  }
+
+  .btn-simpan-journal {
+    padding: 10px 24px;
+    font-size: 13px;
+  }
+
+  .journal-riwayat-section h2 {
+    font-size: 24px;
+    padding-bottom: 10px;
+  }
+
+  .journal-history-list {
+    gap: 15px;
+    margin-top: 19px;
+  }
+
+  .journal-history-card {
+    padding: 18px 20px;
+    border-radius: 15px;
+  }
+
+  .journal-card-header {
+    gap: 10px;
+    margin-bottom: 11px;
+  }
+
+  .journal-date-time {
+    gap: 7px;
+  }
+
+  .journal-date {
+    font-size: 12px;
+  }
+
+  .journal-time {
+    font-size: 11px;
+  }
+
+  .btn-delete-journal {
+    width: 28px;
+    height: 28px;
+    font-size: 22px;
+  }
+
+  .journal-text {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+}
+
+@media (max-width: 480px) {
+  .journal-page-container {
+    padding: 20px 14px 40px;
+  }
+
+  .journal-header {
+    margin-bottom: 18px;
+  }
+
+  .journal-header h1 {
+    font-size: 27px;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+    margin-bottom: 5px;
+  }
+
+  .journal-header p {
+    font-size: 13px;
+    line-height: 1.55;
+    margin-bottom: 0;
+  }
+
+  .journal-input-card {
+    padding: 16px;
+    margin-bottom: 28px;
+    border-radius: 15px;
+  }
+
+  .journal-textarea {
+    min-height: 90px;
+    padding: 12px;
+    border-radius: 11px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .journal-textarea::placeholder {
+    font-size: 13px;
+  }
+
+  .journal-textarea:focus {
+    box-shadow: 0 0 0 2px rgba(141, 178, 152, 0.18);
+  }
+
+  .journal-input-footer {
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .auto-save-text {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .btn-simpan-journal {
+    padding: 9px 18px;
+    font-size: 12px;
+  }
+
+  .journal-riwayat-section h2 {
+    font-size: 21px;
+    padding-bottom: 8px;
+  }
+
+  .journal-history-list {
+    gap: 12px;
+    margin-top: 15px;
+  }
+
+  .journal-history-card {
+    padding: 14px;
+    border-radius: 13px;
+  }
+
+  .journal-card-header {
+    gap: 8px;
+    margin-bottom: 9px;
+  }
+
+  .journal-date-time {
+    gap: 6px;
+  }
+
+  .journal-date {
+    font-size: 11px;
+  }
+
+  .journal-time {
+    font-size: 11px;
+  }
+
+  .btn-delete-journal {
+    width: 26px;
+    height: 26px;
+    font-size: 21px;
+  }
+
+  .journal-text {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 360px) {
+  .journal-page-container {
+    padding: 17px 11px 32px;
+  }
+
+  .journal-header {
+    margin-bottom: 15px;
+  }
+
+  .journal-header h1 {
+    font-size: 25px;
+  }
+
+  .journal-header p {
+    font-size: 12px;
+  }
+
+  .journal-input-card {
+    padding: 13px;
+    margin-bottom: 24px;
+    border-radius: 13px;
+  }
+
+  .journal-textarea {
+    min-height: 82px;
+    padding: 11px;
+    font-size: 13px;
+  }
+
+  .journal-textarea::placeholder {
+    font-size: 12px;
+  }
+
+  .journal-input-footer {
+    gap: 8px;
+    margin-top: 11px;
+  }
+
+  .auto-save-text {
+    font-size: 10px;
+  }
+
+  .btn-simpan-journal {
+    padding: 9px 14px;
+    font-size: 11px;
+  }
+
+  .journal-riwayat-section h2 {
+    font-size: 20px;
+  }
+
+  .journal-history-list {
+    gap: 11px;
+    margin-top: 13px;
+  }
+
+  .journal-history-card {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .journal-date {
+    font-size: 10px;
+  }
+
+  .journal-time {
+    font-size: 10px;
+  }
+
+  .btn-delete-journal {
+    width: 24px;
+    height: 24px;
+    font-size: 19px;
+  }
+
+  .journal-text {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+}
+
+@media (hover: none) {
+  .journal-history-card:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  }
+
+  .btn-simpan-journal:hover {
+    transform: none;
+  }
+
+  .btn-delete-journal:hover {
+    transform: none;
+    background-color: transparent;
+    color: #aebac1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .journal-textarea,
+  .btn-simpan-journal,
+  .journal-history-card,
+  .btn-delete-journal {
+    transition: none;
+  }
+
+  .journal-history-card:hover,
+  .btn-simpan-journal:hover,
+  .btn-delete-journal:hover {
+    transform: none;
+  }
 }
