@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import MomoPet from '@/components/pet/MomoPet'
+import MinecraftBackground from '@/components/pet/MinecraftBackground'
 import '../styles/dashboard.css'
 
 type DashboardData = {
@@ -91,6 +92,7 @@ const DashboardPage = () => {
   return (
     <main className="dashboard-container">
       <section className="welcome-banner">
+        <MinecraftBackground />
         <h1>
           Selamat Datang Kembali, {dashboard?.user.name ?? '...'} 👋
         </h1>
