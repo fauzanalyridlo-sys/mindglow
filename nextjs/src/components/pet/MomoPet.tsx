@@ -310,7 +310,7 @@ export default function MomoPet() {
 
       setPet((p) => {
         const energy = p.asleep
-          ? clamp(p.energy + 20)
+          ? clamp(p.energy + 50)
           : clamp(p.energy - 1)
 
         const asleep = p.asleep
