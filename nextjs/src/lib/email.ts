@@ -1,6 +1,5 @@
 import "server-only";
-
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 type SendEmailOptions = {
   to: string;
@@ -13,29 +12,50 @@ export async function sendEmail({
   subject,
   text,
 }: SendEmailOptions) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM;
+  const host = process.env.SMTP_HOST;
+  const port = Number(process.env.SMTP_PORT || "465");
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
 
-  if (!apiKey || !from) {
-    throw new Error(
-      "Konfigurasi pengiriman email belum tersedia."
-    );
+  const missingConfig = [
+    !host && "SMTP_HOST",
+    !process.env.SMTP_PORT && "SMTP_PORT (kosong; default 465 digunakan)",
+    !user && "SMTP_USER",
+    !pass && "SMTP_PASS",
+    !Number.isInteger(port) && "SMTP_PORT (bukan bilangan bulat)",
+    (port < 1 || port > 65535) && "SMTP_PORT (di luar rentang valid)",
+  ].filter(Boolean);
+
+  if (!host || !user || !pass || !Number.isInteger(port) || port < 1 || port > 65535) {
+    console.error("Konfigurasi SMTP bermasalah:", missingConfig);
+    throw new Error("Konfigurasi SMTP belum lengkap.");
   }
 
-  const resend = new Resend(apiKey);
-
-  const { data, error } = await resend.emails.send({
-    from,
-    to,
-    subject,
-    text,
+  const transporter = nodemailer.createTransport({
+    host,
+    port,
+    secure: port === 465,
+    auth: {
+      user,
+      pass,
+    },
   });
 
-  if (error) {
-    console.error("Resend gagal mengirim email:", error.name, error.message);
-
+  try {
+    return await transporter.sendMail({
+      from: {
+        name: "MindGlow",
+        address: user,
+      },
+      to,
+      subject,
+      text,
+    });
+  } catch (error) {
+    console.error(
+      "Pengiriman email SMTP gagal:",
+      error instanceof Error ? error.message : "Unknown error",
+    );
     throw new Error("Gagal mengirim email.");
   }
-
-  return data;
 }
