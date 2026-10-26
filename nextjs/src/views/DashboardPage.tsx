@@ -93,9 +93,11 @@ const DashboardPage = () => {
     <main className="dashboard-container">
       <section className="welcome-banner">
         <MinecraftBackground />
+
         <h1>
           Selamat Datang Kembali, {dashboard?.user.name ?? '...'} 👋
         </h1>
+
         <p>
           Ingat, kamu tidak perlu menyelesaikan semua masalah sekaligus.
           Cukup ambil satu langkah kecil hari ini.
@@ -116,6 +118,7 @@ const DashboardPage = () => {
             🫀 Butuh Relaksasi Cepat
           </button>
         </div>
+
         <MomoPet />
       </section>
 
@@ -147,6 +150,7 @@ const DashboardPage = () => {
 
           <div className="stat-content">
             <p className="stat-title">Suasana Hati Hari Ini</p>
+
             <h3 className="stat-value">
               {loading
                 ? 'Memuat...'
@@ -154,6 +158,7 @@ const DashboardPage = () => {
                   ? mood.mood
                   : 'Belum check-in'}
             </h3>
+
             <p className="stat-subtext">
               {mood
                 ? `Tidur: ${mood.sleepHours} jam • Energi: ${mood.energyLevel}/5`
@@ -192,11 +197,13 @@ const DashboardPage = () => {
 
           <div className="stat-content">
             <p className="stat-title">Deadline Dekat</p>
+
             <h3 className="stat-value">
               {loading
                 ? 'Memuat...'
                 : `${dashboard?.upcomingTasks.count ?? 0} Deadline Dekat`}
             </h3>
+
             <p className="stat-subtext text-red">
               {dashboard?.upcomingTasks.groupCount ?? 0} Tugas Kelompok
             </p>
@@ -221,7 +228,9 @@ const DashboardPage = () => {
 
           <div className="stat-content">
             <p className="stat-title">Ruang Curhat AI</p>
+
             <h3 className="stat-value">Siap Mendengarkan</h3>
+
             <a href="/ai" className="stat-subtext text-blue">
               Mulai Chat &rarr;
             </a>
@@ -232,6 +241,7 @@ const DashboardPage = () => {
       <section className="tasks-section">
         <div className="tasks-header">
           <h2>Tugas Prioritas Akademik</h2>
+
           <a href="/akademik" className="link-all">
             Kelola Semua Tasks &rarr;
           </a>
@@ -250,9 +260,11 @@ const DashboardPage = () => {
                   readOnly
                   aria-label={`Status tugas ${task.name}`}
                 />
+
                 <span className="task-name">
                   {task.name}
                 </span>
+
                 <span className="task-date">
                   {formatDate(task.deadline)}
                 </span>
