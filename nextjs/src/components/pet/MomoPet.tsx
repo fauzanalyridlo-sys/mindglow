@@ -152,75 +152,165 @@ export default function MomoPet() {
     )
   }, [])
 
-  /* ---------- muat data tersimpan dan hadiah check-in ---------- */
+  /* ---------- muat data lokal dan database ---------- */
   useEffect(() => {
-    const id = window.setTimeout(() => {
-      const saved = loadSaved()
+    let cancelled = false
+
+    async function initializePet() {
       const now = Date.now()
+      const localSaved = loadSaved()
 
-      let next: Saved = DEFAULT_SAVED
-      let hours = 0
+      let loaded: Saved = localSaved
+        ? applyOffline(localSaved, now).saved
+        : { ...DEFAULT_SAVED }
 
-      if (saved) {
-        const result = applyOffline(saved, now)
-        next = result.saved
-        hours = result.hours
+      let hours = localSaved
+        ? applyOffline(localSaved, now).hours
+        : 0
+
+      let databaseAvailable = false
+      let migrateLocalProgress = false
+
+      try {
+        const response = await fetch('/api/momo', {
+          method: 'GET',
+          cache: 'no-store',
+        })
+
+        if (response.ok) {
+          const result = await response.json()
+
+          if (result.success && result.data) {
+            const remote = result.data
+            databaseAvailable = true
+
+            // Jika database masih nol tetapi browser memiliki progres lama,
+            // pertahankan progres lokal untuk migrasi awal.
+            migrateLocalProgress =
+              remote.score === 0 &&
+              !!localSaved &&
+              localSaved.score > 0
+
+            if (!migrateLocalProgress) {
+              loaded = {
+                ...loaded,
+                score: remote.score,
+                energy: remote.energy,
+                happiness: remote.happiness,
+                fullness: remote.fullness,
+                lastCheckin:
+                  remote.lastCheckin || loaded.lastCheckin,
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Gagal memuat data Momo dari database:', error)
       }
 
-      const loaded: Saved = { ...next, lastSeen: now }
       const pendingCheckin = localStorage.getItem(
         'momo:pending-checkin'
       )
       const today = todayKey()
       let rewardedForCheckin = false
 
-      if (pendingCheckin) {
-        // Hapus penanda supaya tidak diproses ulang.
-        localStorage.removeItem('momo:pending-checkin')
-
-        // Hadiah hanya diberikan untuk tanggal hari ini, sekali sehari.
-        if (
-          pendingCheckin === today &&
-          loaded.lastCheckin !== today
-        ) {
-          loaded.happiness = clamp(loaded.happiness + 20)
-          loaded.score += 10
-          loaded.lastCheckin = today
-          rewardedForCheckin = true
-        }
+      if (
+        pendingCheckin === today &&
+        loaded.lastCheckin !== today
+      ) {
+        loaded.happiness = clamp(loaded.happiness + 20)
+        loaded.score += 10
+        loaded.lastCheckin = today
+        rewardedForCheckin = true
       }
+
+      if (pendingCheckin) {
+        localStorage.removeItem('momo:pending-checkin')
+      }
+
+      loaded.lastSeen = now
+
+      if (cancelled) return
 
       prevLevel.current = levelProgress(loaded.score).level
       wasSleeping.current = loaded.asleep
       petRef.current = loaded
 
+      saveSaved(loaded)
       setPet(loaded)
       setHydrated(true)
+
+      if (databaseAvailable) {
+        // Migrasikan progres lama jika database masih berstatus awal.
+        // Selain itu, sinkronkan hasil hadiah check-in bila baru diberikan.
+        if (migrateLocalProgress || rewardedForCheckin) {
+          try {
+            await fetch('/api/momo', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                score: loaded.score,
+                energy: loaded.energy,
+                happiness: loaded.happiness,
+                fullness: loaded.fullness,
+                lastCheckin: loaded.lastCheckin,
+              }),
+            })
+          } catch (error) {
+            console.error('Gagal menyinkronkan progres Momo:', error)
+          }
+        }
+      }
 
       if (rewardedForCheckin) {
         setAction('play')
         spawn('🎉', 4)
-        setMessage(
-          'Hebat! Check-in hari ini selesai! +10 XP 🎉'
-        )
+        setMessage('Hebat! Check-in hari ini selesai! +10 XP 🎉')
       } else {
-        setMessage(
-          greeting(hours, new Date().getHours(), !saved)
-        )
+        setMessage(greeting(hours, new Date().getHours(), !localSaved))
       }
-    }, 0)
+    }
 
-    return () => window.clearTimeout(id)
+    void initializePet()
+
+    return () => {
+      cancelled = true
+    }
   }, [spawn])
 
-  /* ---------- simpan setiap ada perubahan ---------- */
+  /* ---------- simpan lokal dan sinkronkan database ---------- */
   useEffect(() => {
     if (!hydrated) return
 
-    saveSaved({
+    const saved: Saved = {
       ...pet,
       lastSeen: Date.now(),
-    })
+    }
+
+    petRef.current = saved
+    saveSaved(saved)
+
+    const timer = window.setTimeout(() => {
+      void fetch('/api/momo', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          score: saved.score,
+          energy: saved.energy,
+          happiness: saved.happiness,
+          fullness: saved.fullness,
+          lastCheckin: saved.lastCheckin,
+        }),
+      }).then((response) => {
+        if (!response.ok) {
+          console.error('Gagal menyimpan status Momo ke database.')
+        }
+      }).catch((error) => {
+        console.error('Gagal menyinkronkan status Momo:', error)
+      })
+    }, 700)
+
+    return () => window.clearTimeout(timer)
   }, [pet, hydrated])
 
   /* ---------- simpan saat tab disembunyikan, hitung waktu ditinggal ---------- */
@@ -775,7 +865,6 @@ export default function MomoPet() {
   /* ---------- reset progres ---------- */
   function resetAll() {
     clearSaved()
-
     localStorage.removeItem('momo:pending-checkin')
 
     const fresh: Saved = {
@@ -794,6 +883,25 @@ export default function MomoPet() {
     setMessage(
       'Halo lagi! Aku Momo. Senang bertemu denganmu! ✨'
     )
+
+    // Sinkronkan status awal Momo ke database.
+    void fetch('/api/momo', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        score: 0,
+        energy: 100,
+        happiness: 70,
+        fullness: 65,
+        lastCheckin: '',
+      }),
+    }).then((response) => {
+      if (!response.ok) {
+        console.error('Gagal mereset data Momo di database.')
+      }
+    }).catch((error) => {
+      console.error('Gagal mengirim reset Momo:', error)
+    })
   }
   /* ---------- drag Momo ---------- */
   function onPointerDown(
