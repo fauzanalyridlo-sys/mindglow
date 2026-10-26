@@ -1,6 +1,7 @@
 **PRODUCT REQUIREMENTS DOCUMENT (PRD)**
 
 Repositori: https://github.com/fauzanalyridlo-sys/mindglow
+
 Figma: https://www.figma.com/design/UDo96YbSVLBGPN65TpP2S7/MindGlow?node-id=0-1&t=f3LnhtznFw3S3zCh-1
 
 ## 1. Ringkasan Produk
