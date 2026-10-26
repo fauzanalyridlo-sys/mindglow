@@ -310,7 +310,7 @@ export default function MomoPet() {
 
       setPet((p) => {
         const energy = p.asleep
-          ? clamp(p.energy + 10)
+          ? clamp(p.energy + 20)
           : clamp(p.energy - 1)
 
         const asleep = p.asleep
@@ -694,7 +694,7 @@ export default function MomoPet() {
     setPet((p) => ({
       ...p,
       fullness: clamp(p.fullness + 15),
-      energy: clamp(p.energy + 5),
+      energy: clamp(p.energy + 10),
       score: p.score + 2,
     }))
 
@@ -776,7 +776,6 @@ export default function MomoPet() {
   function resetAll() {
     clearSaved()
 
-    // Hapus hadiah tertunda agar tidak muncul setelah reset.
     localStorage.removeItem('momo:pending-checkin')
 
     const fresh: Saved = {
@@ -796,7 +795,6 @@ export default function MomoPet() {
       'Halo lagi! Aku Momo. Senang bertemu denganmu! ✨'
     )
   }
-
   /* ---------- drag Momo ---------- */
   function onPointerDown(
     e: React.PointerEvent<HTMLButtonElement>
@@ -881,7 +879,6 @@ export default function MomoPet() {
       className={`momo-pet ${pet.animations ? '' : 'no-anim'}`}
       aria-label={`Pet virtual ${displayName}`}
     >
-      {/* Pembaca layar membaca ucapan Momo lewat sini */}
       <span
         className="momo-sr"
         role="status"
@@ -891,7 +888,6 @@ export default function MomoPet() {
       </span>
 
       <div className="momo-garden" ref={stageRef}>
-        {/* Creeper lewat */}
         {creeper && (
           <div
             className={`momo-creeper ${creeper.fleeing ? 'is-fleeing' : ''
@@ -902,7 +898,6 @@ export default function MomoPet() {
           </div>
         )}
 
-        {/* XP orb */}
         {orbs.map((orb) => (
           <button
             key={orb.id}
@@ -998,7 +993,6 @@ export default function MomoPet() {
           </button>
         </div>
       </div>
-
       <div className="momo-panel">
         <header className="momo-heading">
           <span className="momo-heading-icon">🌿</span>
@@ -1272,7 +1266,6 @@ export default function MomoPet() {
     </aside>
   )
 }
-
 function PetStat({
   icon,
   label,
