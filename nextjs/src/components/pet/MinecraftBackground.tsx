@@ -1,4 +1,7 @@
+'use client'
+
 import './minecraft-bg.css'
+import { useWorld } from './momo-world'
 
 /* ---------- helper: SVG -> data URI untuk tekstur blok ---------- */
 const svgUrl = (inner: string, w: number, h: number) =>
@@ -73,6 +76,10 @@ const FENCE = svgUrl(
   28
 )
 
+const STARS = Array.from({ length: 26 }, (_, i) => i)
+const DROPS = Array.from({ length: 36 }, (_, i) => i)
+const FLAKES = Array.from({ length: 28 }, (_, i) => i)
+
 /* ---------- sprite kecil ---------- */
 function Prop({
   left,
@@ -99,14 +106,12 @@ function Prop({
   )
 }
 
-function Tree({ left, width }: { left: string; width: number }) {
+function Tree({ left, width, className = '' }: { left: string; width: number; className?: string }) {
   return (
-    <Prop left={left} width={width} viewBox="0 0 80 112">
-      {/* batang */}
+    <Prop left={left} width={width} viewBox="0 0 80 112" className={className}>
       <rect x="32" y="64" width="16" height="48" fill="#7a5a34" />
       <rect x="36" y="64" width="3" height="48" fill="#5e4426" />
       <rect x="44" y="64" width="3" height="48" fill="#8c6a3f" />
-      {/* daun */}
       <rect x="0" y="32" width="80" height="32" fill="#3f8f2f" stroke="rgba(0,0,0,.25)" strokeWidth="1.5" />
       <rect x="16" y="0" width="48" height="32" fill="#3f8f2f" stroke="rgba(0,0,0,.25)" strokeWidth="1.5" />
       <g fill="#2f7a24">
@@ -136,15 +141,19 @@ function Flower({ left, color }: { left: string; color: string }) {
   )
 }
 
-function Cloud({
-  top,
-  left,
-  dur,
-}: {
-  top: number
-  left: string
-  dur: number
-}) {
+function Torch({ left }: { left: string }) {
+  return (
+    <Prop left={left} width={16} viewBox="0 0 8 26" className="mc-hide-sm">
+      <g className="mc-fire">
+        <rect className="mc-flame" x="0" y="0" width="8" height="8" fill="#ffb52e" />
+        <rect className="mc-flame" x="2" y="2" width="4" height="4" fill="#fff0a0" />
+      </g>
+      <rect x="2" y="8" width="4" height="18" fill="#8b5a2b" />
+    </Prop>
+  )
+}
+
+function Cloud({ top, left, dur }: { top: number; left: string; dur: number }) {
   return (
     <svg
       className="mc-cloud"
@@ -166,73 +175,115 @@ function Cloud({
    (card: position: relative; overflow: hidden; isolation: isolate)
    ===================================================== */
 export default function MinecraftBackground() {
+  const { phase, weather } = useWorld()
+
   return (
-    <div className="mc-bg" aria-hidden="true">
-      <div className="mc-sky" />
+    <div className="mc-bg" data-phase={phase} data-weather={weather} aria-hidden="true">
+      {/* langit (berganti halus sesuai jam) */}
+      <div className="mc-sky mc-sky-day" />
+      <div className="mc-sky mc-sky-dawn" />
+      <div className="mc-sky mc-sky-dusk" />
+      <div className="mc-sky mc-sky-night" />
+      <div className="mc-sky-rain" />
+
+      <div className="mc-stars">
+        {STARS.map((i) => (
+          <span
+            key={i}
+            className="mc-star"
+            style={{
+              left: `${(i * 53) % 97}%`,
+              top: `${(i * 29) % 100}%`,
+              animationDelay: `${(i % 7) * 0.4}s`,
+            }}
+          />
+        ))}
+      </div>
+
       <div className="mc-sun" />
+      <div className="mc-moon">
+        <i />
+        <i />
+        <i />
+      </div>
 
-      <Cloud top={22} left="40%" dur={14} />
-      <Cloud top={64} left="58%" dur={18} />
-      <Cloud top={30} left="72%" dur={16} />
+      {/* dunia: gunung, bukit, pohon, tanah */}
+      <div className="mc-world">
+        <Cloud top={22} left="40%" dur={14} />
+        <Cloud top={64} left="58%" dur={18} />
+        <Cloud top={30} left="72%" dur={16} />
 
-      <div className="mc-layer mc-mountains" style={{ backgroundImage: MOUNTAINS }} />
-      <div className="mc-layer mc-hills" style={{ backgroundImage: HILLS }} />
+        <div className="mc-layer mc-mountains" style={{ backgroundImage: MOUNTAINS }} />
+        <div className="mc-layer mc-hills" style={{ backgroundImage: HILLS }} />
 
-      {/* pohon */}
-      <Tree left="50%" width={104} />
-      <Tree left="76%" width={80} />
-      <Tree left="93%" width={92} />
+        <Tree left="50%" width={104} />
+        <Tree left="76%" width={80} className="mc-hide-sm" />
+        <Tree left="93%" width={92} className="mc-hide-sm" />
 
-      {/* pagar kayu */}
-      <div className="mc-prop mc-fence" style={{ backgroundImage: FENCE }} />
+        <div className="mc-prop mc-fence mc-hide-sm" style={{ backgroundImage: FENCE }} />
 
-      {/* obor */}
-      <Prop left="calc(58% - 18px)" width={16} viewBox="0 0 8 26">
-        <rect className="mc-flame" x="0" y="0" width="8" height="8" fill="#ffb52e" />
-        <rect className="mc-flame" x="2" y="2" width="4" height="4" fill="#fff0a0" />
-        <rect x="2" y="8" width="4" height="18" fill="#8b5a2b" />
-      </Prop>
-      <Prop left="calc(58% + 150px)" width={16} viewBox="0 0 8 26">
-        <rect className="mc-flame" x="0" y="0" width="8" height="8" fill="#ffb52e" />
-        <rect className="mc-flame" x="2" y="2" width="4" height="4" fill="#fff0a0" />
-        <rect x="2" y="8" width="4" height="18" fill="#8b5a2b" />
-      </Prop>
+        <Prop left="70%" width={32} viewBox="0 0 16 20" className="mc-hide-sm">
+          <rect x="6" y="0" width="4" height="4" fill="#4a7a2e" />
+          <rect x="0" y="4" width="16" height="16" fill="#d9822b" />
+          <rect x="5" y="4" width="2" height="16" fill="#b86a1c" />
+          <rect x="10" y="4" width="2" height="16" fill="#b86a1c" />
+        </Prop>
 
-      {/* labu */}
-      <Prop left="70%" width={32} viewBox="0 0 16 20">
-        <rect x="6" y="0" width="4" height="4" fill="#4a7a2e" />
-        <rect x="0" y="4" width="16" height="16" fill="#d9822b" />
-        <rect x="5" y="4" width="2" height="16" fill="#b86a1c" />
-        <rect x="10" y="4" width="2" height="16" fill="#b86a1c" />
-      </Prop>
+        <Prop left="48%" width={28} viewBox="0 0 14 12">
+          <rect x="5" y="6" width="4" height="6" fill="#e8dcc0" />
+          <rect x="0" y="0" width="14" height="6" fill="#e0443c" />
+          <rect x="3" y="1" width="2" height="2" fill="#fff" />
+          <rect x="9" y="2" width="2" height="2" fill="#fff" />
+        </Prop>
 
-      {/* jamur merah */}
-      <Prop left="48%" width={28} viewBox="0 0 14 12">
-        <rect x="5" y="6" width="4" height="6" fill="#e8dcc0" />
-        <rect x="0" y="0" width="14" height="6" fill="#e0443c" />
-        <rect x="3" y="1" width="2" height="2" fill="#fff" />
-        <rect x="9" y="2" width="2" height="2" fill="#fff" />
-      </Prop>
+        <Flower left="46%" color="#e0443c" />
+        <Flower left="64%" color="#f5d63d" />
+        <Flower left="68%" color="#5bc0de" />
+        <Flower left="73%" color="#b86bd6" />
+        <Flower left="84%" color="#e0443c" />
 
-      {/* bunga */}
-      <Flower left="46%" color="#e0443c" />
-      <Flower left="64%" color="#f5d63d" />
-      <Flower left="68%" color="#5bc0de" />
-      <Flower left="73%" color="#b86bd6" />
-      <Flower left="84%" color="#e0443c" />
+        <div
+          className="mc-ground"
+          style={{ backgroundImage: `${GRASS}, ${DIRT}, ${STONE}` }}
+        />
+        <div className="mc-snowcap" />
+      </div>
 
-      {/* tanah: rumput, tanah, batu */}
-      <div
-        className="mc-ground"
-        style={{ backgroundImage: `${GRASS}, ${DIRT}, ${STONE}` }}
-      />
+      {/* obor + cahaya (tidak ikut meredup) */}
+      <Torch left="calc(58% - 18px)" />
+      <Torch left="calc(58% + 150px)" />
+      <span className="mc-glow mc-hide-sm" style={{ left: 'calc(58% - 10px)' }} />
+      <span className="mc-glow mc-hide-sm" style={{ left: 'calc(58% + 158px)' }} />
 
-      {/* XP orb */}
-      <span className="mc-orb" style={{ left: '54%', top: '38%', animationDelay: '0s' }} />
-      <span className="mc-orb" style={{ left: '57%', top: '30%', animationDelay: '.3s' }} />
-      <span className="mc-orb" style={{ left: '60%', top: '40%', animationDelay: '.6s' }} />
+      {/* cuaca */}
+      <div className="mc-weather mc-rain">
+        {DROPS.map((i) => (
+          <span
+            key={i}
+            className="mc-drop"
+            style={{
+              left: `${(i * 29) % 100}%`,
+              animationDelay: `${((i * 13) % 20) / 10}s`,
+              animationDuration: `${0.55 + ((i * 7) % 5) / 20}s`,
+            }}
+          />
+        ))}
+      </div>
+      <div className="mc-weather mc-snow">
+        {FLAKES.map((i) => (
+          <span
+            key={i}
+            className="mc-flake"
+            style={{
+              left: `${(i * 37) % 100}%`,
+              animationDelay: `${((i * 11) % 30) / 10}s`,
+              animationDuration: `${3.2 + ((i * 5) % 6) / 3}s`,
+            }}
+          />
+        ))}
+      </div>
 
-      {/* peredup di sisi kiri supaya teks tetap terbaca */}
+      {/* peredup kiri supaya teks tetap terbaca */}
       <div className="mc-shade" />
     </div>
   )

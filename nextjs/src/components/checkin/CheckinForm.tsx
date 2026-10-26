@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
@@ -75,7 +74,9 @@ export default function CheckinForm() {
 
       if (!response.ok || !result.success) {
         if (response.status === 401) {
-          setMessage('Silakan login terlebih dahulu untuk menggunakan Check-in.')
+          setMessage(
+            'Silakan login terlebih dahulu untuk menggunakan Check-in.'
+          )
         } else {
           setMessage(result.message ?? 'Data Check-in gagal dimuat.')
         }
@@ -96,7 +97,9 @@ export default function CheckinForm() {
         return
       }
 
-      setMessage('Tidak dapat memuat Check-in. Periksa koneksi lalu coba lagi.')
+      setMessage(
+        'Tidak dapat memuat Check-in. Periksa koneksi lalu coba lagi.'
+      )
     } finally {
       if (!signal.aborted) {
         setIsLoading(false)
@@ -190,14 +193,28 @@ export default function CheckinForm() {
         if (response.status === 401) {
           setMessage('Sesi login tidak ditemukan. Silakan login kembali.')
         } else {
-          setMessage(result.message ?? 'Check-in gagal disimpan. Coba lagi.')
+          setMessage(
+            result.message ?? 'Check-in gagal disimpan. Coba lagi.'
+          )
         }
         return
       }
 
+      // Tandai hadiah Momo setelah check-in berhasil disimpan.
+      const now = new Date()
+      const today = [
+        now.getFullYear(),
+        String(now.getMonth() + 1).padStart(2, '0'),
+        String(now.getDate()).padStart(2, '0'),
+      ].join('-')
+
+      localStorage.setItem('momo:pending-checkin', today)
+
       setShowSuccess(true)
     } catch {
-      setMessage('Tidak dapat terhubung ke server. Periksa koneksi lalu coba lagi.')
+      setMessage(
+        'Tidak dapat terhubung ke server. Periksa koneksi lalu coba lagi.'
+      )
     } finally {
       setIsSaving(false)
     }
@@ -251,7 +268,9 @@ export default function CheckinForm() {
             max={5}
             step={1}
             value={energyLevel}
-            onChange={(event) => setEnergyLevel(Number(event.target.value))}
+            onChange={(event) =>
+              setEnergyLevel(Number(event.target.value))
+            }
             aria-valuetext={energyLabels[energyLevel]}
             disabled={isLoading || isSaving}
           />
@@ -306,7 +325,10 @@ export default function CheckinForm() {
             </div>
 
             <div className="checkin-other-activity">
-              <label htmlFor="daily-other-activity" className="sr-only">
+              <label
+                htmlFor="daily-other-activity"
+                className="sr-only"
+              >
                 Aktivitas lainnya
               </label>
 
@@ -355,7 +377,10 @@ export default function CheckinForm() {
             aria-labelledby="daily-checkin-success-title"
             aria-describedby="daily-checkin-success-description"
           >
-            <div className="daily-checkin-success-icon" aria-hidden="true">
+            <div
+              className="daily-checkin-success-icon"
+              aria-hidden="true"
+            >
               ✓
             </div>
 

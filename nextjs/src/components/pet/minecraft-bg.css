@@ -1,10 +1,12 @@
 .mc-bg {
-  --mc-b: 32px;                    /* ukuran 1 blok */
-  --mc-floor: calc(var(--mc-b) * 3); /* tinggi tanah (3 baris blok) */
+  --mc-b: 32px;
+  /* ukuran 1 blok */
+  --mc-floor: calc(var(--mc-b) * 3);
+  /* tinggi tanah (3 baris blok) */
 
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
   overflow: hidden;
   pointer-events: none;
   image-rendering: pixelated;
@@ -14,11 +16,81 @@
   pointer-events: none;
 }
 
-/* Langit */
+/* ===== Langit: 4 lapis, berganti halus ===== */
 .mc-sky {
   position: absolute;
   inset: 0;
+  opacity: 0;
+  transition: opacity 2.5s ease;
+}
+
+.mc-sky-day {
   background: linear-gradient(180deg, #5aa7e6 0%, #8ec9f0 55%, #d3ecf3 100%);
+}
+
+.mc-sky-dawn {
+  background: linear-gradient(180deg, #5d74c0 0%, #f0a6a6 58%, #ffdca8 100%);
+}
+
+.mc-sky-dusk {
+  background: linear-gradient(180deg, #34428a 0%, #d9686f 60%, #ffbd7e 100%);
+}
+
+.mc-sky-night {
+  background: linear-gradient(180deg, #070d24 0%, #14204a 60%, #24366b 100%);
+}
+
+.mc-bg[data-phase='day'] .mc-sky-day,
+.mc-bg[data-phase='dawn'] .mc-sky-dawn,
+.mc-bg[data-phase='dusk'] .mc-sky-dusk,
+.mc-bg[data-phase='night'] .mc-sky-night {
+  opacity: 1;
+}
+
+/* mendung saat hujan / salju */
+.mc-sky-rain {
+  position: absolute;
+  inset: 0;
+  background: #3b4a5c;
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+
+.mc-bg[data-weather='rain'] .mc-sky-rain {
+  opacity: .45;
+}
+
+.mc-bg[data-weather='snow'] .mc-sky-rain {
+  opacity: .22;
+}
+
+/* ===== Bintang, matahari, bulan ===== */
+.mc-stars {
+  position: absolute;
+  inset: 0 0 40% 0;
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+
+.mc-bg[data-phase='night'] .mc-stars {
+  opacity: 1;
+}
+
+.mc-bg[data-phase='dawn'] .mc-stars,
+.mc-bg[data-phase='dusk'] .mc-stars {
+  opacity: .25;
+}
+
+.mc-bg[data-weather='rain'] .mc-stars {
+  opacity: .2;
+}
+
+.mc-star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #fff;
+  animation: mc-twinkle 2.4s ease-in-out infinite;
 }
 
 .mc-sun {
@@ -31,6 +103,83 @@
   box-shadow:
     0 0 0 10px rgba(255, 228, 107, .28),
     0 0 0 22px rgba(255, 228, 107, .14);
+  transition: top 2.5s ease, opacity 1.5s ease, background 2.5s ease;
+}
+
+.mc-bg[data-phase='dawn'] .mc-sun,
+.mc-bg[data-phase='dusk'] .mc-sun {
+  top: 118px;
+  background: #ffb25e;
+}
+
+.mc-bg[data-phase='night'] .mc-sun {
+  top: 190px;
+  opacity: 0;
+}
+
+.mc-bg[data-weather='rain'] .mc-sun {
+  opacity: .25;
+}
+
+.mc-moon {
+  position: absolute;
+  top: 30px;
+  left: 66%;
+  width: 44px;
+  height: 44px;
+  background: #e8edf5;
+  box-shadow: 0 0 0 8px rgba(232, 237, 245, .15);
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+
+.mc-bg[data-phase='night'] .mc-moon {
+  opacity: 1;
+}
+
+.mc-moon i {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #c4ccda;
+}
+
+.mc-moon i:nth-child(1) {
+  top: 8px;
+  left: 8px;
+}
+
+.mc-moon i:nth-child(2) {
+  top: 24px;
+  left: 24px;
+  width: 12px;
+  height: 8px;
+}
+
+.mc-moon i:nth-child(3) {
+  top: 6px;
+  left: 28px;
+  width: 6px;
+  height: 6px;
+}
+
+/* ===== Dunia (meredup / menghangat sesuai fase) ===== */
+.mc-world {
+  position: absolute;
+  inset: 0;
+  transition: filter 2.5s ease;
+}
+
+.mc-bg[data-phase='dawn'] .mc-world {
+  filter: brightness(.95) sepia(.18) saturate(1.1);
+}
+
+.mc-bg[data-phase='dusk'] .mc-world {
+  filter: brightness(.82) sepia(.35) hue-rotate(-12deg) saturate(1.15);
+}
+
+.mc-bg[data-phase='night'] .mc-world {
+  filter: brightness(.42) saturate(.75) hue-rotate(8deg);
 }
 
 .mc-cloud {
@@ -41,7 +190,6 @@
   animation: mc-cloud 14s ease-in-out infinite alternate;
 }
 
-/* Lapisan gunung & bukit (berulang horizontal) */
 .mc-layer {
   position: absolute;
   right: 0;
@@ -62,7 +210,6 @@
   background-size: 512px 96px;
 }
 
-/* Sprite yang berdiri di atas rumput */
 .mc-prop {
   position: absolute;
   bottom: var(--mc-floor);
@@ -78,7 +225,6 @@
   background-position: left bottom;
 }
 
-/* Tanah: rumput, tanah, batu */
 .mc-ground {
   position: absolute;
   right: 0;
@@ -96,28 +242,31 @@
     0 calc(var(--mc-b) * 2);
 }
 
-/* XP orb */
-.mc-orb {
+/* salju menumpuk di rumput */
+.mc-snowcap {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background: #b6f03a;
-  border: 2px solid #5fae1f;
-  box-sizing: border-box;
-  animation: mc-orb 1.8s ease-in-out infinite;
+  right: 0;
+  bottom: calc(var(--mc-floor) - 4px);
+  left: 0;
+  height: 8px;
+  background: repeating-linear-gradient(90deg, #fff 0 22px, transparent 22px 32px);
+  opacity: 0;
+  transition: opacity 2s ease;
 }
 
-/* Peredup kiri untuk teks */
-.mc-shade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(14, 34, 24, .82) 0%,
-    rgba(14, 34, 24, .6) 34%,
-    rgba(14, 34, 24, .18) 56%,
-    rgba(14, 34, 24, 0) 70%
-  );
+.mc-bg[data-weather='snow'] .mc-snowcap {
+  opacity: .95;
+}
+
+/* ===== Obor: nyala sore & malam ===== */
+.mc-fire {
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+
+.mc-bg[data-phase='dusk'] .mc-fire,
+.mc-bg[data-phase='night'] .mc-fire {
+  opacity: 1;
 }
 
 .mc-flame {
@@ -126,25 +275,158 @@
   animation: mc-flame .5s ease-in-out infinite alternate;
 }
 
-@keyframes mc-cloud {
-  from { transform: translateX(-24px); }
-  to   { transform: translateX(24px); }
+.mc-glow {
+  position: absolute;
+  bottom: calc(var(--mc-floor) + 4px);
+  width: 130px;
+  height: 130px;
+  background: radial-gradient(circle, rgba(255, 181, 46, .45), rgba(255, 181, 46, 0) 65%);
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity 1.5s ease;
 }
 
-@keyframes mc-orb {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-8px); }
+.mc-bg[data-phase='dusk'] .mc-glow {
+  opacity: .6;
+}
+
+.mc-bg[data-phase='night'] .mc-glow {
+  opacity: 1;
+}
+
+/* ===== Cuaca ===== */
+.mc-weather {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+
+.mc-bg[data-weather='rain'] .mc-rain,
+.mc-bg[data-weather='snow'] .mc-snow {
+  opacity: 1;
+}
+
+.mc-drop {
+  position: absolute;
+  top: -6%;
+  width: 2px;
+  height: 14px;
+  background: #a9c8f5;
+  opacity: .7;
+  animation: mc-fall .7s linear infinite;
+}
+
+.mc-flake {
+  position: absolute;
+  top: -6%;
+  width: 5px;
+  height: 5px;
+  background: #fff;
+  opacity: .9;
+  animation: mc-snow 4s linear infinite;
+}
+
+/* ===== Peredup kiri untuk teks ===== */
+.mc-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+      rgba(14, 34, 24, .82) 0%,
+      rgba(14, 34, 24, .6) 34%,
+      rgba(14, 34, 24, .18) 56%,
+      rgba(14, 34, 24, 0) 70%);
+}
+
+/* ===== Keyframes ===== */
+@keyframes mc-cloud {
+  from {
+    transform: translateX(-24px);
+  }
+
+  to {
+    transform: translateX(24px);
+  }
 }
 
 @keyframes mc-flame {
-  from { transform: scale(1, 1); opacity: 1; }
-  to   { transform: scale(.85, 1.15); opacity: .85; }
+  from {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(.85, 1.15);
+    opacity: .85;
+  }
+}
+
+@keyframes mc-twinkle {
+
+  0%,
+  100% {
+    opacity: .45;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes mc-fall {
+  from {
+    top: -6%;
+  }
+
+  to {
+    top: 100%;
+  }
+}
+
+@keyframes mc-snow {
+  from {
+    top: -6%;
+    translate: 0 0;
+  }
+
+  to {
+    top: 100%;
+    translate: 18px 0;
+  }
+}
+
+/* ===== Layar kecil ===== */
+@media (max-width: 700px) {
+  .mc-hide-sm {
+    display: none;
+  }
+
+  .mc-mountains {
+    opacity: .6;
+  }
+
+  .mc-sun {
+    left: 70%;
+  }
+
+  .mc-moon {
+    left: 72%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .mc-cloud,
-  .mc-orb,
-  .mc-flame {
+  .mc-flame,
+  .mc-star,
+  .mc-drop,
+  .mc-flake {
     animation: none;
+  }
+
+  .mc-sky,
+  .mc-world,
+  .mc-weather {
+    transition: none;
   }
 }
