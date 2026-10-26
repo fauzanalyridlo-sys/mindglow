@@ -28,7 +28,6 @@ const registerSchema = z
   });
 
 export async function POST(request: NextRequest) {
-  // Batasi request lintas origin.
   const origin = request.headers.get("origin");
 
   if (origin && origin !== request.nextUrl.origin) {
@@ -62,11 +61,10 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { username, password, confirmPassword } = parsed.data;
+  const { username, password } = parsed.data;
   const email = parsed.data.email.trim().toLowerCase();
-
-  // Jangan pernah mengembalikan password ke respons.
-  void confirmPassword;
+  const demoMode =
+    process.env.DEMO_ALLOW_UNVERIFIED_REGISTRATION === "true";
 
   try {
     const existingUser = await prisma.users.findFirst({
@@ -95,6 +93,7 @@ export async function POST(request: NextRequest) {
         username,
         email,
         password: passwordHash,
+        email_verified_at: demoMode ? now : null,
         created_at: now,
         updated_at: now,
       },
@@ -106,34 +105,41 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    try {
-      await sendVerificationEmail(user.id, user.email);
-    } catch (emailError) {
-      console.error(
-        "Pengiriman verifikasi email gagal:",
-        emailError instanceof Error ? emailError.message : "Unknown error",
-      );
+    if (!demoMode) {
+      try {
+        await sendVerificationEmail(user.id, user.email);
+      } catch (emailError) {
+        console.error(
+          "Pengiriman verifikasi email gagal:",
+          emailError instanceof Error
+            ? emailError.message
+            : "Unknown error"
+        );
 
-      await prisma.users.deleteMany({
-        where: {
-          id: user.id,
-          email_verified_at: null,
-        },
-      });
+        await prisma.users.deleteMany({
+          where: {
+            id: user.id,
+            email_verified_at: null,
+          },
+        });
 
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Email verifikasi gagal dikirim. Silakan coba mendaftar kembali.",
-        },
-        { status: 503 },
-      );
+        return NextResponse.json(
+          {
+            success: false,
+            message:
+              "Email verifikasi gagal dikirim. Silakan coba mendaftar kembali.",
+          },
+          { status: 503 }
+        );
+      }
     }
 
     return NextResponse.json(
       {
         success: true,
-        message: "Pendaftaran berhasil. Silakan periksa email untuk memverifikasi akun sebelum login.",
+        message: demoMode
+          ? "Pendaftaran berhasil. Kamu sekarang bisa login."
+          : "Pendaftaran berhasil. Silakan periksa email untuk memverifikasi akun sebelum login.",
         user: {
           id: user.id.toString(),
           name: user.name,
