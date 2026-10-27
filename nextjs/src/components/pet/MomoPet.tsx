@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   useCallback,
@@ -6,10 +6,10 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
-} from 'react'
-import './momo-pet.css'
-import { CatSprite, CreeperSprite, type EyeState } from './MomoSprites'
-import { useWorld, type Phase, type Weather } from './momo-world'
+} from "react";
+import "./momo-pet.css";
+import { CatSprite, CreeperSprite, type EyeState } from "./MomoSprites";
+import { useWorld, type Phase, type Weather } from "./momo-world";
 import {
   ACCESSORIES,
   DEFAULT_SAVED,
@@ -24,172 +24,163 @@ import {
   todayKey,
   unlocksAt,
   type Saved,
-} from './momo-data'
+} from "./momo-data";
 
-type Action = 'idle' | 'happy' | 'eat' | 'play' | 'puff'
-type Particle = { id: number; emoji: string; dx: number }
-type Orb = { id: number; x: number; y: number; born: number }
-type Burst = { id: number; x: number; y: number }
-type Creeper = { x: number; dir: 1 | -1; fleeing: boolean }
+type Action = "idle" | "happy" | "eat" | "play" | "puff";
+type Particle = { id: number; emoji: string; dx: number };
+type Orb = { id: number; x: number; y: number; born: number };
+type Burst = { id: number; x: number; y: number };
+type Creeper = { x: number; dir: 1 | -1; fleeing: boolean };
 
-const MIN_X = 18
-const MAX_X = 82
+const MIN_X = 18;
+const MAX_X = 82;
 
 const FEED_LINES = [
-  'Nyam nyam! Ikannya enak! 🐟',
-  'Ikan mentah favoritku! 🐟',
-  'Terima kasih! Perutku hangat 💗',
-]
+  "Nyam nyam! Ikannya enak! 🐟",
+  "Ikan mentah favoritku! 🐟",
+  "Terima kasih! Perutku hangat 💗",
+];
 
 /* Apakah tab sedang terlihat (timer dijeda kalau tersembunyi) */
 function subscribeVisibility(cb: () => void) {
-  document.addEventListener('visibilitychange', cb)
-  return () => document.removeEventListener('visibilitychange', cb)
+  document.addEventListener("visibilitychange", cb);
+  return () => document.removeEventListener("visibilitychange", cb);
 }
 
 function usePageVisible() {
   return useSyncExternalStore(
     subscribeVisibility,
-    () => document.visibilityState !== 'hidden',
-    () => true
-  )
+    () => document.visibilityState !== "hidden",
+    () => true,
+  );
 }
 
 export default function MomoPet() {
-  const world = useWorld()
-  const visible = usePageVisible()
+  const world = useWorld();
+  const visible = usePageVisible();
 
   /* ---------- data utama (tersimpan) ---------- */
-  const [pet, setPet] = useState<Saved>(DEFAULT_SAVED)
-  const [hydrated, setHydrated] = useState(false)
-  const [settingsOpen, setSettingsOpen] = useState(false)
-  const [confirmReset, setConfirmReset] = useState(false)
+  const [pet, setPet] = useState<Saved>(DEFAULT_SAVED);
+  const [hydrated, setHydrated] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
 
   /* ---------- state sementara ---------- */
-  const [message, setMessage] = useState<string | null>(null)
-  const [action, setAction] = useState<Action>('idle')
-  const [x, setX] = useState(50)
-  const [facing, setFacing] = useState<1 | -1>(1)
-  const [walking, setWalking] = useState(false)
-  const [dragging, setDragging] = useState(false)
-  const [particles, setParticles] = useState<Particle[]>([])
-  const [bursts, setBursts] = useState<Burst[]>([])
-  const [orbs, setOrbs] = useState<Orb[]>([])
-  const [creeper, setCreeper] = useState<Creeper | null>(null)
-  const [fishKey, setFishKey] = useState(0)
+  const [message, setMessage] = useState<string | null>(null);
+  const [action, setAction] = useState<Action>("idle");
+  const [x, setX] = useState(50);
+  const [facing, setFacing] = useState<1 | -1>(1);
+  const [walking, setWalking] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const [bursts, setBursts] = useState<Burst[]>([]);
+  const [orbs, setOrbs] = useState<Orb[]>([]);
+  const [creeper, setCreeper] = useState<Creeper | null>(null);
+  const [fishKey, setFishKey] = useState(0);
 
   /* ---------- refs ---------- */
-  const stageRef = useRef<HTMLDivElement>(null)
+  const stageRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef({
     active: false,
     moved: false,
     startX: 0,
-  })
-  const petRef = useRef(pet)
-  const xRef = useRef(50)
-  const cursorRef = useRef<{ x: number; t: number } | null>(null)
-  const creeperRef = useRef<Creeper | null>(null)
-  const walkTimer = useRef<number | null>(null)
-  const fishTimer = useRef<number | null>(null)
-  const particleId = useRef(0)
-  const orbId = useRef(0)
-  const burstId = useRef(0)
-  const wasSleeping = useRef(false)
-  const prevLevel = useRef(1)
-  const prevWeather = useRef<Weather>('clear')
-  const prevPhase = useRef<Phase>('day')
-  const worldInit = useRef(false)
+  });
+  const petRef = useRef(pet);
+  const xRef = useRef(50);
+  const cursorRef = useRef<{ x: number; t: number } | null>(null);
+  const creeperRef = useRef<Creeper | null>(null);
+  const walkTimer = useRef<number | null>(null);
+  const fishTimer = useRef<number | null>(null);
+  const particleId = useRef(0);
+  const orbId = useRef(0);
+  const burstId = useRef(0);
+  const wasSleeping = useRef(false);
+  const prevLevel = useRef(1);
+  const prevWeather = useRef<Weather>("clear");
+  const prevPhase = useRef<Phase>("day");
+  const worldInit = useRef(false);
 
   useEffect(() => {
-    petRef.current = pet
-  }, [pet])
+    petRef.current = pet;
+  }, [pet]);
 
   useEffect(() => {
-    xRef.current = x
-  }, [x])
+    xRef.current = x;
+  }, [x]);
 
-  const { level, pct } = levelProgress(pet.score)
-  const sleeping = pet.asleep
-  const skin = SKINS.find((s) => s.id === pet.skin) ?? SKINS[0]
-  const displayName = pet.name.trim() || 'Momo'
+  const { level, pct } = levelProgress(pet.score);
+  const sleeping = pet.asleep;
+  const skin = SKINS.find((s) => s.id === pet.skin) ?? SKINS[0];
+  const displayName = pet.name.trim() || "Momo";
   const eyes: EyeState = sleeping
-    ? 'sleep'
-    : action === 'happy' || action === 'play'
-      ? 'happy'
-      : 'open'
+    ? "sleep"
+    : action === "happy" || action === "play"
+      ? "happy"
+      : "open";
 
   /* ---------- helpers ---------- */
-  const say = useCallback((text: string) => setMessage(text), [])
+  const say = useCallback((text: string) => setMessage(text), []);
 
   const spawn = useCallback((emoji: string, count = 3) => {
     const items: Particle[] = Array.from({ length: count }, () => ({
       id: ++particleId.current,
       emoji,
       dx: Math.round(Math.random() * 60 - 30),
-    }))
+    }));
 
-    setParticles((p) => [...p, ...items])
+    setParticles((p) => [...p, ...items]);
 
     window.setTimeout(() => {
-      setParticles((p) =>
-        p.filter((i) => !items.some((n) => n.id === i.id))
-      )
-    }, 1200)
-  }, [])
+      setParticles((p) => p.filter((i) => !items.some((n) => n.id === i.id)));
+    }, 1200);
+  }, []);
 
   const moveTo = useCallback((target: number) => {
-    setFacing(target > xRef.current ? 1 : -1)
-    setWalking(true)
-    setX(target)
+    setFacing(target > xRef.current ? 1 : -1);
+    setWalking(true);
+    setX(target);
 
     if (walkTimer.current) {
-      window.clearTimeout(walkTimer.current)
+      window.clearTimeout(walkTimer.current);
     }
 
-    walkTimer.current = window.setTimeout(
-      () => setWalking(false),
-      1700
-    )
-  }, [])
+    walkTimer.current = window.setTimeout(() => setWalking(false), 1700);
+  }, []);
 
   /* ---------- muat data lokal dan database ---------- */
   useEffect(() => {
-    let cancelled = false
+    let cancelled = false;
 
     async function initializePet() {
-      const now = Date.now()
-      const localSaved = loadSaved()
+      const now = Date.now();
+      const localSaved = loadSaved();
 
       let loaded: Saved = localSaved
         ? applyOffline(localSaved, now).saved
-        : { ...DEFAULT_SAVED }
+        : { ...DEFAULT_SAVED };
 
-      let hours = localSaved
-        ? applyOffline(localSaved, now).hours
-        : 0
+      const hours = localSaved ? applyOffline(localSaved, now).hours : 0;
 
-      let databaseAvailable = false
-      let migrateLocalProgress = false
+      let databaseAvailable = false;
+      let migrateLocalProgress = false;
 
       try {
-        const response = await fetch('/api/momo', {
-          method: 'GET',
-          cache: 'no-store',
-        })
+        const response = await fetch("/api/momo", {
+          method: "GET",
+          cache: "no-store",
+        });
 
         if (response.ok) {
-          const result = await response.json()
+          const result = await response.json();
 
           if (result.success && result.data) {
-            const remote = result.data
-            databaseAvailable = true
+            const remote = result.data;
+            databaseAvailable = true;
 
             // Jika database masih nol tetapi browser memiliki progres lama,
             // pertahankan progres lokal untuk migrasi awal.
             migrateLocalProgress =
-              remote.score === 0 &&
-              !!localSaved &&
-              localSaved.score > 0
+              remote.score === 0 && !!localSaved && localSaved.score > 0;
 
             if (!migrateLocalProgress) {
               loaded = {
@@ -198,56 +189,50 @@ export default function MomoPet() {
                 energy: remote.energy,
                 happiness: remote.happiness,
                 fullness: remote.fullness,
-                lastCheckin:
-                  remote.lastCheckin || loaded.lastCheckin,
-              }
+                lastCheckin: remote.lastCheckin || loaded.lastCheckin,
+              };
             }
           }
         }
       } catch (error) {
-        console.error('Gagal memuat data Momo dari database:', error)
+        console.error("Gagal memuat data Momo dari database:", error);
       }
 
-      const pendingCheckin = localStorage.getItem(
-        'momo:pending-checkin'
-      )
-      const today = todayKey()
-      let rewardedForCheckin = false
+      const pendingCheckin = localStorage.getItem("momo:pending-checkin");
+      const today = todayKey();
+      let rewardedForCheckin = false;
 
-      if (
-        pendingCheckin === today &&
-        loaded.lastCheckin !== today
-      ) {
-        loaded.happiness = clamp(loaded.happiness + 20)
-        loaded.score += 10
-        loaded.lastCheckin = today
-        rewardedForCheckin = true
+      if (pendingCheckin === today && loaded.lastCheckin !== today) {
+        loaded.happiness = clamp(loaded.happiness + 20);
+        loaded.score += 10;
+        loaded.lastCheckin = today;
+        rewardedForCheckin = true;
       }
 
       if (pendingCheckin) {
-        localStorage.removeItem('momo:pending-checkin')
+        localStorage.removeItem("momo:pending-checkin");
       }
 
-      loaded.lastSeen = now
+      loaded.lastSeen = now;
 
-      if (cancelled) return
+      if (cancelled) return;
 
-      prevLevel.current = levelProgress(loaded.score).level
-      wasSleeping.current = loaded.asleep
-      petRef.current = loaded
+      prevLevel.current = levelProgress(loaded.score).level;
+      wasSleeping.current = loaded.asleep;
+      petRef.current = loaded;
 
-      saveSaved(loaded)
-      setPet(loaded)
-      setHydrated(true)
+      saveSaved(loaded);
+      setPet(loaded);
+      setHydrated(true);
 
       if (databaseAvailable) {
         // Migrasikan progres lama jika database masih berstatus awal.
         // Selain itu, sinkronkan hasil hadiah check-in bila baru diberikan.
         if (migrateLocalProgress || rewardedForCheckin) {
           try {
-            await fetch('/api/momo', {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
+            await fetch("/api/momo", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 score: loaded.score,
                 energy: loaded.energy,
@@ -255,45 +240,45 @@ export default function MomoPet() {
                 fullness: loaded.fullness,
                 lastCheckin: loaded.lastCheckin,
               }),
-            })
+            });
           } catch (error) {
-            console.error('Gagal menyinkronkan progres Momo:', error)
+            console.error("Gagal menyinkronkan progres Momo:", error);
           }
         }
       }
 
       if (rewardedForCheckin) {
-        setAction('play')
-        spawn('🎉', 4)
-        setMessage('Hebat! Check-in hari ini selesai! +10 XP 🎉')
+        setAction("play");
+        spawn("🎉", 4);
+        setMessage("Hebat! Check-in hari ini selesai! +10 XP 🎉");
       } else {
-        setMessage(greeting(hours, new Date().getHours(), !localSaved))
+        setMessage(greeting(hours, new Date().getHours(), !localSaved));
       }
     }
 
-    void initializePet()
+    void initializePet();
 
     return () => {
-      cancelled = true
-    }
-  }, [spawn])
+      cancelled = true;
+    };
+  }, [spawn]);
 
   /* ---------- simpan lokal dan sinkronkan database ---------- */
   useEffect(() => {
-    if (!hydrated) return
+    if (!hydrated) return;
 
     const saved: Saved = {
       ...pet,
       lastSeen: Date.now(),
-    }
+    };
 
-    petRef.current = saved
-    saveSaved(saved)
+    petRef.current = saved;
+    saveSaved(saved);
 
     const timer = window.setTimeout(() => {
-      void fetch('/api/momo', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+      void fetch("/api/momo", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           score: saved.score,
           energy: saved.energy,
@@ -301,34 +286,36 @@ export default function MomoPet() {
           fullness: saved.fullness,
           lastCheckin: saved.lastCheckin,
         }),
-      }).then((response) => {
-        if (!response.ok) {
-          console.error('Gagal menyimpan status Momo ke database.')
-        }
-      }).catch((error) => {
-        console.error('Gagal menyinkronkan status Momo:', error)
       })
-    }, 700)
+        .then((response) => {
+          if (!response.ok) {
+            console.error("Gagal menyimpan status Momo ke database.");
+          }
+        })
+        .catch((error) => {
+          console.error("Gagal menyinkronkan status Momo:", error);
+        });
+    }, 700);
 
-    return () => window.clearTimeout(timer)
-  }, [pet, hydrated])
+    return () => window.clearTimeout(timer);
+  }, [pet, hydrated]);
 
   /* ---------- simpan saat tab disembunyikan, hitung waktu ditinggal ---------- */
   useEffect(() => {
-    if (!hydrated) return
+    if (!hydrated) return;
 
-    let hiddenAt = 0
+    let hiddenAt = 0;
 
     function onVisibility() {
-      if (document.visibilityState === 'hidden') {
-        hiddenAt = Date.now()
+      if (document.visibilityState === "hidden") {
+        hiddenAt = Date.now();
 
         saveSaved({
           ...petRef.current,
           lastSeen: hiddenAt,
-        })
+        });
       } else if (hiddenAt) {
-        const now = Date.now()
+        const now = Date.now();
 
         if (now - hiddenAt > 5 * 60_000) {
           const { saved, hours } = applyOffline(
@@ -336,83 +323,68 @@ export default function MomoPet() {
               ...petRef.current,
               lastSeen: hiddenAt,
             },
-            now
-          )
+            now,
+          );
 
           setPet({
             ...saved,
             lastSeen: now,
-          })
+          });
 
           setMessage(
             hours >= 6
-              ? 'Kamu lama tidak datang... aku kangen! 💗'
-              : 'Selamat datang kembali! 👋'
-          )
+              ? "Kamu lama tidak datang... aku kangen! 💗"
+              : "Selamat datang kembali! 👋",
+          );
         }
 
-        hiddenAt = 0
+        hiddenAt = 0;
       }
     }
 
-    document.addEventListener('visibilitychange', onVisibility)
+    document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
-      document.removeEventListener(
-        'visibilitychange',
-        onVisibility
-      )
-    }
-  }, [hydrated])
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [hydrated]);
 
   /* ---------- reset action ---------- */
   useEffect(() => {
-    if (action === 'idle') return
+    if (action === "idle") return;
 
     const timer = window.setTimeout(
-      () => setAction('idle'),
-      action === 'puff' ? 1300 : 1000
-    )
+      () => setAction("idle"),
+      action === "puff" ? 1300 : 1000,
+    );
 
-    return () => window.clearTimeout(timer)
-  }, [action])
+    return () => window.clearTimeout(timer);
+  }, [action]);
 
   /* ---------- sembunyikan bubble ---------- */
   useEffect(() => {
-    if (!message) return
+    if (!message) return;
 
-    const timer = window.setTimeout(
-      () => setMessage(null),
-      4500
-    )
+    const timer = window.setTimeout(() => setMessage(null), 4500);
 
-    return () => window.clearTimeout(timer)
-  }, [message])
+    return () => window.clearTimeout(timer);
+  }, [message]);
 
   /* ---------- stat turun pelan setiap 30 detik ---------- */
   useEffect(() => {
-    if (!hydrated || !visible) return
+    if (!hydrated || !visible) return;
 
-    const weather = world.weather
+    const weather = world.weather;
 
     const timer = window.setInterval(() => {
-      const now = Date.now()
+      const now = Date.now();
 
       setPet((p) => {
-        const energy = p.asleep
-          ? clamp(p.energy + 50)
-          : clamp(p.energy - 1)
+        const energy = p.asleep ? clamp(p.energy + 50) : clamp(p.energy - 1);
 
-        const asleep = p.asleep
-          ? energy < 50
-          : energy < 20
+        const asleep = p.asleep ? energy < 50 : energy < 20;
 
-        const moodShift =
-          weather === 'rain'
-            ? -2
-            : weather === 'snow'
-              ? 0
-              : -1
+        const moodShift = weather === "rain" ? -2 : weather === "snow" ? 0 : -1;
 
         return {
           ...p,
@@ -421,133 +393,121 @@ export default function MomoPet() {
           energy,
           asleep,
           lastSeen: now,
-        }
-      })
-    }, 30_000)
+        };
+      });
+    }, 30_000);
 
-    return () => window.clearInterval(timer)
-  }, [hydrated, visible, world.weather])
+    return () => window.clearInterval(timer);
+  }, [hydrated, visible, world.weather]);
 
   /* ---------- pesan tidur / bangun ---------- */
   useEffect(() => {
-    if (!hydrated) return
+    if (!hydrated) return;
 
-    const previousSleeping = wasSleeping.current
-    wasSleeping.current = sleeping
+    const previousSleeping = wasSleeping.current;
+    wasSleeping.current = sleeping;
 
-    if (previousSleeping === sleeping) return
+    if (previousSleeping === sleeping) return;
 
     const timer = window.setTimeout(
       () =>
         say(
           sleeping
-            ? 'Zzz... aku ngantuk 😴'
-            : 'Hoaam... aku sudah segar lagi! ☀️'
+            ? "Zzz... aku ngantuk 😴"
+            : "Hoaam... aku sudah segar lagi! ☀️",
         ),
-      0
-    )
+      0,
+    );
 
-    return () => window.clearTimeout(timer)
-  }, [sleeping, hydrated, say])
+    return () => window.clearTimeout(timer);
+  }, [sleeping, hydrated, say]);
 
   /* ---------- pesan saat cuaca / malam berubah ---------- */
   useEffect(() => {
-    if (!hydrated) return
+    if (!hydrated) return;
 
     if (!worldInit.current) {
-      worldInit.current = true
-      prevWeather.current = world.weather
-      prevPhase.current = world.phase
-      return
+      worldInit.current = true;
+      prevWeather.current = world.weather;
+      prevPhase.current = world.phase;
+      return;
     }
 
-    const previousWeather = prevWeather.current
-    const previousPhase = prevPhase.current
+    const previousWeather = prevWeather.current;
+    const previousPhase = prevPhase.current;
 
-    prevWeather.current = world.weather
-    prevPhase.current = world.phase
+    prevWeather.current = world.weather;
+    prevPhase.current = world.phase;
 
-    let text: string | null = null
+    let text: string | null = null;
 
     if (world.weather !== previousWeather) {
       text =
-        world.weather === 'rain'
-          ? 'Hujan turun... 🌧️ aku jadi agak murung'
-          : world.weather === 'snow'
-            ? 'Salju! ❄️ Dingin tapi seru!'
-            : 'Cuacanya cerah lagi! ☀️'
-    } else if (
-      world.phase !== previousPhase &&
-      world.phase === 'night'
-    ) {
-      text = 'Sudah malam. Bintangnya cantik ya ✨'
+        world.weather === "rain"
+          ? "Hujan turun... 🌧️ aku jadi agak murung"
+          : world.weather === "snow"
+            ? "Salju! ❄️ Dingin tapi seru!"
+            : "Cuacanya cerah lagi! ☀️";
+    } else if (world.phase !== previousPhase && world.phase === "night") {
+      text = "Sudah malam. Bintangnya cantik ya ✨";
     }
 
-    if (!text) return
+    if (!text) return;
 
-    const nextMessage = text
-    const timer = window.setTimeout(
-      () => say(nextMessage),
-      0
-    )
+    const nextMessage = text;
+    const timer = window.setTimeout(() => say(nextMessage), 0);
 
-    return () => window.clearTimeout(timer)
-  }, [hydrated, world.weather, world.phase, say])
+    return () => window.clearTimeout(timer);
+  }, [hydrated, world.weather, world.phase, say]);
 
   /* ---------- pengingat istirahat larut malam ---------- */
   useEffect(() => {
-    if (!hydrated || !visible) return
+    if (!hydrated || !visible) return;
 
     const timer = window.setInterval(() => {
-      const hour = new Date().getHours()
+      const hour = new Date().getHours();
 
-      if (
-        (hour >= 23 || hour < 4) &&
-        !petRef.current.asleep
-      ) {
-        setMessage(
-          'Sudah larut... istirahat dulu ya, besok lanjut lagi 🌙'
-        )
+      if ((hour >= 23 || hour < 4) && !petRef.current.asleep) {
+        setMessage("Sudah larut... istirahat dulu ya, besok lanjut lagi 🌙");
       }
-    }, 15 * 60_000)
+    }, 15 * 60_000);
 
-    return () => window.clearInterval(timer)
-  }, [hydrated, visible])
+    return () => window.clearInterval(timer);
+  }, [hydrated, visible]);
 
   /* ---------- level naik ---------- */
   useEffect(() => {
-    if (!hydrated) return
+    if (!hydrated) return;
 
     if (level <= prevLevel.current) {
-      prevLevel.current = level
-      return
+      prevLevel.current = level;
+      return;
     }
 
-    prevLevel.current = level
-    const items = unlocksAt(level)
+    prevLevel.current = level;
+    const items = unlocksAt(level);
 
     const timer = window.setTimeout(() => {
-      setAction('play')
-      spawn('⭐', 5)
+      setAction("play");
+      spawn("⭐", 5);
 
       say(
-        `Level ${level}! ${items.length
-          ? `Baru: ${items.join(', ')} 🎁`
-          : '🎉'
-        }`
-      )
-    }, 0)
+        `Level ${level}! ${
+          items.length ? `Baru: ${items.join(", ")} 🎁` : "🎉"
+        }`,
+      );
+    }, 0);
 
-    return () => window.clearTimeout(timer)
-  }, [level, hydrated, say, spawn])
+    return () => window.clearTimeout(timer);
+  }, [level, hydrated, say, spawn]);
 
   /* ---------- lacak posisi kursor di sekitar area Momo ---------- */
   useEffect(() => {
     function onMove(e: PointerEvent) {
-      const el = stageRef.current
-      if (!el) return
+      const el = stageRef.current;
+      if (!el) return;
 
-      const rect = el.getBoundingClientRect()
+      const rect = el.getBoundingClientRect();
 
       if (
         e.clientY < rect.top - 60 ||
@@ -555,134 +515,103 @@ export default function MomoPet() {
         e.clientX < rect.left - 60 ||
         e.clientX > rect.right + 60
       ) {
-        cursorRef.current = null
-        return
+        cursorRef.current = null;
+        return;
       }
 
       cursorRef.current = {
-        x: clamp(
-          ((e.clientX - rect.left) / rect.width) * 100,
-          MIN_X,
-          MAX_X
-        ),
+        x: clamp(((e.clientX - rect.left) / rect.width) * 100, MIN_X, MAX_X),
         t: performance.now(),
-      }
+      };
     }
 
-    window.addEventListener('pointermove', onMove, {
+    window.addEventListener("pointermove", onMove, {
       passive: true,
-    })
+    });
 
     return () => {
-      window.removeEventListener('pointermove', onMove)
-    }
-  }, [])
+      window.removeEventListener("pointermove", onMove);
+    };
+  }, []);
 
   /* ---------- jalan sendiri / mengejar kursor ---------- */
   useEffect(() => {
-    if (
-      !hydrated ||
-      !visible ||
-      pet.asleep ||
-      !pet.autoMove
-    ) {
-      return
+    if (!hydrated || !visible || pet.asleep || !pet.autoMove) {
+      return;
     }
 
-    const chase = pet.chase
+    const chase = pet.chase;
 
     const timer = window.setInterval(() => {
-      if (dragRef.current.active) return
+      if (dragRef.current.active) return;
 
-      const cursor = cursorRef.current
+      const cursor = cursorRef.current;
 
-      if (
-        chase &&
-        cursor &&
-        performance.now() - cursor.t < 2500
-      ) {
+      if (chase && cursor && performance.now() - cursor.t < 2500) {
         if (Math.abs(cursor.x - xRef.current) < 8) {
-          return
+          return;
         }
 
-        const step = Math.max(
-          -24,
-          Math.min(24, cursor.x - xRef.current)
-        )
+        const step = Math.max(-24, Math.min(24, cursor.x - xRef.current));
 
-        moveTo(
-          clamp(xRef.current + step, MIN_X, MAX_X)
-        )
+        moveTo(clamp(xRef.current + step, MIN_X, MAX_X));
 
-        return
+        return;
       }
 
-      if (Math.random() < 0.35) return
+      if (Math.random() < 0.35) return;
 
       const target = clamp(
         xRef.current + (Math.random() * 50 - 25),
         MIN_X,
-        MAX_X
-      )
+        MAX_X,
+      );
 
-      if (Math.abs(target - xRef.current) < 6) return
+      if (Math.abs(target - xRef.current) < 6) return;
 
-      moveTo(target)
-    }, 1500)
+      moveTo(target);
+    }, 1500);
 
-    return () => window.clearInterval(timer)
-  }, [
-    hydrated,
-    visible,
-    pet.asleep,
-    pet.autoMove,
-    pet.chase,
-    moveTo,
-  ])
+    return () => window.clearInterval(timer);
+  }, [hydrated, visible, pet.asleep, pet.autoMove, pet.chase, moveTo]);
 
   /* ---------- creeper: muncul sesekali ---------- */
   useEffect(() => {
-    if (!hydrated || !visible) return
+    if (!hydrated || !visible) return;
 
     const timer = window.setInterval(() => {
-      if (
-        creeperRef.current ||
-        petRef.current.asleep ||
-        Math.random() > 0.35
-      ) {
-        return
+      if (creeperRef.current || petRef.current.asleep || Math.random() > 0.35) {
+        return;
       }
 
-      const fromLeft = Math.random() < 0.5
+      const fromLeft = Math.random() < 0.5;
 
       const nextCreeper: Creeper = {
         x: fromLeft ? -10 : 110,
         dir: fromLeft ? 1 : -1,
         fleeing: false,
-      }
+      };
 
-      creeperRef.current = nextCreeper
-      setCreeper(nextCreeper)
-    }, 25_000)
+      creeperRef.current = nextCreeper;
+      setCreeper(nextCreeper);
+    }, 25_000);
 
-    return () => window.clearInterval(timer)
-  }, [hydrated, visible])
+    return () => window.clearInterval(timer);
+  }, [hydrated, visible]);
 
-  const hasCreeper = creeper !== null
+  const hasCreeper = creeper !== null;
 
   useEffect(() => {
-    if (!hasCreeper || !visible) return
+    if (!hasCreeper || !visible) return;
 
     const timer = window.setInterval(() => {
-      const current = creeperRef.current
-      if (!current) return
+      const current = creeperRef.current;
+      if (!current) return;
 
       let next: Creeper = {
         ...current,
-        x:
-          current.x +
-          current.dir * (current.fleeing ? 2.4 : 0.9),
-      }
+        x: current.x + current.dir * (current.fleeing ? 2.4 : 0.9),
+      };
 
       if (
         !next.fleeing &&
@@ -693,92 +622,85 @@ export default function MomoPet() {
           ...next,
           fleeing: true,
           dir: next.dir === 1 ? -1 : 1,
-        }
+        };
 
-        setAction('puff')
-        setMessage('Hsss! Pergi sana, Creeper! 😾')
+        setAction("puff");
+        setMessage("Hsss! Pergi sana, Creeper! 😾");
 
         setPet((p) => ({
           ...p,
           happiness: clamp(p.happiness + 3),
           score: p.score + 1,
-        }))
+        }));
       }
 
       if (next.x < -16 || next.x > 116) {
-        creeperRef.current = null
-        setCreeper(null)
-        return
+        creeperRef.current = null;
+        setCreeper(null);
+        return;
       }
 
-      creeperRef.current = next
-      setCreeper(next)
-    }, 120)
+      creeperRef.current = next;
+      setCreeper(next);
+    }, 120);
 
-    return () => window.clearInterval(timer)
-  }, [hasCreeper, visible])
+    return () => window.clearInterval(timer);
+  }, [hasCreeper, visible]);
 
   /* ---------- XP orb: muncul acak, hilang sendiri ---------- */
   useEffect(() => {
-    if (!hydrated || !visible) return
+    if (!hydrated || !visible) return;
 
     const timer = window.setInterval(() => {
-      const now = Date.now()
-      const skip = Math.random() > 0.7
+      const now = Date.now();
+      const skip = Math.random() > 0.7;
 
       const fresh: Orb = {
         id: ++orbId.current,
-        x:
-          MIN_X -
-          8 +
-          Math.random() * (MAX_X - MIN_X + 16),
+        x: MIN_X - 8 + Math.random() * (MAX_X - MIN_X + 16),
         y: 50 + Math.random() * 100,
         born: now,
-      }
+      };
 
       setOrbs((previous) => {
-        const alive = previous.filter(
-          (orb) => now - orb.born < 12_000
-        )
+        const alive = previous.filter((orb) => now - orb.born < 12_000);
 
-        return alive.length >= 3 || skip
-          ? alive
-          : [...alive, fresh]
-      })
-    }, 7000)
+        return alive.length >= 3 || skip ? alive : [...alive, fresh];
+      });
+    }, 7000);
 
-    return () => window.clearInterval(timer)
-  }, [hydrated, visible])
+    return () => window.clearInterval(timer);
+  }, [hydrated, visible]);
 
   /* ---------- aksi elus Momo ---------- */
   function petMomo() {
     if (sleeping) {
-      say('Zzz... (Momo masih tidur)')
-      return
+      say("Zzz... (Momo masih tidur)");
+      return;
     }
 
     setPet((p) => ({
       ...p,
       happiness: clamp(p.happiness + 8),
       score: p.score + 1,
-    }))
+    }));
 
-    setAction('happy')
-    spawn('💗')
-    say('Meow! Aku suka dielus! 💗')
+    setAction("happy");
+    spawn("💗");
+    say("Meow! Aku suka dielus! 💗");
   }
 
   /* ---------- aksi memberi makan ---------- */
   function feedMomo() {
     if (sleeping) {
-      say('Zzz... (Momo masih tidur)')
-      return
+      say("Zzz... (Momo masih tidur)");
+      return;
     }
 
     if (pet.fullness >= 100) {
-      setAction('happy')
-      say('Aku sudah kenyang! 🐟')
-      return
+      setAction("happy");
+      say("Aku sudah kenyang! 🐟");
+      return;
     }
 
     setPet((p) => ({
@@ -786,37 +708,30 @@ export default function MomoPet() {
       fullness: clamp(p.fullness + 15),
       energy: clamp(p.energy + 10),
       score: p.score + 2,
-    }))
+    }));
 
-    setAction('eat')
-    setFishKey((key) => key + 1)
+    setAction("eat");
+    setFishKey((key) => key + 1);
 
     if (fishTimer.current) {
-      window.clearTimeout(fishTimer.current)
+      window.clearTimeout(fishTimer.current);
     }
 
-    fishTimer.current = window.setTimeout(
-      () => setFishKey(0),
-      900
-    )
+    fishTimer.current = window.setTimeout(() => setFishKey(0), 900);
 
-    say(
-      FEED_LINES[
-      Math.floor(Math.random() * FEED_LINES.length)
-      ]
-    )
+    say(FEED_LINES[Math.floor(Math.random() * FEED_LINES.length)]);
   }
 
   /* ---------- aksi bermain dengan Momo ---------- */
   function playWithMomo() {
     if (sleeping) {
-      say('Zzz... (Momo masih tidur)')
-      return
+      say("Zzz... (Momo masih tidur)");
+      return;
     }
 
     if (pet.energy < 15) {
-      say('Aku capek. Istirahat dulu, ya!')
-      return
+      say("Aku capek. Istirahat dulu, ya!");
+      return;
     }
 
     setPet((p) => ({
@@ -825,26 +740,24 @@ export default function MomoPet() {
       energy: clamp(p.energy - 15),
       fullness: clamp(p.fullness - 5),
       score: p.score + 5,
-    }))
+    }));
 
-    setAction('play')
-    spawn('✨', 4)
-    say('Yeay! Main lagi! ✨')
+    setAction("play");
+    spawn("✨", 4);
+    say("Yeay! Main lagi! ✨");
   }
 
   /* ---------- kumpulkan XP orb ---------- */
   function collectOrb(orb: Orb) {
-    setOrbs((previous) =>
-      previous.filter((item) => item.id !== orb.id)
-    )
+    setOrbs((previous) => previous.filter((item) => item.id !== orb.id));
 
     setPet((p) => ({
       ...p,
       score: p.score + 2,
       happiness: clamp(p.happiness + 1),
-    }))
+    }));
 
-    const id = ++burstId.current
+    const id = ++burstId.current;
 
     setBursts((previous) => [
       ...previous,
@@ -853,153 +766,132 @@ export default function MomoPet() {
         x: orb.x,
         y: orb.y,
       },
-    ])
+    ]);
 
     window.setTimeout(() => {
-      setBursts((previous) =>
-        previous.filter((item) => item.id !== id)
-      )
-    }, 900)
+      setBursts((previous) => previous.filter((item) => item.id !== id));
+    }, 900);
   }
 
   /* ---------- reset progres ---------- */
   function resetAll() {
-    clearSaved()
-    localStorage.removeItem('momo:pending-checkin')
+    clearSaved();
+    localStorage.removeItem("momo:pending-checkin");
 
     const fresh: Saved = {
       ...DEFAULT_SAVED,
       lastSeen: Date.now(),
-    }
+    };
 
-    prevLevel.current = 1
-    wasSleeping.current = false
-    petRef.current = fresh
+    prevLevel.current = 1;
+    wasSleeping.current = false;
+    petRef.current = fresh;
 
-    setPet(fresh)
-    setConfirmReset(false)
-    setSettingsOpen(false)
-    setX(50)
-    setMessage(
-      'Halo lagi! Aku Momo. Senang bertemu denganmu! ✨'
-    )
+    setPet(fresh);
+    setConfirmReset(false);
+    setSettingsOpen(false);
+    setX(50);
+    setMessage("Halo lagi! Aku Momo. Senang bertemu denganmu! ✨");
 
     // Sinkronkan status awal Momo ke database.
-    void fetch('/api/momo', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+    void fetch("/api/momo", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         score: 0,
         energy: 100,
         happiness: 70,
         fullness: 65,
-        lastCheckin: '',
+        lastCheckin: "",
       }),
-    }).then((response) => {
-      if (!response.ok) {
-        console.error('Gagal mereset data Momo di database.')
-      }
-    }).catch((error) => {
-      console.error('Gagal mengirim reset Momo:', error)
     })
+      .then((response) => {
+        if (!response.ok) {
+          console.error("Gagal mereset data Momo di database.");
+        }
+      })
+      .catch((error) => {
+        console.error("Gagal mengirim reset Momo:", error);
+      });
   }
   /* ---------- drag Momo ---------- */
-  function onPointerDown(
-    e: React.PointerEvent<HTMLButtonElement>
-  ) {
+  function onPointerDown(e: React.PointerEvent<HTMLButtonElement>) {
     dragRef.current = {
       active: true,
       moved: false,
       startX: e.clientX,
-    }
+    };
 
-    e.currentTarget.setPointerCapture(e.pointerId)
+    e.currentTarget.setPointerCapture(e.pointerId);
   }
 
-  function onPointerMove(
-    e: React.PointerEvent<HTMLButtonElement>
-  ) {
-    if (
-      !dragRef.current.active ||
-      !stageRef.current
-    ) {
-      return
+  function onPointerMove(e: React.PointerEvent<HTMLButtonElement>) {
+    if (!dragRef.current.active || !stageRef.current) {
+      return;
     }
 
     if (
       !dragRef.current.moved &&
-      Math.abs(
-        e.clientX - dragRef.current.startX
-      ) > 5
+      Math.abs(e.clientX - dragRef.current.startX) > 5
     ) {
-      dragRef.current.moved = true
-      setDragging(true)
-      setWalking(false)
+      dragRef.current.moved = true;
+      setDragging(true);
+      setWalking(false);
     }
 
-    if (!dragRef.current.moved) return
+    if (!dragRef.current.moved) return;
 
-    const rect =
-      stageRef.current.getBoundingClientRect()
+    const rect = stageRef.current.getBoundingClientRect();
 
     const next = clamp(
       ((e.clientX - rect.left) / rect.width) * 100,
       MIN_X,
-      MAX_X
-    )
+      MAX_X,
+    );
 
-    setFacing(next > xRef.current ? 1 : -1)
-    setX(next)
+    setFacing(next > xRef.current ? 1 : -1);
+    setX(next);
   }
 
-  function onPointerUp(
-    e: React.PointerEvent<HTMLButtonElement>
-  ) {
-    const wasMoved = dragRef.current.moved
-    dragRef.current.active = false
+  function onPointerUp(e: React.PointerEvent<HTMLButtonElement>) {
+    const wasMoved = dragRef.current.moved;
+    dragRef.current.active = false;
 
-    if (
-      e.currentTarget.hasPointerCapture(e.pointerId)
-    ) {
-      e.currentTarget.releasePointerCapture(e.pointerId)
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
     }
 
     if (wasMoved) {
-      setDragging(false)
-      say('Wuuush! Seru! 🎈')
+      setDragging(false);
+      say("Wuuush! Seru! 🎈");
     } else {
-      petMomo()
+      petMomo();
     }
   }
 
   const cls = [
-    'momo-character',
+    "momo-character",
     action,
-    walking ? 'walking' : '',
-    sleeping ? 'sleeping' : '',
-    dragging ? 'dragging' : '',
+    walking ? "walking" : "",
+    sleeping ? "sleeping" : "",
+    dragging ? "dragging" : "",
   ]
     .filter(Boolean)
-    .join(' ')
+    .join(" ");
 
   return (
     <aside
-      className={`momo-pet ${pet.animations ? '' : 'no-anim'}`}
+      className={`momo-pet ${pet.animations ? "" : "no-anim"}`}
       aria-label={`Pet virtual ${displayName}`}
     >
-      <span
-        className="momo-sr"
-        role="status"
-        aria-live="polite"
-      >
-        {message ?? ''}
+      <span className="momo-sr" role="status" aria-live="polite">
+        {message ?? ""}
       </span>
 
       <div className="momo-garden" ref={stageRef}>
         {creeper && (
           <div
-            className={`momo-creeper ${creeper.fleeing ? 'is-fleeing' : ''
-              }`}
+            className={`momo-creeper ${creeper.fleeing ? "is-fleeing" : ""}`}
             style={{ left: `${creeper.x}%` }}
           >
             <CreeperSprite />
@@ -1034,16 +926,11 @@ export default function MomoPet() {
         ))}
 
         <div
-          className={`momo-walker ${dragging ? 'is-dragging' : ''
-            }`}
+          className={`momo-walker ${dragging ? "is-dragging" : ""}`}
           style={{ left: `${x}%` }}
         >
           {message && (
-            <div
-              className="momo-bubble"
-              key={message}
-              aria-hidden="true"
-            >
+            <div className="momo-bubble" key={message} aria-hidden="true">
               {message}
             </div>
           )}
@@ -1053,7 +940,7 @@ export default function MomoPet() {
               key={particle.id}
               className="momo-particle"
               style={{
-                ['--dx' as string]: `${particle.dx}px`,
+                ["--dx" as string]: `${particle.dx}px`,
               }}
             >
               {particle.emoji}
@@ -1066,9 +953,7 @@ export default function MomoPet() {
             </span>
           )}
 
-          {sleeping && (
-            <span className="momo-zzz">Zzz</span>
-          )}
+          {sleeping && <span className="momo-zzz">Zzz</span>}
 
           <span className="momo-ground" />
 
@@ -1081,9 +966,9 @@ export default function MomoPet() {
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                petMomo()
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                petMomo();
               }
             }}
           >
@@ -1093,7 +978,7 @@ export default function MomoPet() {
             >
               <CatSprite
                 eyes={eyes}
-                eating={action === 'eat'}
+                eating={action === "eat"}
                 skin={skin}
                 accessory={pet.accessory}
               />
@@ -1107,9 +992,7 @@ export default function MomoPet() {
 
           <strong>{displayName}</strong>
 
-          <span className="momo-level">
-            Lv. {level}
-          </span>
+          <span className="momo-level">Lv. {level}</span>
 
           <button
             type="button"
@@ -1117,8 +1000,8 @@ export default function MomoPet() {
             aria-label="Pengaturan Momo"
             aria-expanded={settingsOpen}
             onClick={() => {
-              setSettingsOpen((value) => !value)
-              setConfirmReset(false)
+              setSettingsOpen((value) => !value);
+              setConfirmReset(false);
             }}
           >
             <svg
@@ -1159,19 +1042,19 @@ export default function MomoPet() {
                 value={pet.name}
                 maxLength={12}
                 onChange={(e) => {
-                  const value = e.target.value
+                  const value = e.target.value;
 
                   setPet((p) => ({
                     ...p,
                     name: value,
-                  }))
+                  }));
                 }}
                 onBlur={() => {
                   if (!pet.name.trim()) {
                     setPet((p) => ({
                       ...p,
-                      name: 'Momo',
-                    }))
+                      name: "Momo",
+                    }));
                   }
                 }}
               />
@@ -1183,12 +1066,12 @@ export default function MomoPet() {
                   type="checkbox"
                   checked={pet.animations}
                   onChange={(e) => {
-                    const value = e.target.checked
+                    const value = e.target.checked;
 
                     setPet((p) => ({
                       ...p,
                       animations: value,
-                    }))
+                    }));
                   }}
                 />
                 Animasi Momo
@@ -1199,12 +1082,12 @@ export default function MomoPet() {
                   type="checkbox"
                   checked={pet.autoMove}
                   onChange={(e) => {
-                    const value = e.target.checked
+                    const value = e.target.checked;
 
                     setPet((p) => ({
                       ...p,
                       autoMove: value,
-                    }))
+                    }));
                   }}
                 />
                 Jalan sendiri
@@ -1215,12 +1098,12 @@ export default function MomoPet() {
                   type="checkbox"
                   checked={pet.chase}
                   onChange={(e) => {
-                    const value = e.target.checked
+                    const value = e.target.checked;
 
                     setPet((p) => ({
                       ...p,
                       chase: value,
-                    }))
+                    }));
                   }}
                 />
                 Kejar kursor
@@ -1242,7 +1125,7 @@ export default function MomoPet() {
                       setPet((p) => ({
                         ...p,
                         skin: item.id,
-                      }))
+                      }));
                     }}
                   >
                     <i
@@ -1253,9 +1136,7 @@ export default function MomoPet() {
 
                     {item.label}
 
-                    {level < item.level
-                      ? ` · Lv.${item.level}`
-                      : ''}
+                    {level < item.level ? ` · Lv.${item.level}` : ""}
                   </button>
                 ))}
               </div>
@@ -1270,22 +1151,18 @@ export default function MomoPet() {
                     key={item.id}
                     type="button"
                     className="momo-choice"
-                    aria-pressed={
-                      pet.accessory === item.id
-                    }
+                    aria-pressed={pet.accessory === item.id}
                     disabled={level < item.level}
                     onClick={() => {
                       setPet((p) => ({
                         ...p,
                         accessory: item.id,
-                      }))
+                      }));
                     }}
                   >
                     {item.label}
 
-                    {level < item.level
-                      ? ` · Lv.${item.level}`
-                      : ''}
+                    {level < item.level ? ` · Lv.${item.level}` : ""}
                   </button>
                 ))}
               </div>
@@ -1295,17 +1172,11 @@ export default function MomoPet() {
               <div className="momo-confirm">
                 <span>Hapus semua progres?</span>
 
-                <button
-                  type="button"
-                  onClick={resetAll}
-                >
+                <button type="button" onClick={resetAll}>
                   Ya, reset
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => setConfirmReset(false)}
-                >
+                <button type="button" onClick={() => setConfirmReset(false)}>
                   Batal
                 </button>
               </div>
@@ -1322,44 +1193,23 @@ export default function MomoPet() {
         ) : (
           <>
             <div className="momo-stats">
-              <PetStat
-                icon="💗"
-                label="Kebahagiaan"
-                value={pet.happiness}
-              />
+              <PetStat icon="💗" label="Kebahagiaan" value={pet.happiness} />
 
-              <PetStat
-                icon="🐟"
-                label="Kenyang"
-                value={pet.fullness}
-              />
+              <PetStat icon="🐟" label="Kenyang" value={pet.fullness} />
 
-              <PetStat
-                icon="⚡"
-                label="Energi"
-                value={pet.energy}
-              />
+              <PetStat icon="⚡" label="Energi" value={pet.energy} />
             </div>
 
             <div className="momo-actions">
-              <button
-                type="button"
-                onClick={petMomo}
-              >
+              <button type="button" onClick={petMomo}>
                 <span>💗</span>Elus
               </button>
 
-              <button
-                type="button"
-                onClick={feedMomo}
-              >
+              <button type="button" onClick={feedMomo}>
                 <span>🐟</span>Beri Makan
               </button>
 
-              <button
-                type="button"
-                onClick={playWithMomo}
-              >
+              <button type="button" onClick={playWithMomo}>
                 <span>🎮</span>Main
               </button>
             </div>
@@ -1372,26 +1222,22 @@ export default function MomoPet() {
         )}
       </div>
     </aside>
-  )
+  );
 }
 function PetStat({
   icon,
   label,
   value,
 }: {
-  icon: string
-  label: string
-  value: number
+  icon: string;
+  label: string;
+  value: number;
 }) {
   return (
     <div className="momo-stat">
-      <span className="momo-stat-icon">
-        {icon}
-      </span>
+      <span className="momo-stat-icon">{icon}</span>
 
-      <span className="momo-stat-label">
-        {label}
-      </span>
+      <span className="momo-stat-label">{label}</span>
 
       <div
         className="momo-progress"
@@ -1404,5 +1250,5 @@ function PetStat({
         <span style={{ width: `${value}%` }} />
       </div>
     </div>
-  )
+  );
 }

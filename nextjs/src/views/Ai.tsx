@@ -1,9 +1,11 @@
-import '../styles/ai.css'
-import '../styles/ai-animation.css'
+import Link from "next/link";
 
-import aiImageAsset from '../assets/elemenheroai.svg'
+import "../styles/ai.css";
+import "../styles/ai-animation.css";
 
-const aiImage = aiImageAsset.src
+import aiImageAsset from "../assets/elemenheroai.svg";
+
+const aiImage = aiImageAsset.src;
 
 export default function Ai() {
   return (
@@ -22,18 +24,22 @@ export default function Ai() {
             rasakan, aku akan menemanimu.
           </p>
 
-          <a href="/reflection" className="ai-button">
+          <Link
+            href="/reflection"
+            scroll={true}
+            className="ai-button"
+          >
             Mulai sekarang <span aria-hidden="true">➜</span>
-          </a>
+          </Link>
         </div>
 
         <div className="ai-hero-image">
           <img
-  src={aiImage}
-  alt="Ilustrasi chatbot MindGlow"
-/>
+            src={aiImage}
+            alt="Ilustrasi chatbot MindGlow"
+          />
         </div>
       </div>
     </section>
-  )
+  );
 }
