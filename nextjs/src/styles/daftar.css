@@ -1,246 +1,613 @@
-/* Trik menutupi Navbar & Footer utama, membuat tepat 1 layar penuh (100vh) */
-/* Container Utama + Background Gambar di Bawah */
+
+/* =========================================
+   HALAMAN PENDAFTARAN MINDGLOW
+========================================= */
+
 .daftar-page-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 9999;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 9999;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    /* --- PENGATURAN GAMBAR BACKGROUND --- */
-    background-color: #f4f7f4;
-    /* Warna dasar krem */
-    background-image: url('/images/footer_login.png');
-    /* Mengambil gambar dari folder public */
-    background-position: bottom center;
-    /* Posisikan gambar mentok di bawah tengah */
-    background-repeat: no-repeat;
-    /* Jangan diulang (tile) */
-    background-size: contain;
-    /* Sesuaikan ukuran gambar agar pas di layar, gunakan 'cover' jika ingin lebih penuh */
+  box-sizing: border-box;
+  padding: 24px 16px;
+
+  background-color: #f4f7f4;
+  background-image: url("/images/footer_login.png");
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Mengatur kotak form agar UKURANNYA LEBIH KECIL dan rapi */
+/* =========================================
+   KARTU PENDAFTARAN
+========================================= */
+
 .daftar-card {
-    background-color: #f9fbf9;
-    border: 1px solid #b5c7b8;
-    border-radius: 25px;
-    padding: 30px 40px;
-    /* Jarak ruang dalam diperkecil */
-    width: 90%;
-    max-width: 400px;
-    /* Lebar maksimal diturunkan drastis dari 550px ke 400px */
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  box-sizing: border-box;
+
+  padding: 34px 36px;
+
+  background-color: #fbfcfb;
+  border: 1px solid #b7c9bb;
+  border-radius: 24px;
+
+  box-shadow:
+    0 12px 32px rgba(32, 57, 40, 0.09),
+    0 2px 6px rgba(32, 57, 40, 0.04);
 }
 
-/* Bagian Judul (Diperkecil) */
+/* =========================================
+   HEADER
+========================================= */
+
 .daftar-header {
-    text-align: center;
-    margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 26px;
 }
 
 .daftar-header h1 {
-    font-size: 24px;
-    /* Mengecilkan teks judul */
-    color: #000;
-    margin-bottom: 5px;
-    font-weight: bold;
+  margin: 0 0 10px;
+
+  color: #17251b;
+  font-size: clamp(23px, 3vw, 28px);
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.6px;
 }
 
 .daftar-header p {
-    font-size: 14px;
-    color: #555;
+  margin: 0;
+
+  color: #59645c;
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
 }
 
-/* Jarak antar isian form (Diperkecil) */
+/* =========================================
+   FORM
+========================================= */
+
+.daftar-form {
+  width: 100%;
+}
+
 .form-group {
-    margin-bottom: 12px;
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 17px;
 }
 
 .form-group label {
-    margin-bottom: 5px;
-    font-size: 13px;
-    color: #000;
-    font-weight: 500;
+  display: block;
+  margin-bottom: 7px;
+
+  color: #202a23;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 600;
 }
 
-/* Desain kotak input teks (Diperkecil) */
 .form-group input {
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    font-size: 13px;
-    outline: none;
-    background-color: #fff;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 47px;
+  box-sizing: border-box;
+
+  padding: 12px 14px;
+
+  color: #202a23;
+  background-color: #ffffff;
+
+  border: 1.5px solid #c5cec7;
+  border-radius: 11px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+
+  outline: none;
+
+  box-shadow: 0 1px 2px rgba(20, 40, 25, 0.025);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.form-group input::placeholder {
+  color: #7a837d;
+  opacity: 1;
+}
+
+.form-group input:hover {
+  border-color: #a5b7a9;
 }
 
 .form-group input:focus {
-    border-color: #8cb494;
+  border-color: #548563;
+  background-color: #ffffff;
+
+  box-shadow: 0 0 0 3px rgba(84, 133, 99, 0.13);
 }
 
-
-/* --- FOOTER DI DALAM KOTAK PUTIH --- */
-.daftar-footer-inside {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    /* Menyusun atas bawah */
-    align-items: center;
-    /* Rata tengah secara horizontal */
-    text-align: center;
-    gap: 8px;
-    /* Jarak antara tulisan "Sudah punya akun" dan "Copyright" */
+.form-group input:focus-visible {
+  outline: none;
 }
 
-.daftar-footer-inside p {
-    margin: 0;
-    font-size: 13px;
-    color: #333;
-}
+/* =========================================
+   TOMBOL DAFTAR TANPA PANAH
+========================================= */
 
-.link-login {
-    color: #2b5c38;
-    /* Warna hijau tua mirip desain */
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.link-login:hover {
-    text-decoration: underline;
-}
-
-.copyright-text {
-    font-size: 11px !important;
-    /* Ukuran lebih kecil untuk copyright */
-    color: #888 !important;
-    /* Warna abu-abu pudar */
-}
-
-/*BUTTON*/
-/* --- DESAIN TOMBOL BARU SESUAI GAMBAR --- */
 .btn-submit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   width: 100%;
+  min-height: 52px;
+  box-sizing: border-box;
+
+  margin-top: 22px;
   padding: 14px 20px;
-  /* Gradasi hijau lembut meniru efek 3D */
-  background: linear-gradient(180deg, #abcaba 0%, #8db298 100%);
-  color: #1a3442; /* Warna teks biru gelap/slate */
-  font-weight: 700;
+
+  color: #203b2b;
+  background: linear-gradient(
+    180deg,
+    #b5d0bd 0%,
+    #94b49d 100%
+  );
+
+  border: 1.5px solid #829f89;
+  border-radius: 999px;
+
+  font-family: inherit;
   font-size: 15px;
-  border: 1px solid #7d9e87; /* Garis tepi tipis */
-  border-radius: 40px; /* Bentuk pil melingkar penuh */
+  font-weight: 750;
+  letter-spacing: 0.35px;
+
   cursor: pointer;
-  margin-top: 15px;
-  /* Kombinasi bayangan luar (drop shadow) dan bayangan dalam (inner shadow) */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08), inset 0 2px 3px rgba(255, 255, 255, 0.4);
-  
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px; /* Jarak teks DAFTAR dengan panah */
-  
-  /* Persiapan Animasi */
-  transition: all 0.3s ease;
+
+  box-shadow:
+    0 4px 9px rgba(40, 70, 48, 0.11),
+    inset 0 1px 1px rgba(255, 255, 255, 0.55);
+
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
-/* Animasi 1: Saat mouse menyorot (Hover) tombol terangkat */
-.btn-submit:hover {
-  background: linear-gradient(180deg, #b5d5c4 0%, #97bea3 100%); /* Warna sedikit lebih terang */
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12), inset 0 2px 3px rgba(255, 255, 255, 0.5);
-  transform: translateY(-3px); /* Mengangkat tombol 3px ke atas */
-}
+.btn-submit:hover:not(:disabled) {
+  background: linear-gradient(
+    180deg,
+    #c0d9c8 0%,
+    #a0c1a9 100%
+  );
 
-/* Animasi 2: Saat tombol ditekan (Active) tombol tenggelam */
-.btn-submit:active {
-  transform: translateY(1px); /* Bergerak ke bawah seperti ditekan */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), inset 0 3px 6px rgba(0, 0, 0, 0.15); /* Bayangan dalam menebal */
-}
+  box-shadow:
+    0 7px 15px rgba(40, 70, 48, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6);
 
-/* Animasi 3: Panah bergerak otomatis ke kanan */
-.arrow-icon {
-  font-size: 18px;
-  transition: transform 0.3s ease;
-}
-
-.btn-submit:hover .arrow-icon {
-  transform: translateX(5px); /* Geser panah 5px ke kanan saat disorot */
-}
-
-/*NOTIFIKASI*/
-/* --- DESAIN NOTIFIKASI KUSTOM --- */
-
-/* Latar belakang transparan gelap untuk menyorot notifikasi */
-.notif-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4); /* Efek gelap */
-  z-index: 99999; /* Selalu di paling depan */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Kotak putih notifikasinya */
-.notif-box {
-  background-color: #f9fbf9;
-  padding: 30px 40px;
-  border-radius: 20px;
-  border: 1px solid #b5c7b8;
-  text-align: center;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-  /* Animasi muncul membesar (pop up) */
-  animation: popUp 0.3s ease-out forwards;
-}
-
-.notif-icon {
-  font-size: 45px;
-  margin-bottom: 10px;
-}
-
-.notif-box h3 {
-  color: #1a3442;
-  margin-bottom: 8px;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.notif-box p {
-  color: #555;
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-
-/* Tombol Tutup di dalam notifikasi */
-.notif-btn {
-  background: linear-gradient(180deg, #abcaba 0%, #8db298 100%);
-  color: #1a3442;
-  border: 1px solid #7d9e87;
-  padding: 10px 30px;
-  border-radius: 20px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-}
-
-.notif-btn:hover {
-  background: linear-gradient(180deg, #b5d5c4 0%, #97bea3 100%);
   transform: translateY(-2px);
 }
 
-/* Animasi bingkai muncul */
+.btn-submit:active:not(:disabled) {
+  transform: translateY(0);
+
+  box-shadow:
+    0 2px 4px rgba(40, 70, 48, 0.09),
+    inset 0 2px 4px rgba(40, 70, 48, 0.08);
+}
+
+.btn-submit:focus-visible {
+  outline: 3px solid rgba(84, 133, 99, 0.35);
+  outline-offset: 3px;
+}
+
+.btn-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* =========================================
+   FOOTER DALAM KARTU
+========================================= */
+
+.daftar-footer-inside {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+
+  margin-top: 24px;
+
+  text-align: center;
+}
+
+.daftar-footer-inside p {
+  margin: 0;
+
+  color: #4d5750;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.link-login {
+  color: #28613a;
+  font-weight: 650;
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+}
+
+.link-login:hover {
+  color: #174728;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.link-login:focus-visible {
+  outline: 2px solid #548563;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.copyright-text {
+  color: #7d867f !important;
+  font-size: 11px !important;
+}
+
+/* =========================================
+   OVERLAY NOTIFIKASI
+========================================= */
+
+.notif-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  box-sizing: border-box;
+  padding: 20px;
+
+  background-color: rgba(17, 29, 20, 0.45);
+
+  overflow-y: auto;
+
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+/* =========================================
+   KOTAK NOTIFIKASI
+========================================= */
+
+.notif-box {
+  width: 100%;
+  max-width: 380px;
+  box-sizing: border-box;
+
+  padding: 30px 28px;
+
+  background-color: #fbfcfb;
+  border: 1px solid #b7c9bb;
+  border-radius: 22px;
+
+  text-align: center;
+
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.16);
+
+  animation: popUp 0.25s ease-out;
+}
+
+.notif-icon {
+  margin-bottom: 12px;
+  font-size: 40px;
+  line-height: 1.3;
+}
+
+.notif-box h3 {
+  margin: 0 0 10px;
+
+  color: #203b2b;
+  font-size: 20px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.notif-box p {
+  margin: 0 0 22px;
+
+  color: #59645c;
+  font-size: 14px;
+  line-height: 1.65;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   TOMBOL TUTUP NOTIFIKASI
+========================================= */
+
+.notif-btn {
+  min-height: 42px;
+  padding: 10px 28px;
+
+  color: #203b2b;
+  background: linear-gradient(
+    180deg,
+    #b5d0bd 0%,
+    #94b49d 100%
+  );
+
+  border: 1px solid #829f89;
+  border-radius: 999px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow: 0 3px 7px rgba(40, 70, 48, 0.09);
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.notif-btn:hover {
+  background: linear-gradient(
+    180deg,
+    #c0d9c8 0%,
+    #a0c1a9 100%
+  );
+
+  transform: translateY(-1px);
+}
+
+.notif-btn:focus-visible {
+  outline: 3px solid rgba(84, 133, 99, 0.35);
+  outline-offset: 3px;
+}
+
+/* =========================================
+   ANIMASI
+========================================= */
+
 @keyframes popUp {
-  0% { transform: scale(0.7); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.96) translateY(6px);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 768px) {
+  .daftar-card {
+    max-width: 420px;
+    padding: 30px 28px;
+  }
+
+  .daftar-header {
+    margin-bottom: 23px;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media screen and (max-width: 480px) {
+  .daftar-page-container {
+    padding: 18px 14px;
+
+    background-position: center bottom;
+    background-size: auto 42%;
+
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  .daftar-card {
+    width: 100%;
+    max-width: 390px;
+
+    padding: 25px 21px;
+
+    border-radius: 20px;
+
+    box-shadow:
+      0 8px 25px rgba(32, 57, 40, 0.09),
+      0 1px 4px rgba(32, 57, 40, 0.04);
+  }
+
+  .daftar-header {
+    margin-bottom: 22px;
+  }
+
+  .daftar-header h1 {
+    font-size: 23px;
+    letter-spacing: -0.4px;
+  }
+
+  .daftar-header p {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  /* Label diperkecil khusus tampilan mobile */
+  .form-group label {
+    margin-bottom: 6px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  /* Font input minimal 16px untuk mengurangi
+     zoom otomatis pada Safari iPhone. */
+
+  .daftar-form input,
+  .form-group input,
+  .daftar-form textarea,
+  .daftar-form select {
+    font-size: 16px !important;
+    line-height: 1.4;
+  }
+
+  .form-group input {
+    min-height: 48px;
+    padding: 12px 13px;
+  }
+
+  .btn-submit {
+    min-height: 51px;
+    margin-top: 19px;
+    font-size: 15px;
+  }
+
+  .daftar-footer-inside {
+    margin-top: 21px;
+    gap: 8px;
+  }
+
+  .daftar-footer-inside p {
+    font-size: 12px;
+  }
+
+  .copyright-text {
+    font-size: 11px !important;
+  }
+
+  .notif-box {
+    max-width: 350px;
+    padding: 27px 22px;
+    border-radius: 20px;
+  }
+
+  .notif-box h3 {
+    font-size: 19px;
+  }
+
+  .notif-box p {
+    font-size: 14px;
+  }
+}
+
+/* =========================================
+   HP KECIL
+========================================= */
+
+@media screen and (max-width: 360px) {
+  .daftar-page-container {
+    padding: 12px 10px;
+  }
+
+  .daftar-card {
+    padding: 22px 17px;
+    border-radius: 18px;
+  }
+
+  .daftar-header h1 {
+    font-size: 21px;
+  }
+
+  .daftar-header p {
+    font-size: 12px;
+  }
+
+  /* Label lebih kecil untuk HP berlayar sempit */
+  .form-group label {
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .form-group input {
+    padding: 11px 10px;
+  }
+
+  .btn-submit {
+    min-height: 48px;
+  }
+
+  .daftar-footer-inside p {
+    font-size: 11px;
+  }
+}
+
+/* =========================================
+   LAYAR PENDEK / LANDSCAPE
+========================================= */
+
+@media (max-height: 700px) {
+  .daftar-page-container {
+    justify-content: flex-start;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .daftar-card {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+}
+
+/* =========================================
+   AKSESIBILITAS
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-submit,
+  .notif-btn,
+  .form-group input,
+  .link-login {
+    transition: none;
+  }
+
+  .notif-box {
+    animation: none;
+  }
+
+  .btn-submit:hover:not(:disabled),
+  .notif-btn:hover {
+    transform: none;
+  }
 }

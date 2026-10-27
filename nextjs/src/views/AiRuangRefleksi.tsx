@@ -28,6 +28,7 @@ export default function AiRuangRefleksi() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState("");
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -37,12 +38,40 @@ export default function AiRuangRefleksi() {
   ]);
 
   const nextId = useRef(2);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef<Message[]>(messages);
+  const previousMessageCountRef = useRef(messages.length);
+  const previousTypingRef = useRef(false);
 
+  // Menjaga referensi percakapan terbaru untuk riwayat API.
   useEffect(() => {
     messagesRef.current = messages;
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Gulir hanya area percakapan ketika pesan baru ditambahkan
+  // atau indikator AI sedang mengetik mulai ditampilkan.
+  // Tidak berjalan saat halaman pertama kali dibuka.
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+
+    const hasNewMessage =
+      messages.length > previousMessageCountRef.current;
+
+    const typingJustStarted =
+      isTyping && !previousTypingRef.current;
+
+    previousMessageCountRef.current = messages.length;
+    previousTypingRef.current = isTyping;
+
+    if (!container || (!hasNewMessage && !typingJustStarted)) {
+      return;
+    }
+
+    // Ubah scrollTop pada wadah percakapan, bukan scroll halaman.
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: "smooth",
+    });
   }, [messages, isTyping]);
 
   async function handleSend() {
@@ -61,7 +90,9 @@ export default function AiRuangRefleksi() {
       .slice(-10)
       .map((message) => ({
         role:
-          message.sender === "ai" ? ("assistant" as const) : ("user" as const),
+          message.sender === "ai"
+            ? ("assistant" as const)
+            : ("user" as const),
         content: message.text,
       }));
 
@@ -98,13 +129,13 @@ export default function AiRuangRefleksi() {
         if (response.status === 429) {
           throw new Error(
             result?.message ||
-              "Kuota chat AI kamu sudah mencapai batas. Silakan coba lagi nanti.",
+            "Kuota chat AI kamu sudah mencapai batas. Silakan coba lagi nanti.",
           );
         }
 
         throw new Error(
           result?.message ||
-            "MindGlow AI sedang mengalami gangguan. Silakan coba lagi.",
+          "MindGlow AI sedang mengalami gangguan. Silakan coba lagi.",
         );
       }
 
@@ -127,7 +158,9 @@ export default function AiRuangRefleksi() {
     }
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+  function handleKeyDown(
+    event: React.KeyboardEvent<HTMLTextAreaElement>,
+  ) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       void handleSend();
@@ -146,6 +179,7 @@ export default function AiRuangRefleksi() {
         </header>
 
         <div
+          ref={messagesContainerRef}
           className="reflection-messages"
           aria-live="polite"
           aria-label="Percakapan refleksi"
@@ -153,9 +187,8 @@ export default function AiRuangRefleksi() {
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`reflection-message-row ${
-                message.sender === "user" ? "is-user" : "is-ai"
-              }`}
+              className={`reflection-message-row ${message.sender === "user" ? "is-user" : "is-ai"
+                }`}
             >
               {message.sender === "ai" && (
                 <div className="reflection-avatar" aria-label="MindGlow">
@@ -181,8 +214,6 @@ export default function AiRuangRefleksi() {
               </div>
             </div>
           )}
-
-          <div ref={bottomRef} />
         </div>
 
         {error && (

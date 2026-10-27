@@ -1,3 +1,4 @@
+
 "use client";
 
 import "../styles/daftar.css";
@@ -33,7 +34,9 @@ const RegisterPage = () => {
     if (password !== confirmPassword) {
       setNotifSuccess(false);
       setNotifTitle("Password Tidak Cocok");
-      setNotifMessage("Pastikan password dan konfirmasi password sama.");
+      setNotifMessage(
+        "Pastikan password dan konfirmasi password sama.",
+      );
       setShowNotif(true);
       return;
     }
@@ -60,7 +63,8 @@ const RegisterPage = () => {
         setNotifSuccess(false);
         setNotifTitle("Pendaftaran Belum Berhasil");
         setNotifMessage(
-          result.message || "Terjadi kesalahan. Silakan coba lagi.",
+          result.message ||
+            "Terjadi kesalahan. Silakan coba lagi.",
         );
         setShowNotif(true);
         return;
@@ -104,8 +108,13 @@ const RegisterPage = () => {
             <div className="notif-icon" aria-hidden="true">
               {notifSuccess ? "💌" : "⚠️"}
             </div>
+
             <h3 id="register-notif-title">{notifTitle}</h3>
-            <p id="register-notif-message">{notifMessage}</p>
+
+            <p id="register-notif-message">
+              {notifMessage}
+            </p>
+
             <button
               type="button"
               onClick={closeNotif}
@@ -130,7 +139,7 @@ const RegisterPage = () => {
               type="email"
               id="email"
               name="email"
-              placeholder="kelompok5@gmail.com"
+              placeholder="Masukkan alamat email kamu"
               autoComplete="email"
               maxLength={255}
               required
@@ -143,7 +152,7 @@ const RegisterPage = () => {
               type="text"
               id="username"
               name="username"
-              placeholder="kelompok5"
+              placeholder="Buat username kamu"
               autoComplete="username"
               minLength={3}
               maxLength={50}
@@ -159,7 +168,7 @@ const RegisterPage = () => {
               type="password"
               id="password"
               name="password"
-              placeholder="Minimal 8 karakter"
+              placeholder="Masukkan password (minimal 8 karakter)"
               autoComplete="new-password"
               minLength={8}
               maxLength={72}
@@ -168,12 +177,14 @@ const RegisterPage = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="confirm-password">Konfirmasi Password</label>
+            <label htmlFor="confirm-password">
+              Konfirmasi Password
+            </label>
             <input
               type="password"
               id="confirm-password"
               name="confirm-password"
-              placeholder="Ulangi password"
+              placeholder="Masukkan ulang password kamu"
               autoComplete="new-password"
               minLength={8}
               maxLength={72}
@@ -187,7 +198,6 @@ const RegisterPage = () => {
             disabled={loading}
           >
             {loading ? "MEMPROSES..." : "DAFTAR"}
-            {!loading && <span className="arrow-icon">→</span>}
           </button>
         </form>
 
@@ -198,7 +208,10 @@ const RegisterPage = () => {
               Masuk di sini
             </a>
           </p>
-          <p className="copyright-text">&copy; 2026 Mindglow</p>
+
+          <p className="copyright-text">
+            &copy; 2026 Mindglow
+          </p>
         </div>
       </section>
     </main>

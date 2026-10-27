@@ -1,249 +1,527 @@
 
+/* ========================================
+   MINDGLOW AI — RUANG REFLEKSI
+   Minimalis, responsif, tanpa card utama
+   ======================================== */
+
 .reflection-page {
-  min-height: calc(100vh - 80px);
-  padding: 36px 24px 40px;
+  --reflection-green: #477653;
+  --reflection-green-dark: #315b3c;
+  --reflection-text: #293d30;
+  --reflection-muted: #7d8b7e;
+  --reflection-border: #dce6db;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
+
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  min-height: calc(100dvh - 80px);
+  padding: 24px clamp(16px, 4vw, 56px);
+
   box-sizing: border-box;
+  overflow: hidden;
+
+  color: var(--reflection-text);
   background:
-    radial-gradient(ellipse at top left, #e8f0e8 0%, transparent 42%),
-    #f6f7f2;
-  color: #263b2f;
+    radial-gradient(
+      ellipse at 8% 5%,
+      rgb(215 234 213 / 45%),
+      transparent 38%
+    ),
+    radial-gradient(
+      ellipse at 95% 90%,
+      rgb(224 236 220 / 35%),
+      transparent 34%
+    ),
+    #f8faf5;
 }
+
+/* ========================================
+   PANEL PERCAKAPAN
+   ======================================== */
 
 .reflection-panel {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
+
   width: 100%;
-  max-width: 1080px;
-  height: min(76vh, 740px);
-  min-height: 500px;
+  max-width: 900px;
+  height: min(82vh, 780px);
+  height: min(82dvh, 780px);
+  min-height: 420px;
+
   overflow: hidden;
-  border: 1px solid #dce7dd;
-  border-radius: 24px;
-  background: #fff;
-  box-shadow: 0 14px 40px rgb(40 67 48 / 9%);
+
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
+
+/* Judul tidak ditampilkan */
 
 .reflection-heading {
-  flex-shrink: 0;
-  padding: 20px 24px;
-  border-bottom: 1px solid #e8eee8;
-  background: linear-gradient(135deg, #fbfdf9, #f0f6ef);
-  text-align: center;
+  display: none;
 }
 
-.reflection-heading h1 {
-  margin: 0;
-  color: #2f5b40;
-  font-size: clamp(24px, 2.5vw, 32px);
-  font-weight: 650;
-  line-height: 1.25;
-  letter-spacing: -0.5px;
-  overflow-wrap: break-word;
-}
+/* ========================================
+   AREA PESAN
+   ======================================== */
 
 .reflection-messages {
   display: flex;
-  flex: 1;
+  flex: 1 1 auto;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
+
   min-height: 0;
-  padding: 28px clamp(16px, 4%, 44px);
+  padding: 22px 8px;
+
   overflow-x: hidden;
   overflow-y: auto;
-  scroll-behavior: smooth;
-  background: #fff;
   overscroll-behavior: contain;
+
+  scrollbar-width: thin;
+  scrollbar-color: #d0ddcf transparent;
+  scroll-behavior: smooth;
+
+  background: transparent;
 }
 
 .reflection-messages::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
+}
+
+.reflection-messages::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .reflection-messages::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background: #d7e2d8;
+  border-radius: 999px;
+  background: #d0ddcf;
 }
+
+.reflection-messages::-webkit-scrollbar-thumb:hover {
+  background: #a9c1a9;
+}
+
+/* ========================================
+   BARIS PESAN
+   ======================================== */
 
 .reflection-message-row {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
+  gap: 12px;
+
   width: 100%;
+  animation: reflection-message-enter 280ms ease both;
+}
+
+.reflection-message-row.is-ai {
+  justify-content: flex-start;
 }
 
 .reflection-message-row.is-user {
   justify-content: flex-end;
 }
 
+/* ========================================
+   AVATAR MINDGLOW
+   ======================================== */
+
 .reflection-avatar {
   display: grid;
   flex-shrink: 0;
   place-items: center;
-  width: 54px;
-  height: 54px;
+
+  width: 56px;
+  height: 56px;
+  margin-bottom: 2px;
   overflow: hidden;
+
   box-sizing: border-box;
-  border: 2px solid #c9dfcd;
+  border: 1.5px solid #d2e3d0;
   border-radius: 50%;
-  background: linear-gradient(145deg, #f7fcf6, #e1efe2);
-  box-shadow:
-    inset 0 1px 3px rgb(255 255 255 / 90%),
-    0 3px 8px rgb(43 83 51 / 14%);
+  background: #eaf3e7;
+
+  box-shadow: 0 2px 8px rgb(49 91 60 / 7%);
 }
 
 .reflection-avatar img {
   display: block;
-  width: 36px;
-  height: 36px;
+
+  width: 42px;
+  height: 42px;
+
   object-fit: contain;
 }
 
+/* ========================================
+   GELEMBUNG PESAN
+   ======================================== */
+
 .reflection-bubble {
-  max-width: min(78%, 620px);
-  padding: 12px 16px;
-  border: 1px solid #e0e9e1;
-  border-radius: 18px;
-  background: #f3f7f2;
-  color: #34483a;
+  max-width: min(76%, 620px);
+  padding: 13px 17px;
+
+  border: 0;
+  border-radius: 17px;
+
+  background: #edf3e9;
+  color: #344738;
+
   font-size: 15px;
-  line-height: 1.65;
+  font-weight: 400;
+  line-height: 1.75;
+
   overflow-wrap: anywhere;
   white-space: pre-wrap;
+  box-shadow: none;
 }
 
 .reflection-message-row.is-ai .reflection-bubble {
   border-bottom-left-radius: 5px;
+  background: #edf3e9;
+  color: #344738;
 }
 
 .reflection-message-row.is-user .reflection-bubble {
-  border-color: #477653;
   border-bottom-right-radius: 5px;
-  background: #477653;
+  background: var(--reflection-green);
   color: #fff;
-  box-shadow: 0 3px 10px rgb(55 103 69 / 10%);
 }
 
+/* ========================================
+   INDIKATOR MENGETIK
+   Mendukung TSX dengan tiga titik
+   ======================================== */
+
 .reflection-bubble.reflection-typing {
-  color: #7b8c7e;
-  font-size: 13px;
-  font-style: italic;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+
+  padding: 13px 16px;
+
+  background: #edf3e9;
+  color: var(--reflection-muted);
+
+  font-size: 12px;
+  font-style: normal;
 }
+
+.reflection-typing-label {
+  line-height: 1.5;
+}
+
+.reflection-typing-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.reflection-typing-dots span {
+  display: block;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+  background: #719477;
+
+  animation: reflection-dot-pulse 1.2s infinite ease-in-out;
+}
+
+.reflection-typing-dots span:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.reflection-typing-dots span:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+/* ========================================
+   SARAN MEMULAI PERCAKAPAN
+   ======================================== */
+
+.reflection-suggestions {
+  flex-shrink: 0;
+
+  width: 100%;
+  padding: 0 8px 12px;
+
+  box-sizing: border-box;
+  animation: reflection-message-enter 350ms ease both;
+}
+
+.reflection-suggestions-title {
+  margin: 0 0 12px;
+
+  color: #647968;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.reflection-suggestions-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.reflection-suggestion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 38px;
+  padding: 9px 14px;
+
+  border: 1px solid #d6e4d3;
+  border-radius: 999px;
+
+  background: rgb(255 255 255 / 70%);
+  color: #45634a;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+
+  cursor: pointer;
+
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.reflection-suggestion:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: #9cbb9d;
+  background: #eaf3e7;
+  color: var(--reflection-green-dark);
+}
+
+.reflection-suggestion:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   PESAN ERROR
+   ======================================== */
+
+.reflection-error {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  width: 100%;
+  margin: 8px 0;
+  padding: 11px 14px;
+
+  box-sizing: border-box;
+  border-left: 3px solid #c96b61;
+  border-radius: 0 8px 8px 0;
+
+  background: #fff0ed;
+  color: #99463f;
+
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.reflection-error p {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.reflection-retry {
+  padding: 5px 10px;
+
+  border: 1px solid #e4b6ae;
+  border-radius: 8px;
+
+  background: transparent;
+  color: #99463f;
+
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ========================================
+   FORM INPUT
+   ======================================== */
 
 .reflection-composer {
   display: flex;
   flex-shrink: 0;
-  align-items: stretch;
-  gap: 10px;
-  padding: 14px clamp(14px, 4%, 36px) 0;
-  background: #fff;
+  align-items: flex-end;
+  gap: 12px;
+
+  padding: 14px 0 0;
+
+  border: 0;
+  background: transparent;
 }
 
 .reflection-input-wrap {
   display: flex;
   flex: 1;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+
   min-width: 0;
-  min-height: 54px;
-  padding: 8px 14px;
-  border: 1px solid #d5e1d6;
-  border-radius: 16px;
-  background: #f8faf7;
+  min-height: 56px;
+  padding: 10px 17px;
+
+  box-sizing: border-box;
+  border: 1px solid var(--reflection-border);
+  border-radius: 18px;
+
+  background: rgb(255 255 255 / 82%);
+
   transition:
-    border-color 200ms ease,
-    box-shadow 200ms ease,
-    background 200ms ease;
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .reflection-input-wrap:focus-within {
-  border-color: #709779;
+  border-color: #8eaf90;
   background: #fff;
-  box-shadow: 0 0 0 3px rgb(112 151 121 / 12%);
+  box-shadow: 0 0 0 3px rgb(71 118 83 / 8%);
 }
+
+/* IKON INPUT */
 
 .reflection-input-icon {
+  display: grid;
   flex-shrink: 0;
-  color: #77917b;
-  font-size: 22px;
-  line-height: 1;
+  place-items: center;
+
+  width: 23px;
+  height: 23px;
+
+  color: #829985;
 }
 
-.reflection-input-icon img {
+.reflection-input-icon svg {
   display: block;
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
 }
+
+/* TEXTAREA
+   Font minimal 16px membantu mencegah auto-zoom iOS.
+   Resize dimatikan agar tinggi form stabil.
+*/
 
 .reflection-input-wrap textarea {
+  display: block;
   flex: 1;
+
   width: 100%;
   min-width: 0;
-  max-height: 110px;
-  resize: vertical;
+  min-height: 24px;
+  max-height: 120px;
+  padding: 3px 0;
+
+  resize: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+
   border: 0;
   outline: 0;
+
   background: transparent;
-  color: #2c4032;
-  font: inherit;
-  font-size: 14px;
-  line-height: 1.55;
+  color: var(--reflection-text);
+
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 .reflection-input-wrap textarea::placeholder {
-  color: #89988c;
+  color: #8b998d;
   opacity: 1;
 }
 
 .reflection-input-wrap textarea:disabled {
   cursor: wait;
+  opacity: 0.7;
 }
+
+/* ========================================
+   TOMBOL KIRIM
+   ======================================== */
 
 .reflection-send {
   display: grid;
   flex-shrink: 0;
   place-items: center;
-  width: 52px;
-  min-width: 52px;
-  min-height: 54px;
-  padding: 0;
+
+  width: 54px;
+  min-width: 54px;
+  height: 56px;
+  padding: 15px;
+
   border: 0;
-  border-radius: 16px;
-  background: #477653;
+  border-radius: 17px;
+
+  background: var(--reflection-green);
   color: #fff;
-  font-size: 24px;
+
   cursor: pointer;
+
   transition:
-    background 200ms ease,
-    transform 200ms ease,
-    box-shadow 200ms ease;
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.reflection-send svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .reflection-send:hover:not(:disabled) {
   transform: translateY(-1px);
-  background: #365f41;
-  box-shadow: 0 5px 12px rgb(55 103 69 / 16%);
+  background: var(--reflection-green-dark);
 }
 
 .reflection-send:active:not(:disabled) {
-  transform: translateY(0);
+  transform: scale(0.96);
 }
 
 .reflection-send:disabled {
-  background: #b8c8ba;
-  color: #f7faf7;
+  background: #bdcdbd;
+  color: #f8faf7;
   cursor: not-allowed;
 }
 
-.reflection-send:focus-visible,
-.reflection-back:focus-visible {
-  outline: 3px solid #9abda0;
-  outline-offset: 3px;
-}
+/* ========================================
+   PRIVASI
+   ======================================== */
 
 .reflection-privacy {
   display: flex;
@@ -251,144 +529,219 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
+
   margin: 0;
-  padding: 12px 12px 18px;
-  background: #fff;
+  padding: 12px 8px 8px;
+
+  background: transparent;
   text-align: center;
 }
 
 .reflection-privacy img {
+  display: block;
   flex-shrink: 0;
-  width: 16px;
-  height: 16px;
+
+  width: 15px;
+  height: 15px;
+
   object-fit: contain;
-  opacity: 0.75;
+  opacity: 0.7;
 }
 
 .reflection-privacy span {
-  color: #7d8f80;
+  color: var(--reflection-muted);
   font-size: 12px;
   line-height: 1.5;
 }
 
+/* ========================================
+   TOMBOL KEMBALI
+   ======================================== */
+
 .reflection-back {
-  position: relative;
-  isolation: isolate;
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-width: 132px;
-  min-height: 42px;
-  padding: 10px 18px;
+
+  min-width: 112px;
+  min-height: 40px;
+  padding: 9px 17px;
+
   box-sizing: border-box;
-  overflow: hidden;
-  border: 1px solid #91aa99;
+  border: 1px solid #d4e0d2;
   border-radius: 999px;
-  background:
-    radial-gradient(
-      ellipse 15% 30% at 18% 40%,
-      rgb(255 255 255 / 78%),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 13% 27% at 54% 20%,
-      rgb(255 255 255 / 68%),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 16% 32% at 78% 70%,
-      rgb(255 255 255 / 75%),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 12% 25% at 35% 82%,
-      rgb(255 255 255 / 58%),
-      transparent 100%
-    ),
-    linear-gradient(135deg, #c5d9ca, #a4c1ad 52%, #87a895);
-  color: #2e394c;
+
+  background: transparent;
+  color: #45634a;
+
+  font-family: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.4;
-  text-align: center;
-  text-decoration: none;
+
   cursor: pointer;
-  box-shadow:
-    inset 0 2px 4px rgb(255 255 255 / 80%),
-    inset 0 -2px 4px rgb(46 57 76 / 10%),
-    0 3px 6px rgb(46 57 76 / 12%);
+
   transition:
-    background 250ms ease,
-    border-color 250ms ease,
-    transform 200ms ease,
-    box-shadow 250ms ease;
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.reflection-back svg {
+  display: block;
+  flex-shrink: 0;
+
+  width: 17px;
+  height: 17px;
 }
 
 .reflection-back:hover {
-  border-color: #a9cbb3;
-  background:
-    radial-gradient(
-      ellipse 18% 34% at 20% 40%,
-      rgb(255 255 255 / 95%),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 15% 30% at 55% 25%,
-      rgb(255 255 255 / 82%),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 18% 34% at 80% 70%,
-      rgb(255 255 255 / 88%),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 12% 25% at 35% 82%,
-      rgb(255 255 255 / 72%),
-      transparent 100%
-    ),
-    linear-gradient(135deg, #e1f0e5, #c9e5d1 52%, #b3d7be);
-  transform: translateY(-2px);
-  box-shadow:
-    inset 0 2px 4px rgb(255 255 255 / 90%),
-    inset 0 -2px 4px rgb(46 57 76 / 8%),
-    0 5px 10px rgb(46 57 76 / 14%);
+  border-color: #a9c5a8;
+  background: #edf4e9;
+  color: var(--reflection-green-dark);
 }
 
 .reflection-back:active {
-  background: linear-gradient(135deg, #e8f5eb, #c4e8cf);
-  transform: scale(0.98);
-  box-shadow:
-    inset 0 2px 5px rgb(255 255 255 / 90%),
-    0 2px 4px rgb(46 57 76 / 10%);
+  background: #e3eddf;
 }
+
+/* ========================================
+   ANIMASI
+   ======================================== */
+
+@keyframes reflection-message-enter {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reflection-dot-pulse {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+/* ========================================
+   FOCUS KEYBOARD
+   ======================================== */
+
+.reflection-send:focus-visible,
+.reflection-back:focus-visible,
+.reflection-suggestion:focus-visible,
+.reflection-retry:focus-visible {
+  outline: 3px solid #91b697;
+  outline-offset: 3px;
+}
+
+/* ========================================
+   TABLET
+   ======================================== */
 
 @media (max-width: 768px) {
   .reflection-page {
     min-height: calc(100vh - 70px);
-    padding: 24px 16px 28px;
-    gap: 14px;
+    min-height: calc(100dvh - 70px);
+
+    padding: 18px 20px 20px;
+    gap: 12px;
   }
 
   .reflection-panel {
-    width: 100%;
-    height: min(76dvh, 680px);
-    min-height: 440px;
-    border-radius: 20px;
-  }
-
-  .reflection-heading {
-    padding: 16px 14px;
-  }
-
-  .reflection-heading h1 {
-    font-size: clamp(22px, 4vw, 27px);
+    height: min(84vh, 720px);
+    height: min(84dvh, 720px);
+    min-height: 380px;
   }
 
   .reflection-messages {
-    gap: 16px;
-    padding: 20px 14px;
+    gap: 20px;
+    padding: 18px 4px;
+  }
+
+  .reflection-avatar {
+    width: 50px;
+    height: 50px;
+  }
+
+  .reflection-avatar img {
+    width: 37px;
+    height: 37px;
+  }
+
+  .reflection-bubble {
+    max-width: 82%;
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .reflection-suggestions {
+    padding-right: 4px;
+    padding-left: 4px;
+  }
+
+  .reflection-composer {
+    gap: 9px;
+    padding-top: 12px;
+  }
+
+  .reflection-input-wrap {
+    min-height: 52px;
+    padding: 9px 12px;
+    border-radius: 15px;
+  }
+
+  .reflection-input-wrap textarea {
+    font-size: 16px;
+  }
+
+  .reflection-send {
+    width: 50px;
+    min-width: 50px;
+    height: 52px;
+    padding: 14px;
+    border-radius: 15px;
+  }
+}
+
+/* ========================================
+   MOBILE
+   ======================================== */
+
+@media (max-width: 480px) {
+  .reflection-page {
+    min-height: calc(100vh - 60px);
+    min-height: calc(100dvh - 60px);
+
+    padding: 12px 12px 14px;
+    gap: 10px;
+
+    overflow-x: hidden;
+  }
+
+  .reflection-panel {
+    height: calc(100dvh - 125px);
+    min-height: 330px;
+  }
+
+  .reflection-messages {
+    gap: 17px;
+    padding: 12px 0;
   }
 
   .reflection-message-row {
@@ -396,164 +749,95 @@
   }
 
   .reflection-avatar {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
   }
 
   .reflection-avatar img {
-    width: 32px;
-    height: 32px;
+    width: 33px;
+    height: 33px;
   }
 
   .reflection-bubble {
-    max-width: 84%;
-    padding: 11px 13px;
-    border-radius: 16px;
-    font-size: 14px;
-    line-height: 1.6;
+    max-width: 86%;
+    padding: 10px 12px;
+    border-radius: 14px;
+
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .reflection-message-row.is-ai .reflection-bubble {
+    border-bottom-left-radius: 4px;
+  }
+
+  .reflection-message-row.is-user .reflection-bubble {
+    border-bottom-right-radius: 4px;
+  }
+
+  .reflection-bubble.reflection-typing {
+    gap: 7px;
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+
+  .reflection-suggestions {
+    padding: 0 0 8px;
+  }
+
+  .reflection-suggestions-title {
+    margin-bottom: 9px;
+    font-size: 12px;
+  }
+
+  .reflection-suggestions-list {
+    gap: 7px;
+  }
+
+  .reflection-suggestion {
+    min-height: 35px;
+    padding: 8px 11px;
+    font-size: 11px;
   }
 
   .reflection-composer {
     gap: 8px;
-    padding: 12px 12px 0;
+    padding-top: 10px;
   }
 
   .reflection-input-wrap {
     min-height: 48px;
     gap: 8px;
-    padding: 7px 10px;
-    border-radius: 13px;
+    padding: 8px 10px;
+    border-radius: 14px;
   }
 
   .reflection-input-icon {
-    font-size: 20px;
-  }
-
-  .reflection-input-icon img {
-    width: 19px;
-    height: 19px;
+    width: 20px;
+    height: 20px;
   }
 
   .reflection-input-wrap textarea {
-    font-size: 14px;
+    min-height: 24px;
+    max-height: 100px;
+
+    font-size: 16px;
+    line-height: 1.5;
+
+    resize: none;
   }
 
   .reflection-send {
     width: 46px;
     min-width: 46px;
-    min-height: 48px;
+    height: 48px;
+    padding: 13px;
     border-radius: 13px;
-    font-size: 22px;
   }
 
   .reflection-privacy {
     gap: 6px;
-    padding: 10px 10px 14px;
-  }
-
-  .reflection-privacy img {
-    width: 14px;
-    height: 14px;
-  }
-
-  .reflection-privacy span {
-    font-size: 11px;
-  }
-
-  .reflection-back {
-    min-width: 120px;
-    min-height: 40px;
-    padding: 9px 15px;
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .reflection-page {
-    min-height: calc(100dvh - 60px);
-    padding: 14px 10px 20px;
-    gap: 12px;
-  }
-
-  .reflection-panel {
-    height: calc(100dvh - 150px);
-    min-height: 390px;
-    border-radius: 17px;
-  }
-
-  .reflection-heading {
-    padding: 14px 10px;
-  }
-
-  .reflection-heading h1 {
-    font-size: clamp(20px, 5.5vw, 24px);
-    line-height: 1.3;
-    letter-spacing: -0.3px;
-  }
-
-  .reflection-messages {
-    gap: 14px;
-    padding: 16px 10px;
-  }
-
-  .reflection-message-row {
-    gap: 6px;
-  }
-
-  .reflection-avatar {
-    width: 42px;
-    height: 42px;
-  }
-
-  .reflection-avatar img {
-    width: 28px;
-    height: 28px;
-  }
-
-  .reflection-bubble {
-    max-width: 87%;
-    padding: 10px 12px;
-    border-radius: 14px;
-    font-size: 13px;
-    line-height: 1.6;
-  }
-
-  .reflection-bubble.reflection-typing {
-    font-size: 12px;
-  }
-
-  .reflection-composer {
-    gap: 7px;
-    padding: 10px 9px 0;
-  }
-
-  .reflection-input-wrap {
-    min-height: 44px;
-    gap: 7px;
-    padding: 6px 9px;
-    border-radius: 12px;
-  }
-
-  .reflection-input-icon img {
-    width: 17px;
-    height: 17px;
-  }
-
-  .reflection-input-wrap textarea {
-    font-size: 13px;
-  }
-
-  .reflection-send {
-    width: 42px;
-    min-width: 42px;
-    min-height: 44px;
-    border-radius: 12px;
-    font-size: 20px;
-  }
-
-  .reflection-privacy {
-    gap: 5px;
-    padding: 9px 8px 12px;
+    padding: 10px 6px 4px;
   }
 
   .reflection-privacy img {
@@ -562,120 +846,130 @@
   }
 
   .reflection-privacy span {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .reflection-back {
-    min-width: 112px;
-    min-height: 38px;
-    padding: 8px 13px;
+    min-width: 104px;
+    min-height: 36px;
+    padding: 8px 14px;
     font-size: 12px;
   }
 }
 
+/* ========================================
+   PONSEL KECIL
+   ======================================== */
+
 @media (max-width: 360px) {
   .reflection-page {
-    padding-right: 8px;
-    padding-left: 8px;
+    padding-right: 9px;
+    padding-left: 9px;
   }
 
   .reflection-panel {
-    min-height: 370px;
-    border-radius: 15px;
-  }
-
-  .reflection-heading h1 {
-    font-size: 20px;
+    min-height: 310px;
   }
 
   .reflection-messages {
-    padding-right: 8px;
-    padding-left: 8px;
+    gap: 14px;
   }
 
   .reflection-avatar {
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
   }
 
   .reflection-avatar img {
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
   }
 
   .reflection-bubble {
-    max-width: 89%;
+    max-width: 88%;
     padding: 9px 10px;
     font-size: 12px;
   }
 
+  .reflection-suggestions-list {
+    gap: 6px;
+  }
+
+  .reflection-suggestion {
+    padding: 7px 9px;
+    font-size: 10px;
+  }
+
   .reflection-input-wrap {
-    padding-right: 7px;
+    padding-right: 8px;
     padding-left: 8px;
   }
 
-  .reflection-input-icon img {
-    width: 16px;
-    height: 16px;
+  .reflection-input-wrap textarea {
+    font-size: 16px;
   }
 
   .reflection-send {
-    width: 38px;
-    min-width: 38px;
-    font-size: 18px;
+    width: 42px;
+    min-width: 42px;
   }
 
   .reflection-privacy span {
-    font-size: 9px;
-  }
-
-  .reflection-back {
-    min-width: 106px;
-    min-height: 36px;
-    padding: 8px 11px;
-    font-size: 11px;
+    font-size: 10px;
   }
 }
+
+/* ========================================
+   LAYAR PENDEK
+   ======================================== */
 
 @media (max-height: 600px) and (max-width: 768px) {
   .reflection-page {
-    padding-top: 10px;
-    padding-bottom: 12px;
+    padding-top: 8px;
+    padding-bottom: 10px;
   }
 
   .reflection-panel {
-    height: 72dvh;
-    min-height: 340px;
-  }
-
-  .reflection-heading {
-    padding: 10px 12px;
+    height: 78dvh;
+    min-height: 280px;
   }
 
   .reflection-messages {
-    padding-top: 12px;
-    padding-bottom: 12px;
+    gap: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
 
   .reflection-privacy {
-    padding-top: 7px;
-    padding-bottom: 9px;
+    padding-top: 6px;
+    padding-bottom: 4px;
   }
 }
+
+/* ========================================
+   AKSESIBILITAS
+   ======================================== */
 
 @media (prefers-reduced-motion: reduce) {
   .reflection-messages {
     scroll-behavior: auto;
   }
 
-  .reflection-input-wrap,
-  .reflection-send,
-  .reflection-back {
-    transition: none;
+  .reflection-message-row,
+  .reflection-suggestions {
+    animation: none;
   }
 
-  .reflection-send:hover,
-  .reflection-back:hover {
+  .reflection-typing-dots span {
+    animation: none;
+    opacity: 0.7;
     transform: none;
+  }
+
+  .reflection-input-wrap,
+  .reflection-send,
+  .reflection-back,
+  .reflection-suggestion {
+    transition: none;
   }
 }
