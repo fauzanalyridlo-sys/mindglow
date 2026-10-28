@@ -1,113 +1,219 @@
-.journal-page-container {
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 40px 30px 120px;
-  background-color: transparent;
-  box-sizing: border-box;
-  min-height: 80vh;
-}
 
+/* =========================================
+   JOURNAL PAGE - MINDGLOW
+   Responsive Desktop, Tablet, iPhone, iOS Safari
+========================================= */
+
+/* Reset khusus halaman Journal */
+
+.journal-page-container,
 .journal-page-container *,
 .journal-page-container *::before,
 .journal-page-container *::after {
   box-sizing: border-box;
 }
 
+.journal-page-container {
+  width: 100%;
+  max-width: 1100px;
+  min-width: 0;
+  min-height: 80vh;
+
+  margin: 0 auto;
+  padding: 40px 30px 120px;
+
+  background-color: transparent;
+
+  font-family: inherit;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
 .journal-header {
   margin-bottom: 40px;
+  min-width: 0;
 }
 
 .journal-header h1 {
-  font-size: 48px;
-  color: #2c363f;
-  font-weight: 800;
   margin: 0 0 5px;
+
+  font-size: 48px;
+  line-height: 1.2;
+  font-weight: 800;
   letter-spacing: 0.5px;
+
+  color: #2c363f;
+
   overflow-wrap: anywhere;
 }
 
 .journal-header p {
+  margin: 0;
+
   font-size: 18px;
-  color: #5a6673;
-  margin-top: 0;
   line-height: 1.6;
+
+  color: #5a6673;
+
+  overflow-wrap: anywhere;
 }
 
+/* =========================================
+   INPUT JOURNAL
+========================================= */
+
 .journal-input-card {
+  width: 100%;
+  min-width: 0;
+
+  margin-bottom: 60px;
+  padding: 40px;
+
   background-color: transparent;
+
   border: 1px solid #2c363f;
   border-radius: 24px;
-  padding: 40px;
-  margin-bottom: 60px;
-  min-width: 0;
 }
+
+/* Textarea */
 
 .journal-textarea {
   display: block;
+
   width: 100%;
+  min-width: 0;
   min-height: 120px;
+
+  margin: 0;
+
+  padding: 24px;
+
   background-color: transparent;
+
   border: 1px solid #aebac1;
   border-radius: 16px;
-  padding: 24px;
+
+  outline: none;
+
+  font-family: inherit;
   font-size: 16px;
   line-height: 1.6;
+
   color: #333;
-  font-family: inherit;
+
   resize: none;
   overflow: hidden;
-  outline: none;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .journal-textarea:focus {
   border-color: #8db298;
-  box-shadow: 0 0 0 3px rgba(141, 178, 152, 0.2);
+
+  box-shadow:
+    0 0 0 3px rgba(141, 178, 152, 0.2);
 }
 
 .journal-textarea::placeholder {
   color: #94a3b8;
+
   font-size: 17px;
+  opacity: 1;
 }
+
+/* =========================================
+   FOOTER INPUT
+========================================= */
 
 .journal-input-footer {
   display: flex;
+
   justify-content: space-between;
   align-items: center;
+
   gap: 16px;
+
   margin-top: 24px;
+
+  min-width: 0;
 }
 
 .auto-save-text {
+  min-width: 0;
+
+  margin: 0;
+
   font-size: 14px;
-  color: #8b96a5;
   line-height: 1.5;
+
+  color: #8b96a5;
+
+  overflow-wrap: anywhere;
 }
 
+/* =========================================
+   BUTTON SIMPAN
+========================================= */
+
 .btn-simpan-journal {
+  display: inline-flex;
+
+  justify-content: center;
+  align-items: center;
+
   flex-shrink: 0;
+
+  min-height: 44px;
+
   padding: 12px 36px;
-  background: linear-gradient(180deg, #b6d3c3 0%, #8db298 100%);
+
+  background: linear-gradient(
+    180deg,
+    #b6d3c3 0%,
+    #8db298 100%
+  );
+
   color: #1a3442;
-  font-weight: 700;
-  font-size: 15px;
+
   font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+
   border: none;
   border-radius: 50px;
+
   cursor: pointer;
+
   box-shadow:
     0 6px 12px rgba(141, 178, 152, 0.3),
     inset 0 2px 4px rgba(255, 255, 255, 0.6);
+
   transition:
     background 0.3s ease,
     transform 0.3s ease,
     box-shadow 0.3s ease;
+
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn-simpan-journal:hover {
-  background: linear-gradient(180deg, #c4e0d0 0%, #97bea3 100%);
+  background: linear-gradient(
+    180deg,
+    #c4e0d0 0%,
+    #97bea3 100%
+  );
+
   transform: translateY(-2px);
+
   box-shadow:
     0 8px 16px rgba(141, 178, 152, 0.4),
     inset 0 2px 4px rgba(255, 255, 255, 0.7);
@@ -115,8 +221,202 @@
 
 .btn-simpan-journal:active {
   transform: translateY(1px);
-  box-shadow: 0 2px 6px rgba(141, 178, 152, 0.2);
+
+  box-shadow:
+    0 2px 6px rgba(141, 178, 152, 0.2);
 }
+
+/* =========================================
+   RIWAYAT JOURNAL
+========================================= */
+
+.journal-riwayat-section {
+  width: 100%;
+  min-width: 0;
+}
+
+.journal-riwayat-section h2 {
+  margin: 0 0 0;
+
+  padding-bottom: 12px;
+
+  font-family: "Times New Roman", Times, serif;
+  font-size: 28px;
+  font-weight: normal;
+  line-height: 1.4;
+
+  color: #2c363f;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  overflow-wrap: anywhere;
+}
+
+/* List riwayat */
+
+.journal-history-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 24px;
+
+  width: 100%;
+  min-width: 0;
+
+  margin-top: 30px;
+}
+
+/* =========================================
+   CARD RIWAYAT
+========================================= */
+
+.journal-history-card {
+  width: 100%;
+  min-width: 0;
+
+  padding: 24px 30px;
+
+  background-color: #ffffff;
+
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.03);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.journal-history-card:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+/* =========================================
+   HEADER CARD
+========================================= */
+
+.journal-card-header {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 12px;
+
+  min-width: 0;
+
+  margin-bottom: 15px;
+}
+
+/* Tanggal dan waktu */
+
+.journal-date-time {
+  display: flex;
+
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  min-width: 0;
+}
+
+.journal-date {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+
+  color: #5a6673;
+
+  overflow-wrap: anywhere;
+}
+
+.journal-time {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+
+  color: #9ca3af;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   BUTTON DELETE
+========================================= */
+
+.btn-delete-journal {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  flex-shrink: 0;
+
+  width: 44px;
+  height: 44px;
+
+  padding: 0;
+
+  background: transparent;
+
+  border: none;
+  border-radius: 50%;
+
+  color: #aebac1;
+
+  font-family: inherit;
+  font-size: 26px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-delete-journal:hover {
+  color: #ef4444;
+
+  background-color: #fee2e2;
+
+  transform: scale(1.1);
+}
+
+/* =========================================
+   TEXT JOURNAL
+========================================= */
+
+.journal-text {
+  width: 100%;
+  min-width: 0;
+
+  margin: 0;
+
+  font-size: 16px;
+  line-height: 1.7;
+
+  color: #1f2937;
+
+  overflow-wrap: anywhere;
+  word-break: normal;
+
+  white-space: pre-wrap;
+}
+
+/* =========================================
+   FOCUS ACCESSIBILITY
+========================================= */
 
 .btn-simpan-journal:focus-visible,
 .btn-delete-journal:focus-visible {
@@ -124,109 +424,10 @@
   outline-offset: 3px;
 }
 
-.journal-riwayat-section {
-  min-width: 0;
-}
-
-.journal-riwayat-section h2 {
-  font-size: 28px;
-  color: #2c363f;
-  font-weight: normal;
-  font-family: "Times New Roman", Times, serif;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 12px;
-  margin-bottom: 0;
-  overflow-wrap: anywhere;
-}
-
-.journal-history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin-top: 30px;
-  min-width: 0;
-}
-
-.journal-history-card {
-  min-width: 0;
-  background-color: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 20px;
-  padding: 24px 30px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.journal-history-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
-}
-
-.journal-text {
-  font-size: 16px;
-  color: #1f2937;
-  line-height: 1.7;
-  margin: 0;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-}
-
-.journal-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 15px;
-  min-width: 0;
-}
-
-.journal-date-time {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  min-width: 0;
-}
-
-.journal-date {
-  font-size: 14px;
-  color: #5a6673;
-  font-weight: 600;
-  overflow-wrap: anywhere;
-}
-
-.journal-time {
-  font-size: 13px;
-  color: #9ca3af;
-  font-weight: 400;
-}
-
-.btn-delete-journal {
-  flex-shrink: 0;
-  background: transparent;
-  border: none;
-  color: #aebac1;
-  font-size: 26px;
-  cursor: pointer;
-  padding: 0;
-  line-height: 1;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition:
-    color 0.2s ease,
-    background-color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.btn-delete-journal:hover {
-  color: #ef4444;
-  background-color: #fee2e2;
-  transform: scale(1.1);
-}
+/* =========================================
+   TABLET
+   1024px ke bawah
+========================================= */
 
 @media (max-width: 1024px) {
   .journal-page-container {
@@ -253,11 +454,10 @@
   .journal-textarea {
     min-height: 110px;
     padding: 18px;
-    font-size: 15px;
   }
 
   .journal-textarea::placeholder {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .journal-input-footer {
@@ -282,9 +482,18 @@
   }
 }
 
+/* =========================================
+   MOBILE
+   768px ke bawah
+========================================= */
+
 @media (max-width: 768px) {
   .journal-page-container {
+    width: 100%;
+    max-width: 100%;
+
     padding: 24px 18px 56px;
+
     min-height: 0;
   }
 
@@ -294,6 +503,7 @@
 
   .journal-header h1 {
     font-size: 32px;
+    line-height: 1.25;
     letter-spacing: 0;
   }
 
@@ -302,23 +512,43 @@
     line-height: 1.55;
   }
 
+  /* Form */
+
   .journal-input-card {
     padding: 22px;
+
     margin-bottom: 34px;
+
     border-radius: 18px;
   }
 
   .journal-textarea {
     min-height: 100px;
+
     padding: 15px;
+
     border-radius: 12px;
-    font-size: 14px;
+
+    /*
+      Jangan turunkan menjadi 14px atau 13px.
+      iOS Safari dapat melakukan zoom otomatis
+      ketika input memiliki font di bawah 16px.
+    */
+
+    font-size: 16px;
     line-height: 1.6;
   }
 
   .journal-textarea::placeholder {
-    font-size: 14px;
+    font-size: 16px;
   }
+
+  .journal-textarea:focus {
+    box-shadow:
+      0 0 0 2px rgba(141, 178, 152, 0.18);
+  }
+
+  /* Footer input */
 
   .journal-input-footer {
     gap: 12px;
@@ -327,12 +557,18 @@
 
   .auto-save-text {
     font-size: 12px;
+    line-height: 1.5;
   }
 
   .btn-simpan-journal {
+    min-height: 44px;
+
     padding: 10px 24px;
+
     font-size: 13px;
   }
+
+  /* Riwayat */
 
   .journal-riwayat-section h2 {
     font-size: 24px;
@@ -367,8 +603,8 @@
   }
 
   .btn-delete-journal {
-    width: 28px;
-    height: 28px;
+    width: 44px;
+    height: 44px;
     font-size: 22px;
   }
 
@@ -377,6 +613,11 @@
     line-height: 1.65;
   }
 }
+
+/* =========================================
+   IPHONE
+   480px ke bawah
+========================================= */
 
 @media (max-width: 480px) {
   .journal-page-container {
@@ -391,36 +632,49 @@
     font-size: 27px;
     line-height: 1.25;
     letter-spacing: -0.3px;
+
     margin-bottom: 5px;
   }
 
   .journal-header p {
     font-size: 13px;
     line-height: 1.55;
+
     margin-bottom: 0;
   }
 
+  /* Input card */
+
   .journal-input-card {
     padding: 16px;
+
     margin-bottom: 28px;
+
     border-radius: 15px;
   }
 
   .journal-textarea {
+    width: 100%;
     min-height: 90px;
+
     padding: 12px;
+
     border-radius: 11px;
-    font-size: 13px;
+
+    /*
+      Ukuran font 16px mencegah
+      auto zoom iPhone saat mengetik.
+    */
+
+    font-size: 16px;
     line-height: 1.55;
   }
 
   .journal-textarea::placeholder {
-    font-size: 13px;
+    font-size: 16px;
   }
 
-  .journal-textarea:focus {
-    box-shadow: 0 0 0 2px rgba(141, 178, 152, 0.18);
-  }
+  /* Footer */
 
   .journal-input-footer {
     gap: 10px;
@@ -433,12 +687,19 @@
   }
 
   .btn-simpan-journal {
+    min-height: 44px;
+
     padding: 9px 18px;
+
     font-size: 12px;
   }
 
+  /* Riwayat */
+
   .journal-riwayat-section h2 {
     font-size: 21px;
+    line-height: 1.4;
+
     padding-bottom: 8px;
   }
 
@@ -470,8 +731,9 @@
   }
 
   .btn-delete-journal {
-    width: 26px;
-    height: 26px;
+    width: 44px;
+    height: 44px;
+
     font-size: 21px;
   }
 
@@ -480,6 +742,11 @@
     line-height: 1.6;
   }
 }
+
+/* =========================================
+   IPHONE SE / LAYAR KECIL
+   360px ke bawah
+========================================= */
 
 @media (max-width: 360px) {
   .journal-page-container {
@@ -498,20 +765,27 @@
     font-size: 12px;
   }
 
+  /* Form */
+
   .journal-input-card {
     padding: 13px;
+
     margin-bottom: 24px;
+
     border-radius: 13px;
   }
 
   .journal-textarea {
     min-height: 82px;
+
     padding: 11px;
-    font-size: 13px;
+
+    font-size: 16px;
+    line-height: 1.55;
   }
 
   .journal-textarea::placeholder {
-    font-size: 12px;
+    font-size: 16px;
   }
 
   .journal-input-footer {
@@ -521,12 +795,18 @@
 
   .auto-save-text {
     font-size: 10px;
+    line-height: 1.4;
   }
 
   .btn-simpan-journal {
+    min-height: 44px;
+
     padding: 9px 14px;
+
     font-size: 11px;
   }
+
+  /* Riwayat */
 
   .journal-riwayat-section h2 {
     font-size: 20px;
@@ -551,8 +831,9 @@
   }
 
   .btn-delete-journal {
-    width: 24px;
-    height: 24px;
+    width: 44px;
+    height: 44px;
+
     font-size: 19px;
   }
 
@@ -562,10 +843,82 @@
   }
 }
 
-@media (hover: none) {
+/* =========================================
+   IPHONE LANDSCAPE
+========================================= */
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .journal-page-container {
+    padding-top: 20px;
+    padding-bottom: 40px;
+  }
+
+  .journal-header {
+    margin-bottom: 18px;
+  }
+
+  .journal-header h1 {
+    font-size: 28px;
+  }
+
+  .journal-input-card {
+    margin-bottom: 28px;
+  }
+}
+
+/* =========================================
+   IOS SAFARI SAFE AREA
+========================================= */
+
+@supports (padding: max(0px)) {
+  .journal-page-container {
+    padding-left: max(30px, env(safe-area-inset-left));
+    padding-right: max(30px, env(safe-area-inset-right));
+  }
+
+  @media (max-width: 1024px) {
+    .journal-page-container {
+      padding-left: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .journal-page-container {
+      padding-left: max(18px, env(safe-area-inset-left));
+      padding-right: max(18px, env(safe-area-inset-right));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .journal-page-container {
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
+
+      padding-bottom: max(40px, env(safe-area-inset-bottom));
+    }
+  }
+
+  @media (max-width: 360px) {
+    .journal-page-container {
+      padding-left: max(11px, env(safe-area-inset-left));
+      padding-right: max(11px, env(safe-area-inset-right));
+
+      padding-bottom: max(32px, env(safe-area-inset-bottom));
+    }
+  }
+}
+
+/* =========================================
+   TOUCH DEVICE
+========================================= */
+
+@media (hover: none) and (pointer: coarse) {
   .journal-history-card:hover {
     transform: none;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+
+    box-shadow:
+      0 4px 15px rgba(0, 0, 0, 0.03);
   }
 
   .btn-simpan-journal:hover {
@@ -574,13 +927,23 @@
 
   .btn-delete-journal:hover {
     transform: none;
+
     background-color: transparent;
+
     color: #aebac1;
+  }
+
+  .btn-simpan-journal,
+  .btn-delete-journal {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+/* =========================================
+   REDUCE MOTION
+========================================= */
 
+@media (prefers-reduced-motion: reduce) {
   .journal-textarea,
   .btn-simpan-journal,
   .journal-history-card,
