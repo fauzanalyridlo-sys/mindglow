@@ -1,7 +1,7 @@
 .momo-pet {
   /* jarak kaki Momo dari bawah kolom ini, supaya pas di atas rumput.
      Naikkan kalau tenggelam, turunkan kalau melayang. */
-  --momo-floor: 66px;
+  --momo-floor: 30px;
 
   position: relative;
   display: grid;
@@ -883,6 +883,11 @@
     transform-origin: center bottom;
   }
 
+  /* Posisi walker agar tidak menimpa tombol panel */
+  .momo-walker {
+    bottom: 0;
+  }
+
   .momo-panel {
     width: 100%;
   }
@@ -920,5 +925,92 @@
   .momo-xp span,
   .momo-actions button {
     transition: none;
+  }
+}
+
+/* Panel Momo yang dapat dibuka/tutup di layar mobile */
+.momo-mobile-toggle {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .momo-pet {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .momo-garden {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .momo-mobile-toggle {
+    display: flex;
+    width: 100%;
+    min-height: 44px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 8px 0;
+    padding: 10px 14px;
+    border: 1px solid rgba(120, 150, 110, 0.35);
+    border-radius: 14px;
+    background: #f4f8ee;
+    color: #354a32;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .momo-mobile-toggle:focus-visible {
+    outline: 2px solid #6a9b61;
+    outline-offset: 3px;
+  }
+
+  .momo-panel.momo-mobile-collapsed {
+    display: none;
+  }
+
+  .momo-panel:not(.momo-mobile-collapsed) {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .momo-panel,
+  .momo-settings,
+  .momo-stats,
+  .momo-actions {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .momo-actions button {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .momo-settings input,
+  .momo-settings button {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .momo-mobile-toggle {
+    padding: 9px 11px;
+    font-size: 12px;
+  }
+
+  .momo-actions {
+    gap: 6px;
+  }
+
+  .momo-actions button {
+    padding-inline: 7px;
+    font-size: 12px;
   }
 }

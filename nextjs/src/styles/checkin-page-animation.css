@@ -1,0 +1,220 @@
+/* ========================================
+   MINDGLOW — CHECK-IN PAGE ANIMATION
+   Soft, calm, and responsive
+======================================== */
+
+/* Animasi dasar */
+@keyframes checkinFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes checkinFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes checkinModalPop {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header */
+.daily-checkin-heading {
+  animation: checkinFadeUp 650ms ease both;
+}
+
+/* Greeting */
+.daily-checkin-greeting {
+  animation: checkinFadeUp 750ms ease both;
+  animation-delay: 100ms;
+}
+
+/* Form */
+.daily-checkin-form {
+  animation: checkinFadeUp 800ms ease both;
+  animation-delay: 180ms;
+}
+
+/* Kartu form */
+.daily-checkin-form .checkin-demo-card {
+  animation: checkinFadeIn 850ms ease both;
+  animation-delay: 200ms;
+}
+
+/* Mood option */
+.daily-checkin-form .mood-option {
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    background-color 220ms ease;
+}
+
+/* Hover mood */
+@media (hover: hover) {
+  .daily-checkin-form .mood-option:hover {
+    transform: translateY(-4px);
+  }
+
+  .daily-checkin-form .mood-option:hover .mood-image {
+    transform: scale(1.04);
+  }
+}
+
+/* Mood image */
+.daily-checkin-form .mood-option .mood-image {
+  transition:
+    transform 220ms ease,
+    filter 220ms ease;
+}
+
+/* Energy panel */
+.daily-checkin-form .checkin-energy-panel {
+  transition:
+    box-shadow 250ms ease,
+    background-color 250ms ease;
+}
+
+/* Info panel */
+.daily-checkin-form .checkin-info-panel {
+  transition:
+    box-shadow 250ms ease,
+    background-color 250ms ease;
+}
+
+/* Activity button */
+.daily-checkin-form .checkin-info-panel .checkin-activities button {
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+@media (hover: hover) {
+  .daily-checkin-form .checkin-info-panel .checkin-activities button:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Save button */
+.daily-checkin-form .checkin-save {
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease,
+    background-color 200ms ease;
+}
+
+@media (hover: hover) {
+  .daily-checkin-form .checkin-save:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(22, 61, 53, 0.14);
+  }
+}
+
+.daily-checkin-form .checkin-save:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* Success modal */
+.daily-checkin-overlay {
+  animation: checkinFadeIn 250ms ease both;
+}
+
+.daily-checkin-modal {
+  animation: checkinModalPop 350ms ease both;
+}
+
+/* Success icon */
+.daily-checkin-success-icon {
+  animation: checkinModalPop 450ms ease both;
+}
+
+/* Modal button */
+.daily-checkin-modal button {
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+@media (hover: hover) {
+  .daily-checkin-modal button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(50, 107, 82, 0.18);
+  }
+}
+
+.daily-checkin-modal button:active {
+  transform: scale(0.97);
+}
+
+/* Tablet dan mobile */
+@media (max-width: 768px) {
+  .daily-checkin-heading,
+  .daily-checkin-greeting,
+  .daily-checkin-form,
+  .daily-checkin-form .checkin-demo-card {
+    animation-duration: 550ms;
+  }
+
+  .daily-checkin-form .mood-option {
+    transition-duration: 180ms;
+  }
+}
+
+/* HP kecil */
+@media (max-width: 480px) {
+  .daily-checkin-heading {
+    animation-delay: 0ms;
+  }
+
+  .daily-checkin-greeting {
+    animation-delay: 80ms;
+  }
+
+  .daily-checkin-form {
+    animation-delay: 140ms;
+  }
+}
+
+/* Aksesibilitas */
+@media (prefers-reduced-motion: reduce) {
+  .daily-checkin-heading,
+  .daily-checkin-greeting,
+  .daily-checkin-form,
+  .daily-checkin-form .checkin-demo-card,
+  .daily-checkin-overlay,
+  .daily-checkin-modal,
+  .daily-checkin-success-icon {
+    animation: none !important;
+  }
+
+  .daily-checkin-form *,
+  .daily-checkin-modal button {
+    transition: none !important;
+  }
+
+  .daily-checkin-form .checkin-save:active:not(:disabled),
+  .daily-checkin-modal button:active {
+    transform: none;
+  }
+}

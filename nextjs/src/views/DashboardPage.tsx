@@ -41,6 +41,7 @@ const DashboardPage = () => {
   const [dashboard, setDashboard] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [busyTaskId, setBusyTaskId] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
@@ -85,6 +86,56 @@ const DashboardPage = () => {
       active = false
     }
   }, [])
+
+
+  const toggleTask = async (task: DashboardData['priorityTasks'][number]) => {
+    if (busyTaskId) return
+
+    setBusyTaskId(task.id)
+    setError('')
+
+    try {
+      const response = await fetch(
+        `/api/academic/tasks/${encodeURIComponent(task.id)}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            completed: !task.completed,
+          }),
+        }
+      )
+
+      const result = await response.json()
+
+      if (!response.ok || !result.success) {
+        throw new Error(
+          result.message || 'Gagal memperbarui status tugas.'
+        )
+      }
+
+      setDashboard((current) => {
+        if (!current) return current
+
+        return {
+          ...current,
+          priorityTasks: current.priorityTasks.map((item) =>
+            item.id === task.id ? result.data : item
+          ),
+        }
+      })
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Gagal memperbarui status tugas.'
+      )
+    } finally {
+      setBusyTaskId(null)
+    }
+  }
 
   const mood = dashboard?.todayMood
   const tasks = dashboard?.priorityTasks ?? []
@@ -248,6 +299,8 @@ const DashboardPage = () => {
         </div>
 
         <div className="tasks-list">
+          {error && <p role="alert">{error}</p>}
+
           {loading ? (
             <p>Memuat tugas akademik...</p>
           ) : tasks.length > 0 ? (
@@ -257,8 +310,11 @@ const DashboardPage = () => {
                   type="checkbox"
                   className="task-checkbox"
                   checked={task.completed}
-                  readOnly
-                  aria-label={`Status tugas ${task.name}`}
+                  disabled={busyTaskId !== null}
+                  onChange={() => toggleTask(task)}
+                  aria-label={`Tandai ${task.name} sebagai ${
+                    task.completed ? 'belum selesai' : 'selesai'
+                  }`}
                 />
 
                 <span className="task-name">
