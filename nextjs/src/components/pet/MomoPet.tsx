@@ -63,6 +63,7 @@ export default function MomoPet() {
   const [pet, setPet] = useState<Saved>(DEFAULT_SAVED);
   const [hydrated, setHydrated] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [mobileCollapsed, setMobileCollapsed] = useState(true);
   const [confirmReset, setConfirmReset] = useState(false);
 
   /* ---------- state sementara ---------- */
@@ -986,7 +987,21 @@ export default function MomoPet() {
           </button>
         </div>
       </div>
-      <div className="momo-panel">
+      <button
+        type="button"
+        className="momo-mobile-toggle"
+        aria-expanded={!mobileCollapsed}
+        aria-controls="momo-mobile-panel"
+        onClick={() => setMobileCollapsed((value) => !value)}
+      >
+        <span>🐱 {displayName}</span>
+        <span>{mobileCollapsed ? "Buka panel ＋" : "Tutup panel −"}</span>
+      </button>
+
+      <div
+        id="momo-mobile-panel"
+        className={`momo-panel ${mobileCollapsed ? "momo-mobile-collapsed" : ""}`}
+      >
         <header className="momo-heading">
           <span className="momo-heading-icon">🌿</span>
 

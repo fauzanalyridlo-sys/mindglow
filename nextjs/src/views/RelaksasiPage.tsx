@@ -213,6 +213,8 @@ export default function RelaksasiPage() {
           hentikan latihan dan bernapaslah secara normal.
         </p>
       </section>
-    </section>
+    
+
+</section>
   )
 }

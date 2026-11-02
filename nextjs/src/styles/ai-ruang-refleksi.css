@@ -973,3 +973,123 @@
     transition: none;
   }
 }
+
+/* BUTTON REFLEKSI - CAHAYA PUTIH REDUP */
+
+.reflection-send {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 25% 25%,
+      rgb(255 255 255 / 35%),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 75% 70%,
+      rgb(255 255 255 / 25%),
+      transparent 35%
+    ),
+    linear-gradient(135deg, #477653, #315b3c);
+
+  box-shadow:
+    0 4px 12px rgb(49 91 60 / 18%),
+    inset 0 1px 2px rgb(255 255 255 / 20%);
+
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    filter 220ms ease;
+}
+
+/* Bercak putih */
+.reflection-send::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background:
+    radial-gradient(circle at 20% 25%, rgb(255 255 255 / 70%) 0, transparent 3px),
+    radial-gradient(circle at 75% 20%, rgb(255 255 255 / 50%) 0, transparent 3px),
+    radial-gradient(circle at 80% 75%, rgb(255 255 255 / 60%) 0, transparent 3px),
+    radial-gradient(circle at 30% 80%, rgb(255 255 255 / 40%) 0, transparent 3px);
+
+  opacity: 0.7;
+}
+
+/* Cahaya bergerak pelan */
+.reflection-send::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  z-index: 0;
+  pointer-events: none;
+
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    rgb(255 255 255 / 15%) 50%,
+    transparent 65%
+  );
+
+  transform: translateX(-100%);
+  animation: reflection-send-glow 5s ease-in-out infinite;
+}
+
+/* Hover */
+.reflection-send:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 6px 16px rgb(49 91 60 / 25%),
+    0 0 10px rgb(255 255 255 / 12%),
+    inset 0 1px 2px rgb(255 255 255 / 25%);
+}
+
+/* Klik */
+.reflection-send:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* Nonaktif - tetap terlihat bercahaya */
+.reflection-send:disabled {
+  background:
+    radial-gradient(circle at 20% 25%, rgb(255 255 255 / 45%), transparent 35%),
+    radial-gradient(circle at 75% 70%, rgb(255 255 255 / 30%), transparent 35%),
+    linear-gradient(135deg, #78967b, #58775e);
+
+  box-shadow:
+    0 0 10px rgb(255 255 255 / 18%),
+    0 3px 10px rgb(49 91 60 / 15%);
+
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Animasi */
+@keyframes reflection-send-glow {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  45%,
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Kurangi animasi jika diminta perangkat */
+@media (prefers-reduced-motion: reduce) {
+  .reflection-send::after {
+    animation: none;
+  }
+
+  .reflection-send {
+    transition: none;
+  }
+}
+

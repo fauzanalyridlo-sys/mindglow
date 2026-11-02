@@ -105,11 +105,7 @@ const RegisterPage = () => {
             aria-labelledby="register-notif-title"
             aria-describedby="register-notif-message"
           >
-            <div className="notif-icon" aria-hidden="true">
-              {notifSuccess ? "💌" : "⚠️"}
-            </div>
-
-            <h3 id="register-notif-title">{notifTitle}</h3>
+<h3 id="register-notif-title">{notifTitle}</h3>
 
             <p id="register-notif-message">
               {notifMessage}
