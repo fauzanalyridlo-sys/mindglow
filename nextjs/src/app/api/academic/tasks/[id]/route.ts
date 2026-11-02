@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/auth";
 const updateTaskSchema = z.object({
   name: z.string().trim().min(1).max(255).optional(),
   course: z.string().trim().min(1).max(255).optional(),
+  description: z.string().trim().max(5000).optional(),
   deadline: z.iso.date().optional(),
   priority: z.enum(["Rendah", "Sedang", "Tinggi"]).optional(),
   type: z.enum(["Kelompok", "Individu"]).optional(),
@@ -30,6 +31,7 @@ function serializeTask(task: {
   id: bigint;
   name: string;
   course: string;
+  description: string | null;
   deadline: Date;
   priority: string;
   type: string;
@@ -39,6 +41,7 @@ function serializeTask(task: {
     id: task.id.toString(),
     name: task.name,
     course: task.course,
+    description: task.description ?? "",
     deadline: task.deadline.toISOString().slice(0, 10),
     priority: task.priority,
     type: task.type,

@@ -19,8 +19,18 @@ type DashboardData = {
   upcomingTasks: {
     count: number
     groupCount: number
+    individualCount: number
   }
   priorityTasks: {
+    id: string
+    name: string
+    course: string
+    deadline: string
+    priority: string
+    type: string
+    completed: boolean
+  }[]
+  completedTasks: {
     id: string
     name: string
     course: string
@@ -119,11 +129,34 @@ const DashboardPage = () => {
       setDashboard((current) => {
         if (!current) return current
 
+        const updatedTask = result.data
+
+        if (updatedTask.completed) {
+          return {
+            ...current,
+            priorityTasks: current.priorityTasks.filter(
+              (item) => item.id !== task.id
+            ),
+            completedTasks: [
+              updatedTask,
+              ...(current.completedTasks ?? []).filter(
+                (item) => item.id !== task.id
+              ),
+            ],
+          }
+        }
+
         return {
           ...current,
-          priorityTasks: current.priorityTasks.map((item) =>
-            item.id === task.id ? result.data : item
+          completedTasks: (current.completedTasks ?? []).filter(
+            (item) => item.id !== task.id
           ),
+          priorityTasks: [
+            updatedTask,
+            ...current.priorityTasks.filter(
+              (item) => item.id !== task.id
+            ),
+          ],
         }
       })
     } catch (err) {
@@ -139,6 +172,7 @@ const DashboardPage = () => {
 
   const mood = dashboard?.todayMood
   const tasks = dashboard?.priorityTasks ?? []
+  const completedTasks = dashboard?.completedTasks ?? []
 
   return (
     <main className="dashboard-container">
@@ -255,9 +289,15 @@ const DashboardPage = () => {
                 : `${dashboard?.upcomingTasks.count ?? 0} Deadline Dekat`}
             </h3>
 
-            <p className="stat-subtext text-red">
-              {dashboard?.upcomingTasks.groupCount ?? 0} Tugas Kelompok
-            </p>
+            <div className="stat-subtext">
+              <p className="text-red">
+                {dashboard?.upcomingTasks.individualCount ?? 0} Tugas Individu
+              </p>
+
+              <p className="text-red">
+                {dashboard?.upcomingTasks.groupCount ?? 0} Tugas Kelompok
+              </p>
+            </div>
           </div>
         </div>
 
@@ -305,7 +345,10 @@ const DashboardPage = () => {
             <p>Memuat tugas akademik...</p>
           ) : tasks.length > 0 ? (
             tasks.map((task) => (
-              <div className="task-item" key={task.id}>
+              <div
+                className={`task-item ${task.completed ? 'task-item-completed' : ''}`}
+                key={task.id}
+              >
                 <input
                   type="checkbox"
                   className="task-checkbox"
@@ -317,17 +360,55 @@ const DashboardPage = () => {
                   }`}
                 />
 
-                <span className="task-name">
+                <span className={`task-name ${task.completed ? 'task-name-completed' : ''}`}>
                   {task.name}
                 </span>
 
-                <span className="task-date">
+                <span className={`task-date ${task.completed ? 'task-date-completed' : ''}`}>
                   {formatDate(task.deadline)}
                 </span>
               </div>
             ))
           ) : (
             <p>Belum ada tugas akademik yang perlu ditampilkan.</p>
+          )}
+        </div>
+      </section>
+
+      <section className="tasks-section completed-tasks-section">
+        <div className="tasks-header">
+          <h2>Tugas Selesai</h2>
+          <span className="completed-task-count">
+            {completedTasks.length} tugas
+          </span>
+        </div>
+
+        <div className="tasks-list">
+          {loading ? (
+            <p>Memuat tugas selesai...</p>
+          ) : completedTasks.length > 0 ? (
+            completedTasks.map((task) => (
+              <div className="task-item task-item-completed" key={task.id}>
+                <input
+                  type="checkbox"
+                  className="task-checkbox"
+                  checked={task.completed}
+                  disabled={busyTaskId !== null}
+                  onChange={() => toggleTask(task)}
+                  aria-label={`Kembalikan ${task.name} ke tugas belum selesai`}
+                />
+
+                <span className="task-name task-name-completed">
+                  {task.name}
+                </span>
+
+                <span className="task-date task-date-completed">
+                  {formatDate(task.deadline)}
+                </span>
+              </div>
+            ))
+          ) : (
+            <p>Belum ada tugas yang selesai.</p>
           )}
         </div>
       </section>

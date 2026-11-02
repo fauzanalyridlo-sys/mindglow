@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/auth";
 const taskSchema = z.object({
   name: z.string().trim().min(1).max(255),
   course: z.string().trim().min(1).max(255),
+  description: z.string().trim().max(5000).optional().default(""),
   deadline: z.iso.date(),
   priority: z.enum(["Rendah", "Sedang", "Tinggi"]),
   type: z.enum(["Kelompok", "Individu"]),
@@ -15,6 +16,7 @@ function serializeTask(task: {
   id: bigint;
   name: string;
   course: string;
+  description: string | null;
   deadline: Date;
   priority: string;
   type: string;
@@ -24,6 +26,7 @@ function serializeTask(task: {
     id: task.id.toString(),
     name: task.name,
     course: task.course,
+    description: task.description ?? "",
     deadline: task.deadline.toISOString().slice(0, 10),
     priority: task.priority,
     type: task.type,
@@ -120,13 +123,14 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { name, course, deadline, priority, type } = parsed.data;
+  const { name, course, description, deadline, priority, type } = parsed.data;
 
   const task = await prisma.academic_tasks.create({
     data: {
       user_id: user.id,
       name,
       course,
+      description,
       deadline: new Date(`${deadline}T00:00:00.000Z`),
       priority,
       type,

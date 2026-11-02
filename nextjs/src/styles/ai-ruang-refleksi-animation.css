@@ -1,4 +1,13 @@
-.isTyping {
+/* ========================================
+   MINDGLOW AI — ANIMASI RUANG REFLEKSI
+   ======================================== */
+
+/* ========================================
+   INDIKATOR AI SEDANG MENGETIK
+   Sesuai class pada CSS utama
+   ======================================== */
+
+.reflection-typing-dots {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -7,26 +16,178 @@
   vertical-align: middle;
 }
 
-.isTyping span {
+.reflection-typing-dots span {
   display: block;
+  flex: 0 0 5px;
   width: 5px;
   height: 5px;
-  flex: 0 0 5px;
+
   border-radius: 50%;
   background: currentColor;
-  animation: typingBounce 1.2s infinite ease-in-out;
+
+  animation: reflection-dot-pulse 1.2s infinite ease-in-out;
 }
 
-.isTyping span:nth-child(2) {
-  animation-delay: 0.15s;
+.reflection-typing-dots span:nth-child(2) {
+  animation-delay: 0.16s;
 }
 
-.isTyping span:nth-child(3) {
-  animation-delay: 0.3s;
+.reflection-typing-dots span:nth-child(3) {
+  animation-delay: 0.32s;
 }
 
-@keyframes typingBounce {
+/* ========================================
+   ANIMASI PESAN
+   ======================================== */
 
+.reflection-message-row {
+  animation: reflection-message-enter 220ms ease-out both;
+}
+
+/* ========================================
+   TOMBOL KIRIM GLOSSY
+   Menggunakan class CSS utama
+   ======================================== */
+
+.reflection-send {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 25% 25%,
+      rgb(255 255 255 / 35%),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 75% 70%,
+      rgb(255 255 255 / 25%),
+      transparent 35%
+    ),
+    linear-gradient(135deg, #477653, #315b3c);
+
+  box-shadow:
+    0 4px 12px rgb(49 91 60 / 18%),
+    inset 0 1px 2px rgb(255 255 255 / 20%);
+
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    filter 220ms ease;
+}
+
+/* Bercak cahaya putih */
+
+.reflection-send::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 20% 25%,
+      rgb(255 255 255 / 70%) 0,
+      transparent 3px
+    ),
+    radial-gradient(
+      circle at 75% 20%,
+      rgb(255 255 255 / 50%) 0,
+      transparent 3px
+    ),
+    radial-gradient(
+      circle at 80% 75%,
+      rgb(255 255 255 / 60%) 0,
+      transparent 3px
+    ),
+    radial-gradient(
+      circle at 30% 80%,
+      rgb(255 255 255 / 40%) 0,
+      transparent 3px
+    );
+
+  opacity: 0.7;
+}
+
+/* Cahaya bergerak */
+
+.reflection-send::after {
+  content: "";
+
+  position: absolute;
+  inset: -50%;
+  z-index: 0;
+
+  pointer-events: none;
+
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    rgb(255 255 255 / 15%) 50%,
+    transparent 65%
+  );
+
+  transform: translateX(-100%);
+  animation: reflection-send-glow 5s ease-in-out infinite;
+}
+
+/* Pastikan ikon tetap di atas efek cahaya */
+
+.reflection-send svg {
+  position: relative;
+  z-index: 1;
+}
+
+/* Hover */
+
+.reflection-send:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 6px 16px rgb(49 91 60 / 25%),
+    0 0 10px rgb(255 255 255 / 12%),
+    inset 0 1px 2px rgb(255 255 255 / 25%);
+}
+
+/* Klik */
+
+.reflection-send:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* Tombol nonaktif */
+
+.reflection-send:disabled {
+  background:
+    radial-gradient(
+      circle at 20% 25%,
+      rgb(255 255 255 / 45%),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 75% 70%,
+      rgb(255 255 255 / 30%),
+      transparent 35%
+    ),
+    linear-gradient(135deg, #78967b, #58775e);
+
+  box-shadow:
+    0 0 10px rgb(255 255 255 / 18%),
+    0 3px 10px rgb(49 91 60 / 15%);
+
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   KEYFRAMES
+   ======================================== */
+
+@keyframes reflection-dot-pulse {
   0%,
   60%,
   100% {
@@ -40,14 +201,10 @@
   }
 }
 
-.reflection-message-row {
-  animation: messageFadeIn 220ms ease-out both;
-}
-
-@keyframes messageFadeIn {
+@keyframes reflection-message-enter {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(7px);
   }
 
   to {
@@ -56,169 +213,101 @@
   }
 }
 
-/* Tombol hijau glossy */
-.reflection-send-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 42px;
-  max-width: 100%;
-  padding: 10px 16px;
-  box-sizing: border-box;
-  border: 1px solid #7e9f8e;
-  border-radius: 999px;
+@keyframes reflection-send-glow {
+  0% {
+    transform: translateX(-100%);
+  }
 
-  background-color: #91b5a1;
-  background-image:
-    radial-gradient(circle at 15% 25%,
-      rgba(255, 255, 255, 0.55) 0%,
-      transparent 24%),
-    radial-gradient(circle at 62% 18%,
-      rgba(255, 255, 255, 0.5) 0%,
-      transparent 22%),
-    radial-gradient(circle at 42% 80%,
-      rgba(255, 255, 255, 0.5) 0%,
-      transparent 24%),
-    radial-gradient(circle at 88% 75%,
-      rgba(255, 255, 255, 0.55) 0%,
-      transparent 22%);
-
-  color: #2e394c;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.4;
-  text-align: center;
-  cursor: pointer;
-
-  box-shadow:
-    inset 0 2px 5px rgba(255, 255, 255, 0.35),
-    0 3px 0 rgba(67, 105, 81, 0.12);
-
-  transition:
-    transform 180ms ease,
-    box-shadow 200ms ease,
-    filter 200ms ease;
+  45%,
+  100% {
+    transform: translateX(100%);
+  }
 }
 
-.reflection-send-button:hover {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
-  box-shadow:
-    inset 0 2px 5px rgba(255, 255, 255, 0.45),
-    0 4px 7px rgba(67, 105, 81, 0.16);
-}
+/* ========================================
+   TABLET
+   ======================================== */
 
-.reflection-send-button:active {
-  transform: translateY(0) scale(0.98);
-  box-shadow:
-    inset 0 2px 5px rgba(255, 255, 255, 0.35),
-    0 1px 2px rgba(67, 105, 81, 0.12);
-}
-
-.reflection-send-button:focus-visible {
-  outline: 2px solid #315e49;
-  outline-offset: 3px;
-}
-
-.reflection-send-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-  filter: none;
-}
-
-/* Tablet */
 @media (max-width: 768px) {
-  .isTyping {
+  .reflection-typing-dots {
     gap: 4px;
     min-height: 15px;
   }
 
-  .isTyping span {
+  .reflection-typing-dots span {
+    flex-basis: 5px;
     width: 5px;
     height: 5px;
-    flex-basis: 5px;
   }
 
   .reflection-message-row {
     animation-duration: 220ms;
   }
-
-  .reflection-send-button {
-    min-height: 40px;
-    padding: 9px 14px;
-    gap: 7px;
-    font-size: 12px;
-  }
 }
 
-/* Mobile */
+/* ========================================
+   MOBILE
+   ======================================== */
+
 @media (max-width: 480px) {
-  .isTyping {
+  .reflection-typing-dots {
     gap: 3px;
     min-height: 13px;
   }
 
-  .isTyping span {
+  .reflection-typing-dots span {
+    flex-basis: 4px;
     width: 4px;
     height: 4px;
-    flex-basis: 4px;
   }
 
   .reflection-message-row {
     animation-duration: 200ms;
   }
-
-  .reflection-send-button {
-    min-height: 38px;
-    padding: 9px 12px;
-    gap: 6px;
-    font-size: 12px;
-    border-radius: 999px;
-  }
 }
 
-/* HP kecil */
+/* ========================================
+   HP KECIL
+   ======================================== */
+
 @media (max-width: 360px) {
-  .isTyping {
+  .reflection-typing-dots {
     gap: 3px;
     min-height: 12px;
   }
 
-  .isTyping span {
+  .reflection-typing-dots span {
+    flex-basis: 4px;
     width: 4px;
     height: 4px;
-    flex-basis: 4px;
   }
 
   .reflection-message-row {
     animation-duration: 180ms;
   }
-
-  .reflection-send-button {
-    min-height: 36px;
-    padding: 8px 10px;
-    gap: 5px;
-    font-size: 11px;
-  }
 }
 
-/* Pengaturan aksesibilitas */
-@media (prefers-reduced-motion: reduce) {
+/* ========================================
+   AKSESIBILITAS
+   ======================================== */
 
-  .isTyping span,
+@media (prefers-reduced-motion: reduce) {
+  .reflection-typing-dots span,
   .reflection-message-row {
     animation: none !important;
     transform: none;
   }
 
-  .reflection-send-button {
+  .reflection-send::after {
+    animation: none;
+  }
+
+  .reflection-send {
     transition: none;
   }
 
-  .reflection-send-button:hover,
-  .reflection-send-button:active {
+  .reflection-send:hover,
+  .reflection-send:active {
     transform: none;
   }
 }

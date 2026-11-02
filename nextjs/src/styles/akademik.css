@@ -286,9 +286,14 @@
   text-align: center;
 }
 
-.task-completed h2 {
-  color: #819087;
-  text-decoration: line-through;
+.academic-task-card.task-completed {
+  background: #f1f3f1;
+  border-color: #d8ded8;
+}
+
+.academic-task-card.task-completed h2 {
+  color: #303830;
+  text-decoration: none;
 }
 
 .academic-empty {
@@ -813,4 +818,510 @@
     transition: none;
     animation: none;
   }
+}
+/* ========================================
+   RESPONSIVE IOS IPHONE
+   ======================================== */
+
+.academic-page,
+.academic-page *,
+.academic-page *::before,
+.academic-page *::after {
+  box-sizing: border-box;
+}
+
+.academic-page {
+  width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+}
+
+/* HERO */
+.academic-hero {
+  min-width: 0;
+}
+
+.academic-hero-copy {
+  min-width: 0;
+}
+
+.academic-hero h1,
+.academic-hero p {
+  overflow-wrap: anywhere;
+}
+
+/* GAMBAR */
+.academic-hero-image {
+  max-width: 100%;
+  height: auto;
+}
+
+/* CARD */
+.academic-task-list {
+  width: 100%;
+  min-width: 0;
+}
+
+.academic-task-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.academic-task-top,
+.academic-task-meta,
+.academic-task-actions {
+  min-width: 0;
+}
+
+/* BUTTON */
+.academic-button {
+  min-width: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.academic-task-actions .academic-button {
+  flex: 0 1 auto;
+  max-width: 100%;
+}
+
+/* MODAL IOS */
+.academic-overlay {
+  min-height: 100%;
+  min-height: 100dvh;
+
+  padding:
+    max(12px, env(safe-area-inset-top))
+    max(12px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom))
+    max(12px, env(safe-area-inset-left));
+
+  -webkit-overflow-scrolling: touch;
+}
+
+.academic-modal {
+  width: 100%;
+  max-width: 430px;
+
+  max-height: calc(100vh - 24px);
+  max-height: calc(
+    100dvh
+    - env(safe-area-inset-top)
+    - env(safe-area-inset-bottom)
+    - 24px
+  );
+
+  min-width: 0;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* FORM IOS */
+.academic-form input,
+.academic-form select {
+  width: 100%;
+  min-width: 0;
+
+  /* Mencegah zoom otomatis saat input di iPhone */
+  font-size: 16px;
+
+  border-radius: 12px;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.academic-form input {
+  scroll-margin-bottom: 20px;
+}
+
+.academic-form input[type="date"],
+.academic-form input[type="datetime-local"] {
+  min-height: 44px;
+}
+
+/* BUTTON TOUCH */
+.academic-form-actions .academic-button,
+.academic-notice-button {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+/* IPHONE */
+@media (max-width: 430px) {
+  .academic-page {
+    padding:
+      12px
+      max(12px, env(safe-area-inset-right))
+      calc(24px + env(safe-area-inset-bottom))
+      max(12px, env(safe-area-inset-left));
+  }
+
+  .academic-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(72px, 25%);
+    gap: 8px;
+    padding: 16px 12px;
+  }
+
+  .academic-hero-image {
+    width: 100%;
+    max-width: 100%;
+    max-height: 115px;
+    object-fit: contain;
+  }
+
+  .academic-task-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .academic-task-card {
+    width: 100%;
+    padding: 13px;
+  }
+
+  .academic-task-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .academic-task-actions .academic-button {
+    flex: 1 1 auto;
+    min-height: 40px;
+    padding: 9px 10px;
+    font-size: 11px;
+  }
+
+  .academic-form-selects {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .academic-form-actions {
+    gap: 8px;
+  }
+
+  .academic-form-actions .academic-button {
+    min-height: 44px;
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+}
+
+/* IPHONE KECIL */
+@media (max-width: 375px) {
+  .academic-hero {
+    grid-template-columns: minmax(0, 1fr) 72px;
+    padding: 14px 10px;
+  }
+
+  .academic-hero h1 {
+    font-size: 19px;
+    line-height: 1.25;
+  }
+
+  .academic-hero p {
+    font-size: 12px;
+  }
+
+  .academic-hero-image {
+    max-width: 72px;
+    max-height: 100px;
+  }
+
+  .academic-task-card {
+    padding: 11px;
+  }
+
+  .academic-task-actions .academic-button {
+    flex-basis: 100%;
+  }
+
+  .academic-modal {
+    padding: 22px 15px;
+    border-radius: 18px;
+  }
+}
+
+/* LANDSCAPE IPHONE */
+@media (max-height: 500px) and (max-width: 900px) {
+  .academic-overlay {
+    place-items: start center;
+  }
+
+  .academic-modal {
+    max-height: calc(100dvh - 20px);
+    margin-block: 10px;
+  }
+}
+
+/* IOS: HILANGKAN HOVER YANG MENETAP */
+@media (hover: none) and (pointer: coarse) {
+  .academic-button:hover,
+  .academic-task-card:hover {
+    transform: none;
+  }
+
+  .academic-button,
+  .academic-task-card {
+    transition-duration: 0.15s;
+  }
+
+  .academic-button:active {
+    transform: scale(0.97);
+  }
+}
+
+/* KURANGI ANIMASI SESUAI PREFERENSI IOS */
+@media (prefers-reduced-motion: reduce) {
+  .academic-button,
+  .academic-task-card,
+  .academic-modal,
+  .academic-popup-icon {
+    animation: none;
+    transition: none;
+  }
+}
+
+
+
+/* DESKRIPSI TUGAS */
+
+.academic-form textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 90px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  border: 1px solid #d4ded5;
+  border-radius: 11px;
+  background: #fff;
+  color: #37443a;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+  resize: vertical;
+  box-shadow: 0 2px 5px rgba(36, 54, 40, .03);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.academic-form textarea::placeholder {
+  color: #a0a7a0;
+}
+
+.academic-form textarea:hover {
+  border-color: #9bb4a0;
+}
+
+.academic-form textarea:focus {
+  outline: none;
+  border-color: #789783;
+  box-shadow: 0 0 0 3px rgba(145, 170, 154, .2);
+}
+
+/* DESKRIPSI TUGAS */
+.academic-task-description {
+  margin: 0 0 12px;
+  color: #667168;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* INDIKATOR TUGAS SELESAI */
+.academic-task-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #e0e9e1;
+  color: #45664b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* CARD TUGAS SELESAI */
+.academic-task-card.task-completed {
+  background: #e5e7e5;
+  border: 1px solid #d0d5d0;
+  box-shadow: 0 4px 12px rgba(50, 60, 50, 0.06);
+}
+
+/* JUDUL TUGAS SELESAI */
+.academic-task-card.task-completed h2 {
+  color: #424842;
+  text-decoration: none;
+}
+
+/* DESKRIPSI TUGAS SELESAI */
+.academic-task-card.task-completed .academic-task-description {
+  color: #737a73;
+}
+
+/* INDIKATOR SELESAI */
+.academic-task-card.task-completed .academic-task-status {
+  background: #d4ddd4;
+  color: #45664b;
+}
+
+/* POSISI INDIVIDU DEKAT STATUS SELESAI */
+.academic-task-top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* PRIORITAS TETAP DI KIRI */
+.academic-task-top .academic-priority {
+  margin-right: auto;
+}
+
+/* INDIVIDU BERADA DI SEBELAH KIRI SELESAI */
+.academic-task-top .academic-task-type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: 0;
+  margin-right: 0;
+  flex: 0 0 auto;
+}
+
+/* STATUS SELESAI TETAP DI KANAN */
+.academic-task-top .academic-task-status {
+  flex: 0 0 auto;
+  margin-left: 0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 560px) {
+  .academic-task-top {
+    gap: 6px;
+  }
+
+  .academic-task-top .academic-priority {
+    margin-right: auto;
+  }
+
+  .academic-task-top .academic-task-type {
+    margin-left: 0;
+  }
+}
+
+/* CORETAN NAMA TUGAS SELESAI */
+.academic-task-card.task-completed h2 {
+  color: #737a73;
+  text-decoration: line-through;
+  text-decoration-color: #929a92;
+  text-decoration-thickness: 1.5px;
+  text-decoration-skip-ink: auto;
+}
+
+
+.academic-task-type img {
+  display: block;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* UKURAN IKON JENIS TUGAS */
+.academic-task-type img {
+  display: block !important;
+  flex: 0 0 40px !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  object-fit: contain !important;
+}
+
+.academic-task-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.academic-task-type > span {
+  font-size: 18px;
+}
+
+/* UKURAN LOGO KELOMPOK */
+.academic-task-type img {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  flex: 0 0 32px !important;
+  object-fit: contain !important;
+}
+
+/* LOGO INDIVIDU LEBIH KECIL */
+.academic-task-type img[src*="individual"] {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  flex: 0 0 24px !important;
+}
+
+/* POSISI IKON DAN TEKS */
+.academic-task-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* UKURAN LOGO FINAL KELOMPOK DAN INDIVIDU */
+/* UKURAN LOGO FINAL KELOMPOK DAN INDIVIDU */
+
+/* Logo Kelompok lebih besar */
+.academic-task-type img[src*="group"] {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  flex: 0 0 40px !important;
+  object-fit: contain !important;
+}
+
+/* Logo Individu tetap 24px */
+.academic-task-type img[src*="individual"] {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  flex: 0 0 24px !important;
+  object-fit: contain !important;
+}
+
+/* Posisi logo dan teks tetap sejajar */
+.academic-task-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* UKURAN IKON KELOMPOK DAN INDIVIDU FINAL */
+/* UKURAN IKON KELOMPOK DAN INDIVIDU FINAL */
+
+.academic-task-type img.academic-icon-group {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  flex: 0 0 40px !important;
+  object-fit: contain !important;
+}
+
+.academic-task-type img.academic-icon-individual {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  flex: 0 0 18px !important;
+  object-fit: contain !important;
 }
