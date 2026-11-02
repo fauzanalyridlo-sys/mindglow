@@ -5,7 +5,7 @@
 
   display: grid;
   place-items: center;
-  width: clamp(220px, 27vw, 350px);
+  width: clamp(180px, 23vw, 280px);
   aspect-ratio: 1;
   margin: 0 auto;
 }
@@ -58,17 +58,17 @@
 }
 
 .phase-tarik {
-  --breath-scale: 1.1;
+  --breath-scale: 1.05;
   --breath-color: #C7D5C5;
 }
 
 .phase-tahan {
-  --breath-scale: 1.1;
+  --breath-scale: 1.05;
   --breath-color: #C7D5C5;
 }
 
 .phase-hembus {
-  --breath-scale: 0.88;
+  --breath-scale: 0.92;
   --breath-color: #A7B9A8;
 }
 
@@ -103,7 +103,7 @@
 
 @media (max-width: 700px) {
   .breath-stage {
-    width: min(65vw, 270px);
+    width: min(60vw, 230px);
   }
 
   .breath-number {
@@ -125,3 +125,78 @@
     animation: none;
   }
 }
+
+/* Soft Glow - efek cahaya lembut pada lingkaran pernapasan */
+.breath-circle {
+  box-shadow:
+    0 0 20px rgba(168, 184, 168, 0.18),
+    0 0 45px rgba(168, 184, 168, 0.12);
+
+  transition:
+    box-shadow 1.2s ease,
+    background-color 1.2s ease;
+}
+
+/* Cahaya sedikit lebih kuat saat menarik napas */
+.breath-stage.phase-tarik .breath-circle {
+  box-shadow:
+    0 0 24px rgba(168, 184, 168, 0.28),
+    0 0 55px rgba(168, 184, 168, 0.18);
+}
+
+/* Cahaya stabil saat menahan napas */
+.breath-stage.phase-tahan .breath-circle {
+  box-shadow:
+    0 0 22px rgba(168, 184, 168, 0.22),
+    0 0 48px rgba(168, 184, 168, 0.14);
+}
+
+/* Cahaya perlahan lebih redup saat menghembuskan napas */
+.breath-stage.phase-hembus .breath-circle {
+  box-shadow:
+    0 0 14px rgba(168, 184, 168, 0.14),
+    0 0 32px rgba(168, 184, 168, 0.08);
+}
+
+/* Tampilan mobile */
+@media (max-width: 560px) {
+  .breath-circle {
+    box-shadow:
+      0 0 15px rgba(168, 184, 168, 0.18),
+      0 0 30px rgba(168, 184, 168, 0.10);
+  }
+}
+
+
+/* Animasi pergantian angka countdown */
+.breath-number {
+  display: inline-block;
+  animation: countdown-number-enter 0.35s ease-out both;
+  transform-origin: center;
+}
+
+@keyframes countdown-number-enter {
+  0% {
+    opacity: 0;
+    transform: scale(1.18);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Mengurangi gerakan untuk pengguna yang memilih
+   preferensi minim animasi */
+@media (prefers-reduced-motion: reduce) {
+  .breath-number {
+    animation: none;
+  }
+}
+

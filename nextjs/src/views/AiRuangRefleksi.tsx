@@ -54,11 +54,9 @@ export default function AiRuangRefleksi() {
   useEffect(() => {
     const container = messagesContainerRef.current;
 
-    const hasNewMessage =
-      messages.length > previousMessageCountRef.current;
+    const hasNewMessage = messages.length > previousMessageCountRef.current;
 
-    const typingJustStarted =
-      isTyping && !previousTypingRef.current;
+    const typingJustStarted = isTyping && !previousTypingRef.current;
 
     previousMessageCountRef.current = messages.length;
     previousTypingRef.current = isTyping;
@@ -90,9 +88,7 @@ export default function AiRuangRefleksi() {
       .slice(-10)
       .map((message) => ({
         role:
-          message.sender === "ai"
-            ? ("assistant" as const)
-            : ("user" as const),
+          message.sender === "ai" ? ("assistant" as const) : ("user" as const),
         content: message.text,
       }));
 
@@ -129,13 +125,13 @@ export default function AiRuangRefleksi() {
         if (response.status === 429) {
           throw new Error(
             result?.message ||
-            "Kuota chat AI kamu sudah mencapai batas. Silakan coba lagi nanti.",
+              "Kuota chat AI kamu sudah mencapai batas. Silakan coba lagi nanti.",
           );
         }
 
         throw new Error(
           result?.message ||
-          "MindGlow AI sedang mengalami gangguan. Silakan coba lagi.",
+            "MindGlow AI sedang mengalami gangguan. Silakan coba lagi.",
         );
       }
 
@@ -158,9 +154,7 @@ export default function AiRuangRefleksi() {
     }
   }
 
-  function handleKeyDown(
-    event: React.KeyboardEvent<HTMLTextAreaElement>,
-  ) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       void handleSend();
@@ -187,8 +181,9 @@ export default function AiRuangRefleksi() {
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`reflection-message-row ${message.sender === "user" ? "is-user" : "is-ai"
-                }`}
+              className={`reflection-message-row ${
+                message.sender === "user" ? "is-user" : "is-ai"
+              }`}
             >
               {message.sender === "ai" && (
                 <div className="reflection-avatar" aria-label="MindGlow">

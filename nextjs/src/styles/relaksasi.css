@@ -757,3 +757,804 @@
     transform: none;
   }
 }
+
+/* Compact layout agar tombol relaksasi terlihat tanpa scroll */
+.relax-page {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 16px;
+  box-sizing: border-box;
+}
+
+.relax-content {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  box-sizing: border-box;
+}
+
+.relax-header {
+  margin-bottom: 10px;
+}
+
+.relax-header h1 {
+  font-size: clamp(22px, 3vw, 32px);
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.relax-header p {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.breath-stage {
+  margin: 10px auto;
+}
+
+.relax-instruction {
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 8px 0;
+}
+
+.relax-progress {
+  margin: 8px 0;
+}
+
+.relax-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.relax-button {
+  min-height: 42px;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.relax-tip {
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 8px 0 0;
+}
+
+@media (max-height: 800px) {
+  .relax-page {
+    min-height: calc(100vh - 100px);
+    padding: 8px 12px;
+  }
+
+  .relax-content {
+    padding: 6px 12px;
+  }
+
+  .relax-header {
+    margin-bottom: 6px;
+  }
+
+  .breath-stage {
+    margin: 6px auto;
+  }
+
+  .relax-actions {
+    margin: 8px 0;
+  }
+
+  .relax-tip {
+    margin-top: 6px;
+  }
+}
+
+@media (max-width: 560px) {
+  .relax-page {
+    min-height: calc(100vh - 90px);
+    padding: 10px;
+  }
+
+  .relax-content {
+    padding: 8px;
+  }
+
+  .relax-header h1 {
+    font-size: 21px;
+  }
+
+  .relax-header p {
+    font-size: 13px;
+  }
+
+  .relax-actions {
+    gap: 8px;
+  }
+
+  .relax-button {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}
+
+
+/* Tombol suara panduan */
+.relax-voice-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: 1px solid #A7B9A8;
+  border-radius: 999px;
+  background: #E8EDE5;
+  color: #354339;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    transform 200ms ease;
+}
+
+.relax-voice-toggle:hover {
+  background: #DCE5D9;
+  transform: translateY(-1px);
+}
+
+.relax-voice-toggle:focus-visible {
+  outline: 3px solid #526B57;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .relax-voice-toggle {
+    min-height: 34px;
+    margin-top: 8px;
+    padding: 7px 12px;
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .relax-voice-toggle {
+    transition: none;
+  }
+
+  .relax-voice-toggle:hover {
+    transform: none;
+  }
+}
+
+/* Tombol kembali ke Dashboard */
+.relax-back-button {
+  display: block;
+  margin: 18px auto 0;
+  padding: 8px 16px;
+
+  border: none;
+  background: transparent;
+
+  color: #596e5c;
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.relax-back-button:hover {
+  color: #39463d;
+}
+
+.relax-back-button:focus-visible {
+  outline: 2px solid #a8b8a8;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* Tombol kembali ke Dashboard */
+.relax-back-button {
+  display: block;
+  margin: 18px auto 0;
+  padding: 7px 22px;
+
+  background: #e5ebe3;
+  border: 1px solid #a8b8a8;
+  border-radius: 999px;
+
+  color: #394b3d;
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.relax-back-button:hover {
+  background: #d5e1d2;
+  border-color: #829783;
+  transform: translateY(-1px);
+}
+
+.relax-back-button:active {
+  transform: translateY(0);
+}
+
+.relax-back-button:focus-visible {
+  outline: 2px solid #596e5c;
+  outline-offset: 3px;
+}
+
+@media (max-width: 560px) {
+  .relax-back-button {
+    margin-top: 16px;
+    padding: 7px 20px;
+    font-size: 13px;
+  }
+}
+
+
+/* Tombol suara panduan dan kembali */
+.relax-bottom-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* Hilangkan margin lama agar kedua tombol sejajar */
+.relax-bottom-actions .relax-voice-toggle,
+.relax-bottom-actions .relax-back-button {
+  margin: 0;
+}
+
+/* Responsif untuk layar mobile */
+@media (max-width: 560px) {
+  .relax-bottom-actions {
+    gap: 10px;
+  }
+
+  .relax-bottom-actions .relax-voice-toggle,
+  .relax-bottom-actions .relax-back-button {
+    max-width: 100%;
+  }
+}
+
+
+/* Samakan ukuran tombol Suara Panduan dan Kembali */
+.relax-bottom-actions .relax-voice-toggle,
+.relax-bottom-actions .relax-back-button {
+  width: 306px;
+  min-width: 306px;
+  height: 68px;
+  min-height: 68px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  margin: 0;
+  border-radius: 999px;
+  font-size: 24px;
+}
+
+/* Responsif pada layar mobile */
+@media (max-width: 560px) {
+  .relax-bottom-actions {
+    width: 100%;
+    gap: 12px;
+  }
+
+  .relax-bottom-actions .relax-voice-toggle,
+  .relax-bottom-actions .relax-back-button {
+    width: min(100%, 306px);
+    min-width: 0;
+    height: 58px;
+    min-height: 58px;
+    font-size: 18px;
+  }
+}
+
+
+/* Ukuran tombol Suara Panduan dan Kembali */
+.relax-bottom-actions .relax-voice-toggle,
+.relax-bottom-actions .relax-back-button {
+  width: 220px;
+  min-width: 220px;
+  height: 48px;
+  min-height: 48px;
+  padding: 0 14px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border-radius: 999px;
+}
+
+/* Responsif mobile */
+@media (max-width: 560px) {
+  .relax-bottom-actions {
+    gap: 10px;
+  }
+
+  .relax-bottom-actions .relax-voice-toggle,
+  .relax-bottom-actions .relax-back-button {
+    width: 180px;
+    min-width: 180px;
+    height: 44px;
+    min-height: 44px;
+    font-size: 14px;
+  }
+}
+
+
+/* Ukuran tombol lebih kecil */
+.relax-bottom-actions .relax-voice-toggle,
+.relax-bottom-actions .relax-back-button {
+  width: 160px !important;
+  min-width: 160px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 10px !important;
+  font-size: 14px !important;
+  box-sizing: border-box;
+  border-radius: 999px;
+}
+
+/* Mobile */
+@media (max-width: 560px) {
+  .relax-bottom-actions .relax-voice-toggle,
+  .relax-bottom-actions .relax-back-button {
+    width: 145px !important;
+    min-width: 145px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    font-size: 12px !important;
+  }
+}
+
+
+/* Tombol Suara dan Kembali dibuat lebih ringkas */
+.relax-bottom-actions .relax-voice-toggle,
+.relax-bottom-actions .relax-back-button {
+  width: 120px !important;
+  min-width: 120px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 8px !important;
+  font-size: 12px !important;
+  box-sizing: border-box;
+}
+
+/* Mobile */
+@media (max-width: 560px) {
+  .relax-bottom-actions .relax-voice-toggle,
+  .relax-bottom-actions .relax-back-button {
+    width: 110px !important;
+    min-width: 110px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    font-size: 11px !important;
+  }
+}
+
+
+/* Perapian area tombol bawah Relaksasi */
+.relax-bottom-actions {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
+  margin: 24px auto 18px !important;
+}
+
+/* Ukuran tombol Suara dan Kembali */
+.relax-bottom-actions .relax-voice-toggle,
+.relax-bottom-actions .relax-back-button {
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 112px !important;
+  min-width: 112px !important;
+  max-width: 112px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 8px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  border-radius: 999px !important;
+}
+
+/* Jarak teks petunjuk dari tombol */
+.relax-tip {
+  margin-top: 18px !important;
+  margin-bottom: 0 !important;
+  line-height: 1.6 !important;
+  text-align: center !important;
+}
+
+/* Tampilan mobile */
+@media (max-width: 560px) {
+  .relax-bottom-actions {
+    gap: 8px !important;
+    margin-top: 20px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .relax-bottom-actions .relax-voice-toggle,
+  .relax-bottom-actions .relax-back-button {
+    width: 105px !important;
+    min-width: 105px !important;
+    max-width: 105px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    font-size: 11px !important;
+  }
+
+  .relax-tip {
+    padding: 0 16px !important;
+    font-size: 13px !important;
+  }
+}
+
+
+/* Perapian area tombol bawah Relaksasi */
+.relax-bottom-actions {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
+  margin: 24px auto 18px !important;
+}
+
+/* Ukuran tombol Suara dan Kembali */
+.relax-bottom-actions .relax-voice-toggle,
+.relax-bottom-actions .relax-back-button {
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 112px !important;
+  min-width: 112px !important;
+  max-width: 112px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 8px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  border-radius: 999px !important;
+}
+
+/* Jarak teks petunjuk dari tombol */
+.relax-tip {
+  margin-top: 18px !important;
+  margin-bottom: 0 !important;
+  line-height: 1.6 !important;
+  text-align: center !important;
+}
+
+/* Tampilan mobile */
+@media (max-width: 560px) {
+  .relax-bottom-actions {
+    gap: 8px !important;
+    margin-top: 20px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .relax-bottom-actions .relax-voice-toggle,
+  .relax-bottom-actions .relax-back-button {
+    width: 105px !important;
+    min-width: 105px !important;
+    max-width: 105px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    font-size: 11px !important;
+  }
+
+  .relax-tip {
+    padding: 0 16px !important;
+    font-size: 13px !important;
+  }
+}
+
+
+/* Susunan tombol bawah */
+.relax-bottom-actions {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
+  margin: 16px auto 0 !important;
+}
+
+/* Tombol Suara dan Kembali */
+.relax-bottom-actions .relax-voice-toggle,
+.relax-bottom-actions .relax-back-button {
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 100px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 6px !important;
+  margin: 0 !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+}
+
+/* Teks petunjuk keselamatan */
+.relax-tip {
+  max-width: 850px !important;
+  margin: 16px auto 0 !important;
+  padding: 0 16px !important;
+  text-align: center !important;
+  line-height: 1.5 !important;
+}
+
+/* Mobile */
+@media (max-width: 560px) {
+  .relax-bottom-actions {
+    gap: 8px !important;
+    margin-top: 14px !important;
+  }
+
+  .relax-bottom-actions .relax-voice-toggle,
+  .relax-bottom-actions .relax-back-button {
+    width: 95px !important;
+    min-width: 95px !important;
+    max-width: 95px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    font-size: 10px !important;
+  }
+
+  .relax-tip {
+    margin-top: 12px !important;
+    font-size: 12px !important;
+  }
+}
+
+
+/* Kotak kontrol bawah Relaksasi */
+.relax-bottom-card {
+  width: min(600px, calc(100% - 32px));
+  box-sizing: border-box;
+  margin: 24px auto 0;
+  padding: 18px 20px;
+  background: rgba(226, 233, 222, 0.48);
+  border: 1px solid rgba(166, 183, 165, 0.45);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Teks petunjuk di dalam kotak */
+.relax-bottom-card .relax-tip {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Tombol Suara dan Kembali */
+.relax-bottom-card .relax-bottom-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+  margin: 0 !important;
+}
+
+/* Ukuran tombol */
+.relax-bottom-card .relax-voice-toggle,
+.relax-bottom-card .relax-back-button {
+  width: 110px !important;
+  min-width: 110px !important;
+  max-width: 110px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 8px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  font-size: 11px !important;
+  white-space: nowrap;
+}
+
+/* Tampilan mobile */
+@media (max-width: 560px) {
+  .relax-bottom-card {
+    width: calc(100% - 28px);
+    padding: 15px 12px;
+    margin-top: 20px;
+    border-radius: 16px;
+    gap: 12px;
+  }
+
+  .relax-bottom-card .relax-tip {
+    font-size: 12px;
+  }
+
+  .relax-bottom-card .relax-bottom-actions {
+    gap: 8px;
+  }
+
+  .relax-bottom-card .relax-voice-toggle,
+  .relax-bottom-card .relax-back-button {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    font-size: 10px !important;
+  }
+}
+
+
+/* Desain minimalis tanpa kotak */
+.relax-bottom-card {
+  width: 100%;
+  max-width: none;
+  margin: 16px auto 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.relax-bottom-card .relax-tip {
+  max-width: 850px;
+  margin: 0 auto !important;
+  padding: 0 16px !important;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.relax-bottom-card .relax-bottom-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 0 !important;
+}
+
+.relax-bottom-card .relax-voice-toggle,
+.relax-bottom-card .relax-back-button {
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 100px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 6px !important;
+  margin: 0 !important;
+  font-size: 10px !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 560px) {
+  .relax-bottom-card {
+    margin-top: 14px;
+    gap: 10px;
+  }
+
+  .relax-bottom-card .relax-tip {
+    font-size: 12px;
+  }
+}
+
+
+/* Garis pemisah lembut pada area bawah Relaksasi */
+.relax-tip {
+  position: relative;
+  max-width: 850px;
+  margin: 18px auto 0 !important;
+  padding: 14px 16px 0 !important;
+  border-top: 1px solid rgba(116, 137, 116, 0.25);
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* Garis pemisah sebelum tombol Suara dan Kembali */
+.relax-bottom-actions {
+  position: relative;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin: 14px auto 0 !important;
+  padding-top: 14px !important;
+  border-top: 1px solid rgba(116, 137, 116, 0.25);
+}
+
+/* Tombol tetap kecil dan sama ukuran */
+.relax-bottom-actions .relax-voice-toggle,
+.relax-bottom-actions .relax-back-button {
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 100px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 6px !important;
+  margin: 0 !important;
+  font-size: 10px !important;
+  box-sizing: border-box !important;
+}
+
+/* Mobile */
+@media (max-width: 560px) {
+  .relax-tip {
+    margin-top: 14px !important;
+    padding: 12px 14px 0 !important;
+    font-size: 12px !important;
+  }
+
+  .relax-bottom-actions {
+    margin-top: 12px !important;
+    padding-top: 12px !important;
+    gap: 8px !important;
+  }
+}
+
+
+/* Hanya satu garis pemisah */
+.relax-tip {
+  border-top: 1px solid rgba(116, 137, 116, 0.25) !important;
+  padding-top: 14px !important;
+}
+
+/* Hilangkan garis kedua sebelum tombol */
+.relax-bottom-actions {
+  border-top: none !important;
+  padding-top: 0 !important;
+  margin-top: 12px !important;
+}
+
+@media (max-width: 560px) {
+  .relax-tip {
+    padding-top: 12px !important;
+  }
+
+  .relax-bottom-actions {
+    padding-top: 0 !important;
+    margin-top: 10px !important;
+  }
+}
+
