@@ -455,3 +455,104 @@
   transform: translateY(0) scale(0.99);
 }
 
+
+/* =========================================
+   BACKGROUND DAFTAR - HIGH QUALITY
+========================================= */
+
+.daftar-page-container {
+  background-color: #f4f7f4;
+
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(244, 247, 244, 0.08) 0%,
+      rgba(244, 247, 244, 0.02) 45%,
+      rgba(244, 247, 244, 0.12) 100%
+    ),
+    url("/images/footer_login.png");
+
+  background-position:
+    center,
+    center bottom;
+
+  background-repeat:
+    no-repeat,
+    no-repeat;
+
+  background-size:
+    100% 100%,
+    100% auto;
+
+  background-attachment: scroll;
+
+  image-rendering: auto;
+
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* =========================================
+   IPHONE
+========================================= */
+
+@media screen and (max-width: 480px) {
+  .daftar-page-container {
+    background-image:
+      linear-gradient(
+        180deg,
+        rgba(244, 247, 244, 0.12) 0%,
+        rgba(244, 247, 244, 0.02) 50%,
+        rgba(244, 247, 244, 0.08) 100%
+      ),
+      url("/images/footer_login.png");
+
+    background-position:
+      center,
+      center bottom;
+
+    background-repeat:
+      no-repeat,
+      no-repeat;
+
+    /* Background tetap proporsional */
+    background-size:
+      100% 100%,
+      100% auto;
+
+    background-attachment: scroll;
+  }
+}
+
+/* =========================================
+   IPHONE KECIL
+========================================= */
+
+@media screen and (max-width: 360px) {
+  .daftar-page-container {
+    background-size:
+      100% 100%,
+      115% auto;
+
+    background-position:
+      center,
+      center bottom;
+  }
+}
+
+/* =========================================
+   IPHONE LANDSCAPE
+========================================= */
+
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .daftar-page-container {
+    background-size:
+      100% 100%,
+      auto 100%;
+
+    background-position:
+      center,
+      center bottom;
+  }
+}
+

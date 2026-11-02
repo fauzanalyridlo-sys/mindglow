@@ -432,3 +432,284 @@
     transform: none;
   }
 }
+/* =========================================
+   PROFILE - RESPONSIVE iOS / iPHONE
+========================================= */
+
+/* Box sizing konsisten */
+.profile-page-container,
+.profile-page-container *,
+.profile-page-container *::before,
+.profile-page-container *::after {
+  box-sizing: border-box;
+}
+
+/* Mencegah overflow horizontal */
+.profile-page-container {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+  padding-left: max(14px, env(safe-area-inset-left));
+  padding-right: max(14px, env(safe-area-inset-right));
+}
+
+/* Card dan konten */
+.profile-content-wrapper {
+  width: 100%;
+  max-width: 620px;
+  min-width: 0;
+}
+
+.profile-card {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Input lebih stabil di Safari iOS */
+.profile-form-group input {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 10px;
+}
+
+/* Mencegah Safari memberi style input default */
+.profile-form-group input:focus {
+  font-size: 16px;
+}
+
+/* Tombol */
+.btn-profile-update,
+.btn-profile-logout {
+  min-height: 48px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* =========================================
+   iPHONE - 430px ke bawah
+========================================= */
+
+@media screen and (max-width: 430px) {
+  .profile-page-container {
+    min-height: calc(
+      100svh - 68px
+    );
+    padding-top: 0;
+    padding-bottom: max(28px, env(safe-area-inset-bottom));
+  }
+
+  .profile-hero {
+    height: 155px;
+  }
+
+  .profile-content-wrapper {
+    padding-top: 88px;
+    max-width: 100%;
+  }
+
+  .profile-card {
+    padding: 26px 18px 22px;
+    border-radius: 15px;
+  }
+
+  .profile-avatar {
+    width: 64px;
+    height: 64px;
+    margin-top: -57px;
+    margin-bottom: 12px;
+    font-size: 23px;
+  }
+
+  .profile-name-title {
+    font-size: clamp(18px, 5vw, 21px);
+    line-height: 1.35;
+    letter-spacing: -0.35px;
+    overflow-wrap: anywhere;
+  }
+
+  .profile-subtitle {
+    max-width: 100%;
+    margin: 6px 0 22px;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .profile-form {
+    gap: 16px;
+  }
+
+  .profile-form-group {
+    gap: 6px;
+  }
+
+  .profile-form-group label {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .profile-form-group input {
+    min-height: 48px;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+
+  .profile-buttons-wrapper {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .btn-profile-update,
+  .btn-profile-logout {
+    width: 100%;
+    min-height: 48px;
+    flex: 1 1 auto;
+    padding: 12px 15px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+}
+
+/* =========================================
+   iPHONE SE / LAYAR KECIL
+========================================= */
+
+@media screen and (max-width: 375px) {
+  .profile-page-container {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+
+  .profile-hero {
+    height: 145px;
+  }
+
+  .profile-content-wrapper {
+    padding-top: 82px;
+  }
+
+  .profile-card {
+    padding: 24px 15px 19px;
+    border-radius: 13px;
+  }
+
+  .profile-avatar {
+    width: 60px;
+    height: 60px;
+    margin-top: -54px;
+    font-size: 22px;
+  }
+
+  .profile-name-title {
+    font-size: 18px;
+  }
+
+  .profile-subtitle {
+    font-size: 11px;
+    margin-bottom: 20px;
+  }
+
+  .profile-form {
+    gap: 15px;
+  }
+
+  .profile-form-group input {
+    padding: 11px;
+    min-height: 46px;
+  }
+
+  .profile-buttons-wrapper {
+    margin-top: 18px;
+  }
+}
+
+/* =========================================
+   IPHONE LANDSCAPE
+========================================= */
+
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .profile-page-container {
+    min-height: 100svh;
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+
+  .profile-hero {
+    height: 125px;
+  }
+
+  .profile-content-wrapper {
+    padding-top: 75px;
+    max-width: 520px;
+  }
+
+  .profile-card {
+    padding-top: 22px;
+    padding-bottom: 20px;
+  }
+
+  .profile-avatar {
+    width: 56px;
+    height: 56px;
+    margin-top: -50px;
+    margin-bottom: 10px;
+  }
+
+  .profile-subtitle {
+    margin-bottom: 18px;
+  }
+
+  .profile-form {
+    gap: 13px;
+  }
+
+  .profile-buttons-wrapper {
+    flex-direction: row;
+    margin-top: 18px;
+  }
+}
+
+/* =========================================
+   SAFARI iOS - TOUCH DEVICE
+========================================= */
+
+@supports (-webkit-touch-callout: none) {
+  .profile-form-group input {
+    font-size: 16px !important;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .profile-page-container {
+    min-height: calc(100vh - 68px);
+    min-height: calc(100svh - 68px);
+  }
+
+  .profile-form-group input,
+  .btn-profile-update,
+  .btn-profile-logout {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* =========================================
+   REDUCED MOTION
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-page-container *,
+  .profile-page-container *::before,
+  .profile-page-container *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+

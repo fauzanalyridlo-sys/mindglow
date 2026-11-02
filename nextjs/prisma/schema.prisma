@@ -163,6 +163,7 @@ model academic_tasks {
   id         BigInt   @id @default(autoincrement())
   user_id    BigInt
   name       String   @db.VarChar(255)
+  description String?  @db.Text
   course     String   @db.VarChar(255)
   deadline   DateTime @db.Date
   priority   String   @db.VarChar(10)

@@ -16,6 +16,7 @@ type Task = {
   id: string
   name: string
   course: string
+  description: string
   deadline: string
   priority: 'Rendah' | 'Sedang' | 'Tinggi'
   type: 'Kelompok' | 'Individu'
@@ -41,6 +42,7 @@ export default function AkademikPage() {
 
   const [name, setName] = useState('')
   const [course, setCourse] = useState('')
+  const [description, setDescription] = useState('')
   const [deadline, setDeadline] = useState('')
   const [priority, setPriority] = useState<Task['priority'] | ''>('')
   const [type, setType] = useState<Task['type'] | ''>('')
@@ -77,6 +79,7 @@ export default function AkademikPage() {
   const resetForm = () => {
     setName('')
     setCourse('')
+    setDescription('')
     setDeadline('')
     setPriority('')
     setType('')
@@ -105,6 +108,7 @@ export default function AkademikPage() {
         body: JSON.stringify({
           name: name.trim(),
           course: course.trim(),
+          description: description.trim(),
           deadline,
           priority,
           type,
@@ -274,15 +278,27 @@ export default function AkademikPage() {
 
                 <span className="academic-task-type">
                   <img
+                    className={task.type === 'Kelompok' ? 'academic-icon-group' : 'academic-icon-individual'}
                     src={task.type === 'Kelompok' ? groupIcon.src : individualIcon.src}
                     alt=""
                     aria-hidden="true"
                   />
                   <span>{task.type}</span>
                 </span>
+                {task.completed && (
+                  <span className="academic-task-status">
+                    ✓ Selesai
+                  </span>
+                )}
               </div>
 
               <h2>{task.name}</h2>
+
+              {task.description && (
+                <p className="academic-task-description">
+                  {task.description}
+                </p>
+              )}
 
               <div className="academic-task-meta">
                 <span>{task.course}</span>
@@ -359,6 +375,17 @@ export default function AkademikPage() {
                 onChange={(event) => setCourse(event.target.value)}
                 placeholder="Masukkan mata kuliah kamu"
                 required
+              />
+            </label>
+
+            <label>
+              Deskripsi Tugas
+              <textarea
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+                placeholder="Tulis deskripsi tugas di sini..."
+                rows={3}
+                maxLength={5000}
               />
             </label>
 

@@ -43,7 +43,7 @@ export async function GET() {
   const nextWeek = new Date(today);
   nextWeek.setUTCDate(nextWeek.getUTCDate() + 7);
 
-  const [checkin, upcomingTasks, priorityTasks] = await Promise.all([
+  const [checkin, upcomingTasks, priorityTasks, completedTasks] = await Promise.all([
     prisma.daily_check_ins.findUnique({
       where: {
         user_id_checkin_date: {
@@ -79,10 +79,24 @@ export async function GET() {
       ],
       take: 5,
     }),
+
+    prisma.academic_tasks.findMany({
+      where: {
+        user_id: user.id,
+        completed: true,
+      },
+      orderBy: [
+        { created_at: "desc" },
+      ],
+    }),
   ]);
 
   const groupCount = upcomingTasks.filter(
     (task) => task.type === "Kelompok"
+  ).length;
+
+  const individualCount = upcomingTasks.filter(
+    (task) => task.type === "Individu"
   ).length;
 
   const sortedPriorityTasks = [...priorityTasks].sort((a, b) => {
@@ -122,9 +136,20 @@ export async function GET() {
         upcomingTasks: {
           count: upcomingTasks.length,
           groupCount,
+          individualCount,
         },
 
         priorityTasks: sortedPriorityTasks.map((task) => ({
+          id: task.id.toString(),
+          name: task.name,
+          course: task.course,
+          deadline: task.deadline.toISOString().slice(0, 10),
+          priority: task.priority,
+          type: task.type,
+          completed: task.completed,
+        })),
+
+        completedTasks: completedTasks.map((task) => ({
           id: task.id.toString(),
           name: task.name,
           course: task.course,
