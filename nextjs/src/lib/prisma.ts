@@ -26,6 +26,8 @@ function createPrismaClient() {
 
   const adapter = new PrismaPg({
     connectionString,
+    max: 1,
+    connectionTimeoutMillis: 10000,
     options: "-c timezone=UTC",
     ssl: {
       ca,
@@ -41,6 +43,4 @@ function createPrismaClient() {
 export const prisma =
   globalForPrisma.prisma ?? createPrismaClient();
 
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
-}
+globalForPrisma.prisma = prisma;
