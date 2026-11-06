@@ -22,91 +22,106 @@ function getTodayWIB() {
 }
 
 export async function GET() {
-  const user = await getCurrentUser();
+  try {
+    const user = await getCurrentUser();
 
-  if (!user) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Silakan login terlebih dahulu.",
+    if (!user) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Silakan login terlebih dahulu.",
+        },
+        {
+          status: 401,
+          headers: { "Cache-Control": "no-store" },
+        }
+      );
+    }
+
+    const today = getTodayWIB();
+
+    const checkin = await prisma.daily_check_ins.findUnique({
+      where: {
+        user_id_checkin_date: {
+          user_id: user.id,
+          checkin_date: today,
+        },
       },
-      {
-        status: 401,
-        headers: { "Cache-Control": "no-store" },
+    });
+
+    if (!checkin) {
+      return NextResponse.json(
+        {
+          success: true,
+          data: null,
+          message: "Belum ada Check-in hari ini.",
+        },
+        {
+          headers: { "Cache-Control": "no-store" },
+        }
+      );
+    }
+
+    let activities: string[] = [];
+    let otherActivity = "";
+
+    if (checkin.activity) {
+      try {
+        const parsed: unknown = JSON.parse(checkin.activity);
+
+        if (
+          typeof parsed === "object" &&
+          parsed !== null &&
+          "activities" in parsed &&
+          Array.isArray(parsed.activities)
+        ) {
+          activities = parsed.activities.filter(
+            (item): item is string => typeof item === "string"
+          );
+        }
+
+        if (
+          typeof parsed === "object" &&
+          parsed !== null &&
+          "otherActivity" in parsed &&
+          typeof parsed.otherActivity === "string"
+        ) {
+          otherActivity = parsed.otherActivity;
+        }
+      } catch {
+        // Aktivitas lama yang bukan JSON tetap aman dibaca.
       }
-    );
-  }
+    }
 
-  const today = getTodayWIB();
-
-  const checkin = await prisma.daily_check_ins.findUnique({
-    where: {
-      user_id_checkin_date: {
-        user_id: user.id,
-        checkin_date: today,
-      },
-    },
-  });
-
-  if (!checkin) {
     return NextResponse.json(
       {
         success: true,
-        data: null,
-        message: "Belum ada Check-in hari ini.",
+        data: {
+          id: checkin.id.toString(),
+          date: checkin.checkin_date.toISOString().slice(0, 10),
+          mood: moodLabels[checkin.mood - 1] ?? "Tidak diketahui",
+          energyLevel: checkin.energy,
+          sleepHours: Number(checkin.sleep_hours),
+          activities,
+          otherActivity,
+        },
       },
       {
         headers: { "Cache-Control": "no-store" },
       }
     );
-  }
+  } catch (error) {
+    console.error("GET /api/checkin/today:", error);
 
-  let activities: string[] = [];
-  let otherActivity = "";
-
-  if (checkin.activity) {
-    try {
-      const parsed: unknown = JSON.parse(checkin.activity);
-
-      if (
-        typeof parsed === "object" &&
-        parsed !== null &&
-        "activities" in parsed &&
-        Array.isArray(parsed.activities)
-      ) {
-        activities = parsed.activities.filter(
-          (item): item is string => typeof item === "string"
-        );
-      }
-
-      if (
-        typeof parsed === "object" &&
-        parsed !== null &&
-        "otherActivity" in parsed &&
-        typeof parsed.otherActivity === "string"
-      ) {
-        otherActivity = parsed.otherActivity;
-      }
-    } catch {
-      // Data aktivitas lama yang bukan JSON tetap aman dibaca.
-    }
-  }
-
-  return NextResponse.json(
-    {
-      success: true,
-      data: {
-        id: checkin.id.toString(),
-        date: checkin.checkin_date.toISOString().slice(0, 10),
-        mood: moodLabels[checkin.mood - 1] ?? "Tidak diketahui",
-        energyLevel: checkin.energy,
-        sleepHours: Number(checkin.sleep_hours),
-        activities,
-        otherActivity,
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Gagal memuat Check-in hari ini.",
       },
-    },
-    {
-      headers: { "Cache-Control": "no-store" },
-    }
-  );
+      {
+        status: 500,
+        headers: { "Cache-Control": "no-store" },
+      }
+    );
+  }
 }

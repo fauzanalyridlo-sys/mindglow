@@ -28,12 +28,16 @@ function AnimatedStat({
       '(prefers-reduced-motion: reduce)',
     ).matches
 
+    let frame = 0
+
     if (reduceMotion || !('IntersectionObserver' in window)) {
-      setValue(target)
-      return
+      frame = window.requestAnimationFrame(() => {
+        setValue(target)
+      })
+
+      return () => window.cancelAnimationFrame(frame)
     }
 
-    let frame = 0
     let started = false
     let startTime = 0
     const duration = 1200

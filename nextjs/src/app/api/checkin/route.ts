@@ -108,48 +108,99 @@ export async function POST(request: NextRequest) {
     otherActivity,
   });
 
-  const checkin = await prisma.daily_check_ins.upsert({
-    where: {
-      user_id_checkin_date: {
-        user_id: user.id,
-        checkin_date: today,
-      },
-    },
-    create: {
-      user_id: user.id,
-      checkin_date: today,
-      mood: moodNumber,
-      energy: energyLevel,
-      sleep_hours: sleepHours,
-      activity: activityData,
-      created_at: now,
-      updated_at: now,
-    },
-    update: {
-      mood: moodNumber,
-      energy: energyLevel,
-      sleep_hours: sleepHours,
-      activity: activityData,
-      updated_at: now,
-    },
-  });
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const checkin = await tx.daily_check_ins.upsert({
+        where: {
+          user_id_checkin_date: {
+            user_id: user.id,
+            checkin_date: today,
+          },
+        },
+        create: {
+          user_id: user.id,
+          checkin_date: today,
+          mood: moodNumber,
+          energy: energyLevel,
+          sleep_hours: sleepHours,
+          activity: activityData,
+          created_at: now,
+          updated_at: now,
+        },
+        update: {
+          mood: moodNumber,
+          energy: energyLevel,
+          sleep_hours: sleepHours,
+          activity: activityData,
+          updated_at: now,
+        },
+      });
 
-  return NextResponse.json(
-    {
-      success: true,
-      message: "Check-in hari ini berhasil disimpan.",
-      data: {
-        id: checkin.id.toString(),
-        date: checkin.checkin_date.toISOString().slice(0, 10),
-        mood,
-        energyLevel: checkin.energy,
-        sleepHours: Number(checkin.sleep_hours),
-        activities,
-        otherActivity,
+      // Pastikan data Momo sudah tersedia untuk akun ini.
+      await tx.momo_pets.upsert({
+        where: { user_id: user.id },
+        create: {
+          user_id: user.id,
+          name: "Momo",
+          score: 0,
+          energy: 80,
+          happiness: 70,
+          fullness: 65,
+          asleep: false,
+          skin: "salju",
+          accessory: "none",
+          animations: true,
+          auto_move: true,
+          chase: true,
+          last_seen: now,
+        },
+        update: {},
+      });
+
+      // Hadiah hanya diberikan sekali sehari dan skor tidak melewati 1 juta.
+      // LEAST menjaga happiness tetap maksimal 100 secara atomik.
+      const rewardCount = await tx.$executeRaw`
+        UPDATE public.momo_pets
+        SET
+          score = score + 10,
+          happiness = LEAST(100, happiness + 20),
+          version = version + 1,
+          last_checkin = ${today}::date,
+          last_seen = ${now},
+          updated_at = ${now}
+        WHERE
+          user_id = ${user.id}
+          AND (last_checkin IS NULL OR last_checkin < ${today}::date)
+          AND score <= 999990
+      `;
+
+      return {
+        checkin,
+        momoRewardAwarded: rewardCount === 1,
+      };
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Check-in hari ini berhasil disimpan.",
+        momoRewardAwarded: result.momoRewardAwarded,
+        data: {
+          id: result.checkin.id.toString(),
+          date: result.checkin.checkin_date.toISOString().slice(0, 10),
+          mood,
+          energyLevel: result.checkin.energy,
+          sleepHours: Number(result.checkin.sleep_hours),
+          activities,
+          otherActivity,
+        },
       },
-    },
-    {
-      headers: { "Cache-Control": "no-store" },
-    }
-  );
+      {
+        headers: { "Cache-Control": "no-store" },
+      }
+    );
+  } catch (error) {
+    console.error("POST /api/checkin:", error);
+    return errorResponse("Check-in gagal disimpan. Silakan coba lagi.", 500);
+  }
 }
