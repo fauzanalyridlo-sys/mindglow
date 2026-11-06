@@ -30,6 +30,13 @@ type Notice = {
   variant: 'success' | 'delete'
 }
 
+const ACADEMIC_TASKS_UPDATED_EVENT =
+  'mindglow:academic-tasks-updated'
+
+function notifyAcademicTasksUpdated() {
+  window.dispatchEvent(new Event(ACADEMIC_TASKS_UPDATED_EVENT))
+}
+
 export default function AkademikPage() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(true)
@@ -122,6 +129,7 @@ export default function AkademikPage() {
       }
 
       setTasks((current) => [...current, result.data])
+      notifyAcademicTasksUpdated()
       closeForm()
 
       setNotice({
@@ -163,6 +171,7 @@ export default function AkademikPage() {
       setTasks((current) =>
         current.map((item) => item.id === task.id ? result.data : item)
       )
+      notifyAcademicTasksUpdated()
 
       if (!task.completed) {
         setNotice({
@@ -200,6 +209,7 @@ export default function AkademikPage() {
       }
 
       setTasks((current) => current.filter((task) => task.id !== id))
+      notifyAcademicTasksUpdated()
       setDeleteId(null)
 
       setNotice({
