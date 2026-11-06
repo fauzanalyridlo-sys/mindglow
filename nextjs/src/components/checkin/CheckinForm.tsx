@@ -21,6 +21,7 @@ type CheckinData = {
 type ApiResponse = {
   success: boolean
   message?: string
+  momoRewardAwarded?: boolean
   data?: CheckinData | null
 }
 
@@ -61,8 +62,6 @@ export default function CheckinForm() {
   const [isSaving, setIsSaving] = useState(false)
 
   const loadTodayCheckin = useCallback(async (signal: AbortSignal) => {
-    setIsLoading(true)
-
     try {
       const response = await fetch('/api/checkin/today', {
         method: 'GET',
@@ -109,9 +108,15 @@ export default function CheckinForm() {
 
   useEffect(() => {
     const controller = new AbortController()
-    void loadTodayCheckin(controller.signal)
 
-    return () => controller.abort()
+    const timer = window.setTimeout(() => {
+      void loadTodayCheckin(controller.signal)
+    }, 0)
+
+    return () => {
+      window.clearTimeout(timer)
+      controller.abort()
+    }
   }, [loadTodayCheckin])
 
   function toggleActivity(activity: string) {
@@ -127,7 +132,7 @@ export default function CheckinForm() {
       return [...previous, activity]
     })
 
-    setMessage((previous) =>
+    setMessage(
       activities.length >= 3 && !activities.includes(activity)
         ? 'Pilih maksimal 3 aktivitas utama.'
         : ''
@@ -200,16 +205,7 @@ export default function CheckinForm() {
         return
       }
 
-      // Tandai hadiah Momo setelah check-in berhasil disimpan.
-      const now = new Date()
-      const today = [
-        now.getFullYear(),
-        String(now.getMonth() + 1).padStart(2, '0'),
-        String(now.getDate()).padStart(2, '0'),
-      ].join('-')
-
-      localStorage.setItem('momo:pending-checkin', today)
-
+      // Hadiah Momo sudah diberikan langsung oleh API dan disimpan ke database.
       setShowSuccess(true)
     } catch {
       setMessage(

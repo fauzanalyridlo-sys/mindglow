@@ -16,12 +16,8 @@ import {
   SKINS,
   applyOffline,
   clamp,
-  clearSaved,
   greeting,
   levelProgress,
-  loadSaved,
-  saveSaved,
-  todayKey,
   unlocksAt,
   type Saved,
 } from "./momo-data";
@@ -62,6 +58,7 @@ export default function MomoPet() {
   /* ---------- data utama (tersimpan) ---------- */
   const [pet, setPet] = useState<Saved>(DEFAULT_SAVED);
   const [hydrated, setHydrated] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [mobileCollapsed, setMobileCollapsed] = useState(true);
   const [confirmReset, setConfirmReset] = useState(false);
@@ -100,6 +97,16 @@ export default function MomoPet() {
   const prevWeather = useRef<Weather>("clear");
   const prevPhase = useRef<Phase>("day");
   const worldInit = useRef(false);
+  const pendingXpRef = useRef<Set<Promise<void>>>(new Set());
+  const scoreRevisionRef = useRef(0);
+  const resettingRef = useRef(false);
+
+  const autosaveTimerRef = useRef<number | null>(null);
+  const saveRevisionRef = useRef(0);
+  const saveChainRef = useRef<Promise<void>>(Promise.resolve());
+  const dbVersionRef = useRef(0);
+  const versionConflictRef = useRef(false);
+  const xpBlockedUntilRef = useRef(0);
 
   useEffect(() => {
     petRef.current = pet;
@@ -121,6 +128,131 @@ export default function MomoPet() {
 
   /* ---------- helpers ---------- */
   const say = useCallback((text: string) => setMessage(text), []);
+
+  const awardXp = useCallback((
+    activity: "creeper" | "pet" | "feed" | "play" | "orb"
+  ): Promise<void> => {
+    if (resettingRef.current || versionConflictRef.current) {
+      return Promise.resolve();
+    }
+
+    if (Date.now() < xpBlockedUntilRef.current) {
+      const remaining = Math.ceil(
+        (xpBlockedUntilRef.current - Date.now()) / 1000
+      );
+      setMessage(
+        `Batas aktivitas XP tercapai. Coba lagi dalam ${remaining} detik.`
+      );
+      return Promise.resolve();
+    }
+
+    const revision = scoreRevisionRef.current;
+    const requestId = crypto.randomUUID();
+
+    // XP dan autosave memakai antrean yang sama.
+    const request = saveChainRef.current.then(async () => {
+      if (
+        resettingRef.current ||
+        versionConflictRef.current ||
+        revision !== scoreRevisionRef.current
+      ) {
+        return;
+      }
+
+      // Jangan kirim antrean XP yang tertunda selama cooldown.
+      if (Date.now() < xpBlockedUntilRef.current) {
+        return;
+      }
+
+      const response = await fetch("/api/momo/xp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: activity,
+          requestId,
+          expectedVersion: dbVersionRef.current,
+        }),
+      });
+
+      const result = (await response.json()) as {
+        success?: boolean;
+        message?: string;
+        debug?: string;
+        data?: {
+          score?: number;
+          version?: number;
+          awarded?: boolean;
+        };
+      };
+
+      if (response.status === 409) {
+        versionConflictRef.current = true;
+        setMessage(
+          "Data Momo berubah di perangkat lain. Muat ulang halaman sebelum melanjutkan."
+        );
+        return;
+      }
+
+      // Rate limit adalah kondisi normal, bukan error aplikasi.
+      if (response.status === 429) {
+        const retryAfter = Number(response.headers.get("Retry-After"));
+        const cooldownSeconds =
+          Number.isFinite(retryAfter) && retryAfter > 0
+            ? Math.min(300, Math.ceil(retryAfter))
+            : 60;
+
+        xpBlockedUntilRef.current =
+          Date.now() + cooldownSeconds * 1000;
+
+        setMessage(
+          result.message ??
+            `Batas aktivitas XP tercapai. Coba lagi setelah ${cooldownSeconds} detik.`
+        );
+        return;
+      }
+
+      if (
+        !response.ok ||
+        !result.success ||
+        typeof result.data?.score !== "number" ||
+        typeof result.data?.version !== "number"
+      ) {
+        throw new Error(
+          process.env.NODE_ENV === "development"
+            ? result.debug ?? result.message ?? "Gagal menyimpan XP Momo."
+            : result.message ?? "Gagal menyimpan XP Momo."
+        );
+      }
+
+      dbVersionRef.current = result.data.version;
+
+      if (revision === scoreRevisionRef.current) {
+        setPet((current) => ({
+          ...current,
+          score: Math.max(current.score, result.data!.score!),
+        }));
+      }
+    }).catch((error: unknown) => {
+      console.error("Gagal menambahkan XP Momo:", error);
+
+      if (
+        revision === scoreRevisionRef.current &&
+        !versionConflictRef.current
+      ) {
+        setMessage("XP Momo gagal disimpan. Periksa koneksi internet.");
+      }
+    });
+
+    saveChainRef.current = request;
+
+    pendingXpRef.current.add(request);
+
+    void request.finally(() => {
+      pendingXpRef.current.delete(request);
+    });
+
+    return request;
+  }, []);
 
   const spawn = useCallback((emoji: string, count = 3) => {
     const items: Particle[] = Array.from({ length: count }, () => ({
@@ -148,112 +280,235 @@ export default function MomoPet() {
     walkTimer.current = window.setTimeout(() => setWalking(false), 1700);
   }, []);
 
-  /* ---------- muat data lokal dan database ---------- */
+  /* ---------- antrekan penyimpanan data Momo ---------- */
+  const queuePetSave = useCallback(
+    (saved: Saved, keepalive = false): Promise<void> => {
+      if (resettingRef.current || versionConflictRef.current) {
+        return Promise.resolve();
+      }
+
+      const revision = saveRevisionRef.current;
+
+      const queuedSave = saveChainRef.current.then(async () => {
+        if (
+          resettingRef.current ||
+          versionConflictRef.current ||
+          revision !== saveRevisionRef.current
+        ) {
+          return;
+        }
+
+        const response = await fetch("/api/momo", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          keepalive,
+          body: JSON.stringify({
+            version: dbVersionRef.current,
+            name: saved.name,
+            energy: saved.energy,
+            happiness: saved.happiness,
+            fullness: saved.fullness,
+            asleep: saved.asleep,
+            skin: saved.skin,
+            accessory: saved.accessory,
+            animations: saved.animations,
+            autoMove: saved.autoMove,
+            chase: saved.chase,
+          }),
+        });
+
+        const result = (await response.json()) as {
+          success?: boolean;
+          message?: string;
+          data?: {
+            version?: number;
+          };
+        };
+
+        if (response.status === 409) {
+          versionConflictRef.current = true;
+          setMessage(
+            "Data Momo berubah di perangkat lain. Muat ulang halaman sebelum melanjutkan."
+          );
+          return;
+        }
+
+        if (
+          !response.ok ||
+          !result.success ||
+          typeof result.data?.version !== "number"
+        ) {
+          throw new Error(result.message ?? "Gagal menyimpan data Momo.");
+        }
+
+        dbVersionRef.current = result.data.version;
+      });
+
+      saveChainRef.current = queuedSave.catch((error: unknown) => {
+        console.error("Gagal menyinkronkan data Momo:", error);
+      });
+
+      return saveChainRef.current;
+    },
+    []
+  );
+
+  /* ---------- muat data Momo dari database ---------- */
   useEffect(() => {
     let cancelled = false;
 
     async function initializePet() {
-      const now = Date.now();
-      const localSaved = loadSaved();
-
-      let loaded: Saved = localSaved
-        ? applyOffline(localSaved, now).saved
-        : { ...DEFAULT_SAVED };
-
-      const hours = localSaved ? applyOffline(localSaved, now).hours : 0;
-
-      let databaseAvailable = false;
-      let migrateLocalProgress = false;
-
       try {
         const response = await fetch("/api/momo", {
           method: "GET",
           cache: "no-store",
         });
 
-        if (response.ok) {
-          const result = await response.json();
-
-          if (result.success && result.data) {
-            const remote = result.data;
-            databaseAvailable = true;
-
-            // Jika database masih nol tetapi browser memiliki progres lama,
-            // pertahankan progres lokal untuk migrasi awal.
-            migrateLocalProgress =
-              remote.score === 0 && !!localSaved && localSaved.score > 0;
-
-            if (!migrateLocalProgress) {
-              loaded = {
-                ...loaded,
-                score: remote.score,
-                energy: remote.energy,
-                happiness: remote.happiness,
-                fullness: remote.fullness,
-                lastCheckin: remote.lastCheckin || loaded.lastCheckin,
-              };
-            }
-          }
+        if (!response.ok) {
+          throw new Error(`Gagal memuat Momo: HTTP ${response.status}`);
         }
+
+        const result = (await response.json()) as {
+          success?: boolean;
+          isNew?: boolean;
+          userId?: string;
+          data?: {
+            name?: unknown;
+            score?: unknown;
+            version?: unknown;
+            energy?: unknown;
+            happiness?: unknown;
+            fullness?: unknown;
+            asleep?: unknown;
+            skin?: unknown;
+            accessory?: unknown;
+            animations?: unknown;
+            autoMove?: unknown;
+            chase?: unknown;
+            lastSeen?: unknown;
+            lastCheckin?: unknown;
+          };
+        };
+
+        if (
+          !result.success ||
+          !result.data ||
+          typeof result.userId !== "string" ||
+          !result.userId
+        ) {
+          throw new Error("Identitas pengguna atau data Momo tidak valid.");
+        }
+
+        if (cancelled) return;
+
+        const activeUserId = result.userId;
+        const remote = result.data;
+        const now = Date.now();
+
+        const safeNumber = (value: unknown, fallback: number) =>
+          typeof value === "number" && Number.isFinite(value)
+            ? value
+            : fallback;
+
+        const databaseSaved: Saved = {
+          ...DEFAULT_SAVED,
+          name:
+            typeof remote.name === "string" && remote.name.trim()
+              ? remote.name.trim().slice(0, 12)
+              : DEFAULT_SAVED.name,
+          score: Math.max(
+            0,
+            Math.min(1_000_000, Math.floor(safeNumber(remote.score, 0)))
+          ),
+          version: Math.max(0, Math.floor(safeNumber(remote.version, 0))),
+          energy: clamp(safeNumber(remote.energy, DEFAULT_SAVED.energy)),
+          happiness: clamp(
+            safeNumber(remote.happiness, DEFAULT_SAVED.happiness)
+          ),
+          fullness: clamp(
+            safeNumber(remote.fullness, DEFAULT_SAVED.fullness)
+          ),
+          asleep:
+            typeof remote.asleep === "boolean"
+              ? remote.asleep
+              : DEFAULT_SAVED.asleep,
+          skin: SKINS.some((item) => item.id === remote.skin)
+            ? (remote.skin as Saved["skin"])
+            : DEFAULT_SAVED.skin,
+          accessory: ACCESSORIES.some(
+            (item) => item.id === remote.accessory
+          )
+            ? (remote.accessory as Saved["accessory"])
+            : DEFAULT_SAVED.accessory,
+          animations:
+            typeof remote.animations === "boolean"
+              ? remote.animations
+              : DEFAULT_SAVED.animations,
+          autoMove:
+            typeof remote.autoMove === "boolean"
+              ? remote.autoMove
+              : DEFAULT_SAVED.autoMove,
+          chase:
+            typeof remote.chase === "boolean"
+              ? remote.chase
+              : DEFAULT_SAVED.chase,
+          lastSeen: safeNumber(remote.lastSeen, now),
+          lastCheckin:
+            typeof remote.lastCheckin === "string"
+              ? remote.lastCheckin
+              : "",
+        };
+
+        dbVersionRef.current = databaseSaved.version;
+        versionConflictRef.current = false;
+
+        // Terapkan penurunan stat berdasarkan waktu terakhir tersimpan di DB.
+        const offline = applyOffline(databaseSaved, now);
+        const loaded: Saved = {
+          ...offline.saved,
+          lastSeen: now,
+        };
+
+        const currentLevel = levelProgress(loaded.score).level;
+        const selectedSkin = SKINS.find((item) => item.id === loaded.skin);
+        const selectedAccessory = ACCESSORIES.find(
+          (item) => item.id === loaded.accessory
+        );
+
+        if (!selectedSkin || selectedSkin.level > currentLevel) {
+          loaded.skin = "salju";
+        }
+
+        if (
+          !selectedAccessory ||
+          selectedAccessory.level > currentLevel
+        ) {
+          loaded.accessory = "none";
+        }
+
+        if (cancelled) return;
+
+        setUserId(activeUserId);
+        prevLevel.current = levelProgress(loaded.score).level;
+        wasSleeping.current = loaded.asleep;
+        petRef.current = loaded;
+
+        setPet(loaded);
+        setHydrated(true);
+
+        setMessage(
+          greeting(
+            offline.hours,
+            new Date().getHours(),
+            Boolean(result.isNew),
+            loaded.name,
+          )
+        );
       } catch (error) {
-        console.error("Gagal memuat data Momo dari database:", error);
-      }
-
-      const pendingCheckin = localStorage.getItem("momo:pending-checkin");
-      const today = todayKey();
-      let rewardedForCheckin = false;
-
-      if (pendingCheckin === today && loaded.lastCheckin !== today) {
-        loaded.happiness = clamp(loaded.happiness + 20);
-        loaded.score += 10;
-        loaded.lastCheckin = today;
-        rewardedForCheckin = true;
-      }
-
-      if (pendingCheckin) {
-        localStorage.removeItem("momo:pending-checkin");
-      }
-
-      loaded.lastSeen = now;
-
-      if (cancelled) return;
-
-      prevLevel.current = levelProgress(loaded.score).level;
-      wasSleeping.current = loaded.asleep;
-      petRef.current = loaded;
-
-      saveSaved(loaded);
-      setPet(loaded);
-      setHydrated(true);
-
-      if (databaseAvailable) {
-        // Migrasikan progres lama jika database masih berstatus awal.
-        // Selain itu, sinkronkan hasil hadiah check-in bila baru diberikan.
-        if (migrateLocalProgress || rewardedForCheckin) {
-          try {
-            await fetch("/api/momo", {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                score: loaded.score,
-                energy: loaded.energy,
-                happiness: loaded.happiness,
-                fullness: loaded.fullness,
-                lastCheckin: loaded.lastCheckin,
-              }),
-            });
-          } catch (error) {
-            console.error("Gagal menyinkronkan progres Momo:", error);
-          }
+        if (!cancelled) {
+          console.error("Gagal memuat data Momo:", error);
+          setMessage("Data Momo gagal dimuat. Silakan muat ulang halaman.");
         }
-      }
-
-      if (rewardedForCheckin) {
-        setAction("play");
-        spawn("🎉", 4);
-        setMessage("Hebat! Check-in hari ini selesai! +10 XP 🎉");
-      } else {
-        setMessage(greeting(hours, new Date().getHours(), !localSaved));
       }
     }
 
@@ -264,9 +519,9 @@ export default function MomoPet() {
     };
   }, [spawn]);
 
-  /* ---------- simpan lokal dan sinkronkan database ---------- */
+  /* ---------- simpan seluruh data Momo ke database ---------- */
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || !userId || resettingRef.current) return;
 
     const saved: Saved = {
       ...pet,
@@ -274,36 +529,39 @@ export default function MomoPet() {
     };
 
     petRef.current = saved;
-    saveSaved(saved);
+
+    // Simpan revisi agar timer lama tidak berjalan setelah reset.
+    const revision = saveRevisionRef.current;
 
     const timer = window.setTimeout(() => {
-      void fetch("/api/momo", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          score: saved.score,
-          energy: saved.energy,
-          happiness: saved.happiness,
-          fullness: saved.fullness,
-          lastCheckin: saved.lastCheckin,
-        }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            console.error("Gagal menyimpan status Momo ke database.");
-          }
-        })
-        .catch((error) => {
-          console.error("Gagal menyinkronkan status Momo:", error);
-        });
+      if (autosaveTimerRef.current === timer) {
+        autosaveTimerRef.current = null;
+      }
+
+      if (
+        resettingRef.current ||
+        revision !== saveRevisionRef.current
+      ) {
+        return;
+      }
+
+      void queuePetSave(saved);
     }, 700);
 
-    return () => window.clearTimeout(timer);
-  }, [pet, hydrated]);
+    autosaveTimerRef.current = timer;
 
-  /* ---------- simpan saat tab disembunyikan, hitung waktu ditinggal ---------- */
+    return () => {
+      window.clearTimeout(timer);
+
+      if (autosaveTimerRef.current === timer) {
+        autosaveTimerRef.current = null;
+      }
+    };
+  }, [pet, hydrated, userId, queuePetSave]);
+
+  /* ---------- hitung waktu saat tab tidak aktif ---------- */
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || !userId) return;
 
     let hiddenAt = 0;
 
@@ -311,10 +569,10 @@ export default function MomoPet() {
       if (document.visibilityState === "hidden") {
         hiddenAt = Date.now();
 
-        saveSaved({
-          ...petRef.current,
-          lastSeen: hiddenAt,
-        });
+        // Gunakan antrean yang sama agar tidak bertabrakan dengan reset.
+        if (!resettingRef.current) {
+          void queuePetSave(petRef.current, true);
+        }
       } else if (hiddenAt) {
         const now = Date.now();
 
@@ -324,18 +582,21 @@ export default function MomoPet() {
               ...petRef.current,
               lastSeen: hiddenAt,
             },
-            now,
+            now
           );
 
-          setPet({
+          const resumed: Saved = {
             ...saved,
             lastSeen: now,
-          });
+          };
+
+          petRef.current = resumed;
+          setPet(resumed);
 
           setMessage(
             hours >= 6
               ? "Kamu lama tidak datang... aku kangen! 💗"
-              : "Selamat datang kembali! 👋",
+              : "Selamat datang kembali! 👋"
           );
         }
 
@@ -348,7 +609,7 @@ export default function MomoPet() {
     return () => {
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [hydrated]);
+  }, [hydrated, userId, queuePetSave]);
 
   /* ---------- reset action ---------- */
   useEffect(() => {
@@ -631,8 +892,9 @@ export default function MomoPet() {
         setPet((p) => ({
           ...p,
           happiness: clamp(p.happiness + 3),
-          score: p.score + 1,
         }));
+
+        void awardXp("creeper");
       }
 
       if (next.x < -16 || next.x > 116) {
@@ -646,7 +908,7 @@ export default function MomoPet() {
     }, 120);
 
     return () => window.clearInterval(timer);
-  }, [hasCreeper, visible]);
+  }, [hasCreeper, visible, awardXp]);
 
   /* ---------- XP orb: muncul acak, hilang sendiri ---------- */
   useEffect(() => {
@@ -676,15 +938,16 @@ export default function MomoPet() {
   /* ---------- aksi elus Momo ---------- */
   function petMomo() {
     if (sleeping) {
-      say("Zzz... (Momo masih tidur)");
+      say(`Zzz... (${displayName} masih tidur)`);
       return;
     }
 
     setPet((p) => ({
       ...p,
       happiness: clamp(p.happiness + 8),
-      score: p.score + 1,
     }));
+
+    void awardXp("pet");
 
     setAction("happy");
     spawn("💗");
@@ -694,7 +957,7 @@ export default function MomoPet() {
   /* ---------- aksi memberi makan ---------- */
   function feedMomo() {
     if (sleeping) {
-      say("Zzz... (Momo masih tidur)");
+      say(`Zzz... (${displayName} masih tidur)`);
       return;
     }
 
@@ -708,8 +971,9 @@ export default function MomoPet() {
       ...p,
       fullness: clamp(p.fullness + 15),
       energy: clamp(p.energy + 10),
-      score: p.score + 2,
     }));
+
+    void awardXp("feed");
 
     setAction("eat");
     setFishKey((key) => key + 1);
@@ -726,7 +990,7 @@ export default function MomoPet() {
   /* ---------- aksi bermain dengan Momo ---------- */
   function playWithMomo() {
     if (sleeping) {
-      say("Zzz... (Momo masih tidur)");
+      say(`Zzz... (${displayName} masih tidur)`);
       return;
     }
 
@@ -740,8 +1004,9 @@ export default function MomoPet() {
       happiness: clamp(p.happiness + 12),
       energy: clamp(p.energy - 15),
       fullness: clamp(p.fullness - 5),
-      score: p.score + 5,
     }));
+
+    void awardXp("play");
 
     setAction("play");
     spawn("✨", 4);
@@ -754,9 +1019,10 @@ export default function MomoPet() {
 
     setPet((p) => ({
       ...p,
-      score: p.score + 2,
       happiness: clamp(p.happiness + 1),
     }));
+
+    void awardXp("orb");
 
     const id = ++burstId.current;
 
@@ -774,46 +1040,147 @@ export default function MomoPet() {
     }, 900);
   }
 
-  /* ---------- reset progres ---------- */
-  function resetAll() {
-    clearSaved();
-    localStorage.removeItem("momo:pending-checkin");
+  /* ---------- reset progres Momo di database ---------- */
+  async function resetAll() {
+    if (!userId || resettingRef.current) return;
 
-    const fresh: Saved = {
-      ...DEFAULT_SAVED,
-      lastSeen: Date.now(),
-    };
+    resettingRef.current = true;
+    scoreRevisionRef.current += 1;
 
-    prevLevel.current = 1;
-    wasSleeping.current = false;
-    petRef.current = fresh;
+    // Batalkan autosave yang belum sempat dikirim.
+    saveRevisionRef.current += 1;
 
-    setPet(fresh);
-    setConfirmReset(false);
-    setSettingsOpen(false);
-    setX(50);
-    setMessage("Halo lagi! Aku Momo. Senang bertemu denganmu! ✨");
+    if (autosaveTimerRef.current !== null) {
+      window.clearTimeout(autosaveTimerRef.current);
+      autosaveTimerRef.current = null;
+    }
 
-    // Sinkronkan status awal Momo ke database.
-    void fetch("/api/momo", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        score: 0,
-        energy: 100,
-        happiness: 70,
-        fullness: 65,
-        lastCheckin: "",
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          console.error("Gagal mereset data Momo di database.");
+    try {
+      // Selesaikan penyimpanan lama sebelum reset database.
+      await saveChainRef.current;
+
+      // Selesaikan XP yang sudah dikirim sebelum reset database.
+      await Promise.all(Array.from(pendingXpRef.current));
+
+      type ResetApiResult = {
+        success?: boolean;
+        message?: string;
+        data?: {
+          version?: number;
+          name?: string;
+          animations?: boolean;
+          autoMove?: boolean;
+          chase?: boolean;
+          lastCheckin?: string;
+          lastSeen?: number;
+        };
+      };
+
+      async function sendResetRequest(expectedVersion: number) {
+        const response = await fetch("/api/momo/reset", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ expectedVersion }),
+        });
+
+        const result = (await response.json()) as ResetApiResult;
+        return { response, result };
+      }
+
+      let { response, result } = await sendResetRequest(
+        dbVersionRef.current
+      );
+
+      // Jika versi kedaluwarsa, ambil versi database terbaru.
+      // Reset dicoba ulang maksimal satu kali.
+      if (response.status === 409) {
+        const latestResponse = await fetch("/api/momo", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        const latestResult = (await latestResponse.json()) as {
+          success?: boolean;
+          data?: {
+            version?: unknown;
+          };
+        };
+
+        if (
+          !latestResponse.ok ||
+          !latestResult.success ||
+          typeof latestResult.data?.version !== "number" ||
+          !Number.isSafeInteger(latestResult.data.version)
+        ) {
+          throw new Error(
+            "Gagal mengambil versi Momo terbaru. Muat ulang halaman."
+          );
         }
-      })
-      .catch((error) => {
-        console.error("Gagal mengirim reset Momo:", error);
-      });
+
+        dbVersionRef.current = latestResult.data.version;
+
+        ({ response, result } = await sendResetRequest(
+          dbVersionRef.current
+        ));
+      }
+
+      // Jangan memaksakan reset jika konflik terjadi kembali.
+      if (response.status === 409) {
+        versionConflictRef.current = true;
+        setMessage(
+          "Data Momo masih berubah di perangkat lain. Muat ulang halaman sebelum reset."
+        );
+        return;
+      }
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message ?? "Reset Momo gagal.");
+      }
+
+      const fresh: Saved = {
+        ...DEFAULT_SAVED,
+        version: typeof result.data?.version === "number"
+          ? result.data.version
+          : dbVersionRef.current,
+        name: typeof result.data?.name === "string"
+          ? result.data.name
+          : petRef.current.name,
+        animations: typeof result.data?.animations === "boolean"
+          ? result.data.animations
+          : petRef.current.animations,
+        autoMove: typeof result.data?.autoMove === "boolean"
+          ? result.data.autoMove
+          : petRef.current.autoMove,
+        chase: typeof result.data?.chase === "boolean"
+          ? result.data.chase
+          : petRef.current.chase,
+        lastCheckin:
+          typeof result.data?.lastCheckin === "string"
+            ? result.data.lastCheckin
+            : petRef.current.lastCheckin,
+        lastSeen:
+          typeof result.data?.lastSeen === "number"
+            ? result.data.lastSeen
+            : Date.now(),
+      };
+
+      dbVersionRef.current = fresh.version;
+      versionConflictRef.current = false;
+      prevLevel.current = 1;
+      wasSleeping.current = false;
+      petRef.current = fresh;
+
+      setPet(fresh);
+      setConfirmReset(false);
+      setSettingsOpen(false);
+      setX(50);
+      setMessage(`Halo lagi! Aku ${fresh.name}. Senang bertemu denganmu! ✨`);
+    } catch (error) {
+      console.warn("Gagal mereset Momo:", error);
+      setMessage("Reset Momo gagal disimpan. Silakan coba lagi.");
+    } finally {
+      resettingRef.current = false;
+    }
   }
   /* ---------- drag Momo ---------- */
   function onPointerDown(e: React.PointerEvent<HTMLButtonElement>) {
@@ -867,6 +1234,16 @@ export default function MomoPet() {
       say("Wuuush! Seru! 🎈");
     } else {
       petMomo();
+    }
+  }
+
+  function onPointerCancel(e: React.PointerEvent<HTMLButtonElement>) {
+    dragRef.current.active = false;
+    dragRef.current.moved = false;
+    setDragging(false);
+
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
     }
   }
 
@@ -965,7 +1342,7 @@ export default function MomoPet() {
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
-            onPointerCancel={onPointerUp}
+            onPointerCancel={onPointerCancel}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
@@ -1012,7 +1389,7 @@ export default function MomoPet() {
           <button
             type="button"
             className="momo-gear"
-            aria-label="Pengaturan Momo"
+            aria-label={`Pengaturan ${displayName}`}
             aria-expanded={settingsOpen}
             onClick={() => {
               setSettingsOpen((value) => !value);
@@ -1050,7 +1427,7 @@ export default function MomoPet() {
         {settingsOpen ? (
           <div className="momo-settings">
             <label className="momo-field">
-              <span>Nama</span>
+              <span>Nama hewan peliharaan</span>
 
               <input
                 type="text"
@@ -1089,7 +1466,7 @@ export default function MomoPet() {
                     }));
                   }}
                 />
-                Animasi Momo
+                Animasi {displayName}
               </label>
 
               <label>

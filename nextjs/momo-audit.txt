@@ -1,0 +1,3138 @@
+
+================================================================================
+FILE: src/components/pet/MomoPet.tsx
+================================================================================
+
+"use client";
+
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import "./momo-pet.css";
+import { CatSprite, CreeperSprite, type EyeState } from "./MomoSprites";
+import { useWorld, type Phase, type Weather } from "./momo-world";
+import {
+  ACCESSORIES,
+  DEFAULT_SAVED,
+  SKINS,
+  applyOffline,
+  clamp,
+  greeting,
+  levelProgress,
+  unlocksAt,
+  type Saved,
+} from "./momo-data";
+
+type Action = "idle" | "happy" | "eat" | "play" | "puff";
+type Particle = { id: number; emoji: string; dx: number };
+type Orb = { id: number; x: number; y: number; born: number };
+type Burst = { id: number; x: number; y: number };
+type Creeper = { x: number; dir: 1 | -1; fleeing: boolean };
+
+const MIN_X = 18;
+const MAX_X = 82;
+
+const FEED_LINES = [
+  "Nyam nyam! Ikannya enak! 🐟",
+  "Ikan mentah favoritku! 🐟",
+  "Terima kasih! Perutku hangat 💗",
+];
+
+/* Apakah tab sedang terlihat (timer dijeda kalau tersembunyi) */
+function subscribeVisibility(cb: () => void) {
+  document.addEventListener("visibilitychange", cb);
+  return () => document.removeEventListener("visibilitychange", cb);
+}
+
+function usePageVisible() {
+  return useSyncExternalStore(
+    subscribeVisibility,
+    () => document.visibilityState !== "hidden",
+    () => true,
+  );
+}
+
+export default function MomoPet() {
+  const world = useWorld();
+  const visible = usePageVisible();
+
+  /* ---------- data utama (tersimpan) ---------- */
+  const [pet, setPet] = useState<Saved>(DEFAULT_SAVED);
+  const [hydrated, setHydrated] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [mobileCollapsed, setMobileCollapsed] = useState(true);
+  const [confirmReset, setConfirmReset] = useState(false);
+
+  /* ---------- state sementara ---------- */
+  const [message, setMessage] = useState<string | null>(null);
+  const [action, setAction] = useState<Action>("idle");
+  const [x, setX] = useState(50);
+  const [facing, setFacing] = useState<1 | -1>(1);
+  const [walking, setWalking] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const [bursts, setBursts] = useState<Burst[]>([]);
+  const [orbs, setOrbs] = useState<Orb[]>([]);
+  const [creeper, setCreeper] = useState<Creeper | null>(null);
+  const [fishKey, setFishKey] = useState(0);
+
+  /* ---------- refs ---------- */
+  const stageRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef({
+    active: false,
+    moved: false,
+    startX: 0,
+  });
+  const petRef = useRef(pet);
+  const xRef = useRef(50);
+  const cursorRef = useRef<{ x: number; t: number } | null>(null);
+  const creeperRef = useRef<Creeper | null>(null);
+  const walkTimer = useRef<number | null>(null);
+  const fishTimer = useRef<number | null>(null);
+  const particleId = useRef(0);
+  const orbId = useRef(0);
+  const burstId = useRef(0);
+  const wasSleeping = useRef(false);
+  const prevLevel = useRef(1);
+  const prevWeather = useRef<Weather>("clear");
+  const prevPhase = useRef<Phase>("day");
+  const worldInit = useRef(false);
+  const pendingXpRef = useRef<Set<Promise<void>>>(new Set());
+  const scoreRevisionRef = useRef(0);
+  const resettingRef = useRef(false);
+
+  useEffect(() => {
+    petRef.current = pet;
+  }, [pet]);
+
+  useEffect(() => {
+    xRef.current = x;
+  }, [x]);
+
+  const { level, pct } = levelProgress(pet.score);
+  const sleeping = pet.asleep;
+  const skin = SKINS.find((s) => s.id === pet.skin) ?? SKINS[0];
+  const displayName = pet.name.trim() || "Momo";
+  const eyes: EyeState = sleeping
+    ? "sleep"
+    : action === "happy" || action === "play"
+      ? "happy"
+      : "open";
+
+  /* ---------- helpers ---------- */
+  const say = useCallback((text: string) => setMessage(text), []);
+
+  const awardXp = useCallback((
+    activity: "creeper" | "pet" | "feed" | "play" | "orb"
+  ): Promise<void> => {
+    if (resettingRef.current) {
+      return Promise.resolve();
+    }
+
+    const revision = scoreRevisionRef.current;
+    const requestId = crypto.randomUUID();
+
+    const request = (async () => {
+      try {
+        const response = await fetch("/api/momo/xp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: activity,
+            requestId,
+          }),
+        });
+
+        const result = (await response.json()) as {
+          success?: boolean;
+          message?: string;
+          data?: {
+            score?: number;
+            awarded?: boolean;
+          };
+        };
+
+        if (
+          !response.ok ||
+          !result.success ||
+          typeof result.data?.score !== "number"
+        ) {
+          throw new Error(result.message ?? "Gagal menyimpan XP Momo.");
+        }
+
+        const serverScore = result.data.score;
+
+        if (revision === scoreRevisionRef.current) {
+          setPet((current) => ({
+            ...current,
+            score: Math.max(current.score, serverScore),
+          }));
+        }
+      } catch (error) {
+        console.error("Gagal menambahkan XP Momo:", error);
+
+        if (revision === scoreRevisionRef.current) {
+          setMessage("XP Momo gagal disimpan. Periksa koneksi internet.");
+        }
+      }
+    })();
+
+    pendingXpRef.current.add(request);
+
+    void request.finally(() => {
+      pendingXpRef.current.delete(request);
+    });
+
+    return request;
+  }, []);
+
+  const spawn = useCallback((emoji: string, count = 3) => {
+    const items: Particle[] = Array.from({ length: count }, () => ({
+      id: ++particleId.current,
+      emoji,
+      dx: Math.round(Math.random() * 60 - 30),
+    }));
+
+    setParticles((p) => [...p, ...items]);
+
+    window.setTimeout(() => {
+      setParticles((p) => p.filter((i) => !items.some((n) => n.id === i.id)));
+    }, 1200);
+  }, []);
+
+  const moveTo = useCallback((target: number) => {
+    setFacing(target > xRef.current ? 1 : -1);
+    setWalking(true);
+    setX(target);
+
+    if (walkTimer.current) {
+      window.clearTimeout(walkTimer.current);
+    }
+
+    walkTimer.current = window.setTimeout(() => setWalking(false), 1700);
+  }, []);
+
+  /* ---------- muat data Momo dari database ---------- */
+  useEffect(() => {
+    let cancelled = false;
+
+    async function initializePet() {
+      try {
+        const response = await fetch("/api/momo", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error(`Gagal memuat Momo: HTTP ${response.status}`);
+        }
+
+        const result = (await response.json()) as {
+          success?: boolean;
+          isNew?: boolean;
+          userId?: string;
+          data?: {
+            name?: unknown;
+            score?: unknown;
+            energy?: unknown;
+            happiness?: unknown;
+            fullness?: unknown;
+            asleep?: unknown;
+            skin?: unknown;
+            accessory?: unknown;
+            animations?: unknown;
+            autoMove?: unknown;
+            chase?: unknown;
+            lastSeen?: unknown;
+            lastCheckin?: unknown;
+          };
+        };
+
+        if (
+          !result.success ||
+          !result.data ||
+          typeof result.userId !== "string" ||
+          !result.userId
+        ) {
+          throw new Error("Identitas pengguna atau data Momo tidak valid.");
+        }
+
+        if (cancelled) return;
+
+        const activeUserId = result.userId;
+        const remote = result.data;
+        const now = Date.now();
+
+        const safeNumber = (value: unknown, fallback: number) =>
+          typeof value === "number" && Number.isFinite(value)
+            ? value
+            : fallback;
+
+        const databaseSaved: Saved = {
+          ...DEFAULT_SAVED,
+          name:
+            typeof remote.name === "string" && remote.name.trim()
+              ? remote.name.trim().slice(0, 12)
+              : DEFAULT_SAVED.name,
+          score: Math.max(
+            0,
+            Math.min(1_000_000, Math.floor(safeNumber(remote.score, 0)))
+          ),
+          energy: clamp(safeNumber(remote.energy, DEFAULT_SAVED.energy)),
+          happiness: clamp(
+            safeNumber(remote.happiness, DEFAULT_SAVED.happiness)
+          ),
+          fullness: clamp(
+            safeNumber(remote.fullness, DEFAULT_SAVED.fullness)
+          ),
+          asleep:
+            typeof remote.asleep === "boolean"
+              ? remote.asleep
+              : DEFAULT_SAVED.asleep,
+          skin: SKINS.some((item) => item.id === remote.skin)
+            ? (remote.skin as Saved["skin"])
+            : DEFAULT_SAVED.skin,
+          accessory: ACCESSORIES.some(
+            (item) => item.id === remote.accessory
+          )
+            ? (remote.accessory as Saved["accessory"])
+            : DEFAULT_SAVED.accessory,
+          animations:
+            typeof remote.animations === "boolean"
+              ? remote.animations
+              : DEFAULT_SAVED.animations,
+          autoMove:
+            typeof remote.autoMove === "boolean"
+              ? remote.autoMove
+              : DEFAULT_SAVED.autoMove,
+          chase:
+            typeof remote.chase === "boolean"
+              ? remote.chase
+              : DEFAULT_SAVED.chase,
+          lastSeen: safeNumber(remote.lastSeen, now),
+          lastCheckin:
+            typeof remote.lastCheckin === "string"
+              ? remote.lastCheckin
+              : "",
+        };
+
+        // Terapkan penurunan stat berdasarkan waktu terakhir tersimpan di DB.
+        const offline = applyOffline(databaseSaved, now);
+        const loaded: Saved = {
+          ...offline.saved,
+          lastSeen: now,
+        };
+
+        const currentLevel = levelProgress(loaded.score).level;
+        const selectedSkin = SKINS.find((item) => item.id === loaded.skin);
+        const selectedAccessory = ACCESSORIES.find(
+          (item) => item.id === loaded.accessory
+        );
+
+        if (!selectedSkin || selectedSkin.level > currentLevel) {
+          loaded.skin = "salju";
+        }
+
+        if (
+          !selectedAccessory ||
+          selectedAccessory.level > currentLevel
+        ) {
+          loaded.accessory = "none";
+        }
+
+        if (cancelled) return;
+
+        setUserId(activeUserId);
+        prevLevel.current = levelProgress(loaded.score).level;
+        wasSleeping.current = loaded.asleep;
+        petRef.current = loaded;
+
+        setPet(loaded);
+        setHydrated(true);
+
+        setMessage(
+          greeting(
+            offline.hours,
+            new Date().getHours(),
+            Boolean(result.isNew),
+            loaded.name,
+          )
+        );
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Gagal memuat data Momo:", error);
+          setMessage("Data Momo gagal dimuat. Silakan muat ulang halaman.");
+        }
+      }
+    }
+
+    void initializePet();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [spawn]);
+
+  /* ---------- simpan seluruh data Momo ke database ---------- */
+  useEffect(() => {
+    if (!hydrated || !userId) return;
+
+    const saved: Saved = {
+      ...pet,
+      lastSeen: Date.now(),
+    };
+
+    petRef.current = saved;
+
+    const timer = window.setTimeout(() => {
+      void fetch("/api/momo", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: saved.name,
+          energy: saved.energy,
+          happiness: saved.happiness,
+          fullness: saved.fullness,
+          asleep: saved.asleep,
+          skin: saved.skin,
+          accessory: saved.accessory,
+          animations: saved.animations,
+          autoMove: saved.autoMove,
+          chase: saved.chase,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            console.error("Gagal menyimpan data Momo ke database.");
+          }
+        })
+        .catch((error) => {
+          console.error("Gagal menyinkronkan data Momo:", error);
+        });
+    }, 700);
+
+    return () => window.clearTimeout(timer);
+  }, [pet, hydrated, userId]);
+
+  /* ---------- hitung waktu saat tab tidak aktif ---------- */
+  useEffect(() => {
+    if (!hydrated || !userId) return;
+
+    let hiddenAt = 0;
+
+    function onVisibility() {
+      if (document.visibilityState === "hidden") {
+        hiddenAt = Date.now();
+
+        // Kirim status terakhir langsung ke database saat tab disembunyikan.
+        const saved = petRef.current;
+
+        void fetch("/api/momo", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          keepalive: true,
+          body: JSON.stringify({
+            name: saved.name,
+            energy: saved.energy,
+            happiness: saved.happiness,
+            fullness: saved.fullness,
+            asleep: saved.asleep,
+            skin: saved.skin,
+            accessory: saved.accessory,
+            animations: saved.animations,
+            autoMove: saved.autoMove,
+            chase: saved.chase,
+          }),
+        }).catch((error) => {
+          console.error("Gagal menyimpan Momo saat tab disembunyikan:", error);
+        });
+      } else if (hiddenAt) {
+        const now = Date.now();
+
+        if (now - hiddenAt > 5 * 60_000) {
+          const { saved, hours } = applyOffline(
+            {
+              ...petRef.current,
+              lastSeen: hiddenAt,
+            },
+            now
+          );
+
+          const resumed: Saved = {
+            ...saved,
+            lastSeen: now,
+          };
+
+          petRef.current = resumed;
+          setPet(resumed);
+
+          setMessage(
+            hours >= 6
+              ? "Kamu lama tidak datang... aku kangen! 💗"
+              : "Selamat datang kembali! 👋"
+          );
+        }
+
+        hiddenAt = 0;
+      }
+    }
+
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [hydrated, userId]);
+
+  /* ---------- reset action ---------- */
+  useEffect(() => {
+    if (action === "idle") return;
+
+    const timer = window.setTimeout(
+      () => setAction("idle"),
+      action === "puff" ? 1300 : 1000,
+    );
+
+    return () => window.clearTimeout(timer);
+  }, [action]);
+
+  /* ---------- sembunyikan bubble ---------- */
+  useEffect(() => {
+    if (!message) return;
+
+    const timer = window.setTimeout(() => setMessage(null), 4500);
+
+    return () => window.clearTimeout(timer);
+  }, [message]);
+
+  /* ---------- stat turun pelan setiap 30 detik ---------- */
+  useEffect(() => {
+    if (!hydrated || !visible) return;
+
+    const weather = world.weather;
+
+    const timer = window.setInterval(() => {
+      const now = Date.now();
+
+      setPet((p) => {
+        const energy = p.asleep ? clamp(p.energy + 50) : clamp(p.energy - 1);
+
+        const asleep = p.asleep ? energy < 50 : energy < 20;
+
+        const moodShift = weather === "rain" ? -2 : weather === "snow" ? 0 : -1;
+
+        return {
+          ...p,
+          fullness: clamp(p.fullness - 1),
+          happiness: clamp(p.happiness + moodShift),
+          energy,
+          asleep,
+          lastSeen: now,
+        };
+      });
+    }, 30_000);
+
+    return () => window.clearInterval(timer);
+  }, [hydrated, visible, world.weather]);
+
+  /* ---------- pesan tidur / bangun ---------- */
+  useEffect(() => {
+    if (!hydrated) return;
+
+    const previousSleeping = wasSleeping.current;
+    wasSleeping.current = sleeping;
+
+    if (previousSleeping === sleeping) return;
+
+    const timer = window.setTimeout(
+      () =>
+        say(
+          sleeping
+            ? "Zzz... aku ngantuk 😴"
+            : "Hoaam... aku sudah segar lagi! ☀️",
+        ),
+      0,
+    );
+
+    return () => window.clearTimeout(timer);
+  }, [sleeping, hydrated, say]);
+
+  /* ---------- pesan saat cuaca / malam berubah ---------- */
+  useEffect(() => {
+    if (!hydrated) return;
+
+    if (!worldInit.current) {
+      worldInit.current = true;
+      prevWeather.current = world.weather;
+      prevPhase.current = world.phase;
+      return;
+    }
+
+    const previousWeather = prevWeather.current;
+    const previousPhase = prevPhase.current;
+
+    prevWeather.current = world.weather;
+    prevPhase.current = world.phase;
+
+    let text: string | null = null;
+
+    if (world.weather !== previousWeather) {
+      text =
+        world.weather === "rain"
+          ? "Hujan turun... 🌧️ aku jadi agak murung"
+          : world.weather === "snow"
+            ? "Salju! ❄️ Dingin tapi seru!"
+            : "Cuacanya cerah lagi! ☀️";
+    } else if (world.phase !== previousPhase && world.phase === "night") {
+      text = "Sudah malam. Bintangnya cantik ya ✨";
+    }
+
+    if (!text) return;
+
+    const nextMessage = text;
+    const timer = window.setTimeout(() => say(nextMessage), 0);
+
+    return () => window.clearTimeout(timer);
+  }, [hydrated, world.weather, world.phase, say]);
+
+  /* ---------- pengingat istirahat larut malam ---------- */
+  useEffect(() => {
+    if (!hydrated || !visible) return;
+
+    const timer = window.setInterval(() => {
+      const hour = new Date().getHours();
+
+      if ((hour >= 23 || hour < 4) && !petRef.current.asleep) {
+        setMessage("Sudah larut... istirahat dulu ya, besok lanjut lagi 🌙");
+      }
+    }, 15 * 60_000);
+
+    return () => window.clearInterval(timer);
+  }, [hydrated, visible]);
+
+  /* ---------- level naik ---------- */
+  useEffect(() => {
+    if (!hydrated) return;
+
+    if (level <= prevLevel.current) {
+      prevLevel.current = level;
+      return;
+    }
+
+    prevLevel.current = level;
+    const items = unlocksAt(level);
+
+    const timer = window.setTimeout(() => {
+      setAction("play");
+      spawn("⭐", 5);
+
+      say(
+        `Level ${level}! ${
+          items.length ? `Baru: ${items.join(", ")} 🎁` : "🎉"
+        }`,
+      );
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [level, hydrated, say, spawn]);
+
+  /* ---------- lacak posisi kursor di sekitar area Momo ---------- */
+  useEffect(() => {
+    function onMove(e: PointerEvent) {
+      const el = stageRef.current;
+      if (!el) return;
+
+      const rect = el.getBoundingClientRect();
+
+      if (
+        e.clientY < rect.top - 60 ||
+        e.clientY > rect.bottom + 60 ||
+        e.clientX < rect.left - 60 ||
+        e.clientX > rect.right + 60
+      ) {
+        cursorRef.current = null;
+        return;
+      }
+
+      cursorRef.current = {
+        x: clamp(((e.clientX - rect.left) / rect.width) * 100, MIN_X, MAX_X),
+        t: performance.now(),
+      };
+    }
+
+    window.addEventListener("pointermove", onMove, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+    };
+  }, []);
+
+  /* ---------- jalan sendiri / mengejar kursor ---------- */
+  useEffect(() => {
+    if (!hydrated || !visible || pet.asleep || !pet.autoMove) {
+      return;
+    }
+
+    const chase = pet.chase;
+
+    const timer = window.setInterval(() => {
+      if (dragRef.current.active) return;
+
+      const cursor = cursorRef.current;
+
+      if (chase && cursor && performance.now() - cursor.t < 2500) {
+        if (Math.abs(cursor.x - xRef.current) < 8) {
+          return;
+        }
+
+        const step = Math.max(-24, Math.min(24, cursor.x - xRef.current));
+
+        moveTo(clamp(xRef.current + step, MIN_X, MAX_X));
+
+        return;
+      }
+
+      if (Math.random() < 0.35) return;
+
+      const target = clamp(
+        xRef.current + (Math.random() * 50 - 25),
+        MIN_X,
+        MAX_X,
+      );
+
+      if (Math.abs(target - xRef.current) < 6) return;
+
+      moveTo(target);
+    }, 1500);
+
+    return () => window.clearInterval(timer);
+  }, [hydrated, visible, pet.asleep, pet.autoMove, pet.chase, moveTo]);
+
+  /* ---------- creeper: muncul sesekali ---------- */
+  useEffect(() => {
+    if (!hydrated || !visible) return;
+
+    const timer = window.setInterval(() => {
+      if (creeperRef.current || petRef.current.asleep || Math.random() > 0.35) {
+        return;
+      }
+
+      const fromLeft = Math.random() < 0.5;
+
+      const nextCreeper: Creeper = {
+        x: fromLeft ? -10 : 110,
+        dir: fromLeft ? 1 : -1,
+        fleeing: false,
+      };
+
+      creeperRef.current = nextCreeper;
+      setCreeper(nextCreeper);
+    }, 25_000);
+
+    return () => window.clearInterval(timer);
+  }, [hydrated, visible]);
+
+  const hasCreeper = creeper !== null;
+
+  useEffect(() => {
+    if (!hasCreeper || !visible) return;
+
+    const timer = window.setInterval(() => {
+      const current = creeperRef.current;
+      if (!current) return;
+
+      let next: Creeper = {
+        ...current,
+        x: current.x + current.dir * (current.fleeing ? 2.4 : 0.9),
+      };
+
+      if (
+        !next.fleeing &&
+        !petRef.current.asleep &&
+        Math.abs(next.x - xRef.current) < 20
+      ) {
+        next = {
+          ...next,
+          fleeing: true,
+          dir: next.dir === 1 ? -1 : 1,
+        };
+
+        setAction("puff");
+        setMessage("Hsss! Pergi sana, Creeper! 😾");
+
+        setPet((p) => ({
+          ...p,
+          happiness: clamp(p.happiness + 3),
+        }));
+
+        void awardXp("creeper");
+      }
+
+      if (next.x < -16 || next.x > 116) {
+        creeperRef.current = null;
+        setCreeper(null);
+        return;
+      }
+
+      creeperRef.current = next;
+      setCreeper(next);
+    }, 120);
+
+    return () => window.clearInterval(timer);
+  }, [hasCreeper, visible]);
+
+  /* ---------- XP orb: muncul acak, hilang sendiri ---------- */
+  useEffect(() => {
+    if (!hydrated || !visible) return;
+
+    const timer = window.setInterval(() => {
+      const now = Date.now();
+      const skip = Math.random() > 0.7;
+
+      const fresh: Orb = {
+        id: ++orbId.current,
+        x: MIN_X - 8 + Math.random() * (MAX_X - MIN_X + 16),
+        y: 50 + Math.random() * 100,
+        born: now,
+      };
+
+      setOrbs((previous) => {
+        const alive = previous.filter((orb) => now - orb.born < 12_000);
+
+        return alive.length >= 3 || skip ? alive : [...alive, fresh];
+      });
+    }, 7000);
+
+    return () => window.clearInterval(timer);
+  }, [hydrated, visible]);
+
+  /* ---------- aksi elus Momo ---------- */
+  function petMomo() {
+    if (sleeping) {
+      say(`Zzz... (${displayName} masih tidur`);
+      return;
+    }
+
+    setPet((p) => ({
+      ...p,
+      happiness: clamp(p.happiness + 8),
+    }));
+
+    void awardXp("pet");
+
+    setAction("happy");
+    spawn("💗");
+    say("Meow! Aku suka dielus! 💗");
+  }
+
+  /* ---------- aksi memberi makan ---------- */
+  function feedMomo() {
+    if (sleeping) {
+      say(`Zzz... (${displayName} masih tidur`);
+      return;
+    }
+
+    if (pet.fullness >= 100) {
+      setAction("happy");
+      say("Aku sudah kenyang! 🐟");
+      return;
+    }
+
+    setPet((p) => ({
+      ...p,
+      fullness: clamp(p.fullness + 15),
+      energy: clamp(p.energy + 10),
+    }));
+
+    void awardXp("feed");
+
+    setAction("eat");
+    setFishKey((key) => key + 1);
+
+    if (fishTimer.current) {
+      window.clearTimeout(fishTimer.current);
+    }
+
+    fishTimer.current = window.setTimeout(() => setFishKey(0), 900);
+
+    say(FEED_LINES[Math.floor(Math.random() * FEED_LINES.length)]);
+  }
+
+  /* ---------- aksi bermain dengan Momo ---------- */
+  function playWithMomo() {
+    if (sleeping) {
+      say(`Zzz... (${displayName} masih tidur`);
+      return;
+    }
+
+    if (pet.energy < 15) {
+      say("Aku capek. Istirahat dulu, ya!");
+      return;
+    }
+
+    setPet((p) => ({
+      ...p,
+      happiness: clamp(p.happiness + 12),
+      energy: clamp(p.energy - 15),
+      fullness: clamp(p.fullness - 5),
+    }));
+
+    void awardXp("play");
+
+    setAction("play");
+    spawn("✨", 4);
+    say("Yeay! Main lagi! ✨");
+  }
+
+  /* ---------- kumpulkan XP orb ---------- */
+  function collectOrb(orb: Orb) {
+    setOrbs((previous) => previous.filter((item) => item.id !== orb.id));
+
+    setPet((p) => ({
+      ...p,
+      happiness: clamp(p.happiness + 1),
+    }));
+
+    void awardXp("orb");
+
+    const id = ++burstId.current;
+
+    setBursts((previous) => [
+      ...previous,
+      {
+        id,
+        x: orb.x,
+        y: orb.y,
+      },
+    ]);
+
+    window.setTimeout(() => {
+      setBursts((previous) => previous.filter((item) => item.id !== id));
+    }, 900);
+  }
+
+  /* ---------- reset progres Momo di database ---------- */
+  async function resetAll() {
+    if (!userId || resettingRef.current) return;
+
+    resettingRef.current = true;
+    scoreRevisionRef.current += 1;
+
+    try {
+      // Selesaikan XP yang sudah dikirim sebelum reset database.
+      await Promise.all(Array.from(pendingXpRef.current));
+
+      const response = await fetch("/api/momo/reset", {
+        method: "POST",
+      });
+
+      const result = (await response.json()) as {
+        success?: boolean;
+        message?: string;
+        data?: {
+          lastCheckin?: string;
+          lastSeen?: number;
+        };
+      };
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message ?? "Reset Momo gagal.");
+      }
+
+      const fresh: Saved = {
+        ...DEFAULT_SAVED,
+        lastCheckin:
+          typeof result.data?.lastCheckin === "string"
+            ? result.data.lastCheckin
+            : petRef.current.lastCheckin,
+        lastSeen:
+          typeof result.data?.lastSeen === "number"
+            ? result.data.lastSeen
+            : Date.now(),
+      };
+
+      prevLevel.current = 1;
+      wasSleeping.current = false;
+      petRef.current = fresh;
+
+      setPet(fresh);
+      setConfirmReset(false);
+      setSettingsOpen(false);
+      setX(50);
+      setMessage("Halo lagi! Aku Momo. Senang bertemu denganmu! ✨");
+    } catch (error) {
+      console.error("Gagal mereset Momo:", error);
+      setMessage("Reset Momo gagal disimpan. Silakan coba lagi.");
+    } finally {
+      resettingRef.current = false;
+    }
+  }
+  /* ---------- drag Momo ---------- */
+  function onPointerDown(e: React.PointerEvent<HTMLButtonElement>) {
+    dragRef.current = {
+      active: true,
+      moved: false,
+      startX: e.clientX,
+    };
+
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }
+
+  function onPointerMove(e: React.PointerEvent<HTMLButtonElement>) {
+    if (!dragRef.current.active || !stageRef.current) {
+      return;
+    }
+
+    if (
+      !dragRef.current.moved &&
+      Math.abs(e.clientX - dragRef.current.startX) > 5
+    ) {
+      dragRef.current.moved = true;
+      setDragging(true);
+      setWalking(false);
+    }
+
+    if (!dragRef.current.moved) return;
+
+    const rect = stageRef.current.getBoundingClientRect();
+
+    const next = clamp(
+      ((e.clientX - rect.left) / rect.width) * 100,
+      MIN_X,
+      MAX_X,
+    );
+
+    setFacing(next > xRef.current ? 1 : -1);
+    setX(next);
+  }
+
+  function onPointerUp(e: React.PointerEvent<HTMLButtonElement>) {
+    const wasMoved = dragRef.current.moved;
+    dragRef.current.active = false;
+
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+
+    if (wasMoved) {
+      setDragging(false);
+      say("Wuuush! Seru! 🎈");
+    } else {
+      petMomo();
+    }
+  }
+
+  const cls = [
+    "momo-character",
+    action,
+    walking ? "walking" : "",
+    sleeping ? "sleeping" : "",
+    dragging ? "dragging" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <aside
+      className={`momo-pet ${pet.animations ? "" : "no-anim"}`}
+      aria-label={`Pet virtual ${displayName}`}
+    >
+      <span className="momo-sr" role="status" aria-live="polite">
+        {message ?? ""}
+      </span>
+
+      <div className="momo-garden" ref={stageRef}>
+        {creeper && (
+          <div
+            className={`momo-creeper ${creeper.fleeing ? "is-fleeing" : ""}`}
+            style={{ left: `${creeper.x}%` }}
+          >
+            <CreeperSprite />
+          </div>
+        )}
+
+        {orbs.map((orb) => (
+          <button
+            key={orb.id}
+            type="button"
+            className="momo-orb"
+            aria-label="Ambil XP orb"
+            style={{
+              left: `${orb.x}%`,
+              bottom: `calc(var(--momo-floor) + ${orb.y}px)`,
+            }}
+            onClick={() => collectOrb(orb)}
+          />
+        ))}
+
+        {bursts.map((burst) => (
+          <span
+            key={burst.id}
+            className="momo-burst"
+            style={{
+              left: `${burst.x}%`,
+              bottom: `calc(var(--momo-floor) + ${burst.y}px)`,
+            }}
+          >
+            +2 XP
+          </span>
+        ))}
+
+        <div
+          className={`momo-walker ${dragging ? "is-dragging" : ""}`}
+          style={{ left: `${x}%` }}
+        >
+          {message && (
+            <div className="momo-bubble" key={message} aria-hidden="true">
+              {message}
+            </div>
+          )}
+
+          {particles.map((particle) => (
+            <span
+              key={particle.id}
+              className="momo-particle"
+              style={{
+                ["--dx" as string]: `${particle.dx}px`,
+              }}
+            >
+              {particle.emoji}
+            </span>
+          ))}
+
+          {fishKey > 0 && (
+            <span key={fishKey} className="momo-fish">
+              🐟
+            </span>
+          )}
+
+          {sleeping && <span className="momo-zzz">Zzz</span>}
+
+          <span className="momo-ground" />
+
+          <button
+            type="button"
+            className={cls}
+            aria-label={`Elus ${displayName} (tahan dan geser untuk memindahkan)`}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerCancel={onPointerUp}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                petMomo();
+              }
+            }}
+          >
+            <span
+              className="momo-flip"
+              style={{ transform: `scaleX(${facing})` }}
+            >
+              <CatSprite
+                eyes={eyes}
+                eating={action === "eat"}
+                skin={skin}
+                accessory={pet.accessory}
+              />
+            </span>
+          </button>
+        </div>
+      </div>
+      <button
+        type="button"
+        className="momo-mobile-toggle"
+        aria-expanded={!mobileCollapsed}
+        aria-controls="momo-mobile-panel"
+        onClick={() => setMobileCollapsed((value) => !value)}
+      >
+        <span>🐱 {displayName}</span>
+        <span>{mobileCollapsed ? "Buka panel ＋" : "Tutup panel −"}</span>
+      </button>
+
+      <div
+        id="momo-mobile-panel"
+        className={`momo-panel ${mobileCollapsed ? "momo-mobile-collapsed" : ""}`}
+      >
+        <header className="momo-heading">
+          <span className="momo-heading-icon">🌿</span>
+
+          <strong>{displayName}</strong>
+
+          <span className="momo-level">Lv. {level}</span>
+
+          <button
+            type="button"
+            className="momo-gear"
+            aria-label={`Pengaturan ${displayName}`}
+            aria-expanded={settingsOpen}
+            onClick={() => {
+              setSettingsOpen((value) => !value);
+              setConfirmReset(false);
+            }}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
+            </svg>
+          </button>
+        </header>
+
+        <div
+          className="momo-xp"
+          role="progressbar"
+          aria-label="Progres menuju level berikutnya"
+          aria-valuenow={pct}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        >
+          <span style={{ width: `${pct}%` }} />
+        </div>
+
+        {settingsOpen ? (
+          <div className="momo-settings">
+            <label className="momo-field">
+              <span>Nama</span>
+
+              <input
+                type="text"
+                value={pet.name}
+                maxLength={12}
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  setPet((p) => ({
+                    ...p,
+                    name: value,
+                  }));
+                }}
+                onBlur={() => {
+                  if (!pet.name.trim()) {
+                    setPet((p) => ({
+                      ...p,
+                      name: "Momo",
+                    }));
+                  }
+                }}
+              />
+            </label>
+
+            <div className="momo-toggles">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={pet.animations}
+                  onChange={(e) => {
+                    const value = e.target.checked;
+
+                    setPet((p) => ({
+                      ...p,
+                      animations: value,
+                    }));
+                  }}
+                />
+                Animasi {displayName}
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  checked={pet.autoMove}
+                  onChange={(e) => {
+                    const value = e.target.checked;
+
+                    setPet((p) => ({
+                      ...p,
+                      autoMove: value,
+                    }));
+                  }}
+                />
+                Jalan sendiri
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  checked={pet.chase}
+                  onChange={(e) => {
+                    const value = e.target.checked;
+
+                    setPet((p) => ({
+                      ...p,
+                      chase: value,
+                    }));
+                  }}
+                />
+                Kejar kursor
+              </label>
+            </div>
+
+            <fieldset className="momo-group">
+              <legend>Warna bulu</legend>
+
+              <div className="momo-choices">
+                {SKINS.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="momo-choice"
+                    aria-pressed={pet.skin === item.id}
+                    disabled={level < item.level}
+                    onClick={() => {
+                      setPet((p) => ({
+                        ...p,
+                        skin: item.id,
+                      }));
+                    }}
+                  >
+                    <i
+                      style={{
+                        background: item.swatch,
+                      }}
+                    />
+
+                    {item.label}
+
+                    {level < item.level ? ` · Lv.${item.level}` : ""}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset className="momo-group">
+              <legend>Aksesori</legend>
+
+              <div className="momo-choices">
+                {ACCESSORIES.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="momo-choice"
+                    aria-pressed={pet.accessory === item.id}
+                    disabled={level < item.level}
+                    onClick={() => {
+                      setPet((p) => ({
+                        ...p,
+                        accessory: item.id,
+                      }));
+                    }}
+                  >
+                    {item.label}
+
+                    {level < item.level ? ` · Lv.${item.level}` : ""}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+
+            {confirmReset ? (
+              <div className="momo-confirm">
+                <span>Hapus semua progres?</span>
+
+                <button type="button" onClick={resetAll}>
+                  Ya, reset
+                </button>
+
+                <button type="button" onClick={() => setConfirmReset(false)}>
+                  Batal
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="momo-reset"
+                onClick={() => setConfirmReset(true)}
+              >
+                Reset progres
+              </button>
+            )}
+          </div>
+        ) : (
+          <>
+            <div className="momo-stats">
+              <PetStat icon="💗" label="Kebahagiaan" value={pet.happiness} />
+
+              <PetStat icon="🐟" label="Kenyang" value={pet.fullness} />
+
+              <PetStat icon="⚡" label="Energi" value={pet.energy} />
+            </div>
+
+            <div className="momo-actions">
+              <button type="button" onClick={petMomo}>
+                <span>💗</span>Elus
+              </button>
+
+              <button type="button" onClick={feedMomo}>
+                <span>🐟</span>Beri Makan
+              </button>
+
+              <button type="button" onClick={playWithMomo}>
+                <span>🎮</span>Main
+              </button>
+            </div>
+
+            <div className="momo-score">
+              <span>⭐ Skor bermain</span>
+              <strong>{pet.score}</strong>
+            </div>
+          </>
+        )}
+      </div>
+    </aside>
+  );
+}
+function PetStat({
+  icon,
+  label,
+  value,
+}: {
+  icon: string;
+  label: string;
+  value: number;
+}) {
+  return (
+    <div className="momo-stat">
+      <span className="momo-stat-icon">{icon}</span>
+
+      <span className="momo-stat-label">{label}</span>
+
+      <div
+        className="momo-progress"
+        role="progressbar"
+        aria-label={label}
+        aria-valuenow={value}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
+        <span style={{ width: `${value}%` }} />
+      </div>
+    </div>
+  );
+}
+
+
+================================================================================
+FILE: src/components/pet/momo-data.ts
+================================================================================
+
+export const clamp = (v: number, min = 0, max = 100) => Math.min(max, Math.max(min, v))
+
+/* ---------- Skin & aksesori ---------- */
+export type SkinId = 'salju' | 'jahe' | 'abu' | 'siam' | 'malam'
+export type AccessoryId = 'none' | 'syal' | 'kacamata' | 'topi' | 'mahkota'
+
+export type Skin = {
+    id: SkinId
+    label: string
+    level: number
+    fur: string
+    shade: string
+    accent: string
+    accentD: string
+    chest: string
+    ear: string
+    eye: string
+    lid: string
+    nose: string
+    mouth: string
+    swatch: string
+}
+
+export const SKINS: Skin[] = [
+    {
+        id: 'salju', label: 'Salju', level: 1,
+        fur: '#fffdf3', shade: '#e3e8da', accent: '#a9d4a4', accentD: '#7fb98a',
+        chest: '#ffffff', ear: '#f6b9c0', eye: '#3b4a40', lid: '#3b4a40',
+        nose: '#f08fa0', mouth: '#5a4044', swatch: '#fffdf3',
+    },
+    {
+        id: 'jahe', label: 'Jahe', level: 2,
+        fur: '#f2a65a', shade: '#d98a3d', accent: '#d9782a', accentD: '#b9601c',
+        chest: '#ffe9c8', ear: '#f6b9c0', eye: '#3b2a1a', lid: '#4a2e1a',
+        nose: '#e06f7f', mouth: '#5a3326', swatch: '#f2a65a',
+    },
+    {
+        id: 'abu', label: 'Abu', level: 3,
+        fur: '#b8bec6', shade: '#9aa1aa', accent: '#8e96a0', accentD: '#737b86',
+        chest: '#e6eaee', ear: '#f2b9c4', eye: '#2b3440', lid: '#2e3440',
+        nose: '#e98c9c', mouth: '#4a4048', swatch: '#b8bec6',
+    },
+    {
+        id: 'siam', label: 'Siam', level: 4,
+        fur: '#f4ead8', shade: '#dccfb8', accent: '#8a6a55', accentD: '#6e5240',
+        chest: '#fff7e8', ear: '#c9a08a', eye: '#4aa3d8', lid: '#5e4536',
+        nose: '#b5707a', mouth: '#4a3a32', swatch: '#f4ead8',
+    },
+    {
+        id: 'malam', label: 'Malam', level: 5,
+        fur: '#3a3d46', shade: '#2a2c34', accent: '#565b6a', accentD: '#444956',
+        chest: '#4a4e5a', ear: '#8a5a6a', eye: '#ffd23f', lid: '#ffd23f',
+        nose: '#e98c9c', mouth: '#f0b8c0', swatch: '#3a3d46',
+    },
+]
+
+export type Accessory = { id: AccessoryId; label: string; level: number }
+
+export const ACCESSORIES: Accessory[] = [
+    { id: 'none', label: 'Polos', level: 1 },
+    { id: 'syal', label: 'Syal', level: 2 },
+    { id: 'kacamata', label: 'Kacamata', level: 3 },
+    { id: 'topi', label: 'Topi Penyihir', level: 4 },
+    { id: 'mahkota', label: 'Mahkota', level: 6 },
+]
+
+/* ---------- Level ---------- */
+export const levelFor = (score: number) => 1 + Math.floor(Math.sqrt(Math.max(0, score) / 15))
+export const scoreForLevel = (level: number) => 15 * (level - 1) ** 2
+
+export function levelProgress(score: number) {
+    const level = levelFor(score)
+    const a = scoreForLevel(level)
+    const b = scoreForLevel(level + 1)
+    return { level, pct: Math.min(100, Math.round(((score - a) / (b - a)) * 100)) }
+}
+
+export function unlocksAt(level: number): string[] {
+    return [
+        ...SKINS.filter((s) => s.level === level).map((s) => `bulu ${s.label}`),
+        ...ACCESSORIES.filter((a) => a.level === level).map((a) => a.label),
+    ]
+}
+
+/* ---------- Data tersimpan ---------- */
+export type Saved = {
+    v: 1
+    name: string
+    happiness: number
+    fullness: number
+    energy: number
+    asleep: boolean
+    score: number
+    skin: SkinId
+    accessory: AccessoryId
+    animations: boolean
+    autoMove: boolean
+    chase: boolean
+    lastSeen: number
+    lastCheckin: string
+}
+
+export const DEFAULT_SAVED: Saved = {
+    v: 1,
+    name: 'Momo',
+    happiness: 70,
+    fullness: 65,
+    energy: 80,
+    asleep: false,
+    score: 0,
+    skin: 'salju',
+    accessory: 'none',
+    animations: true,
+    autoMove: true,
+    chase: true,
+    lastSeen: 0,
+    lastCheckin: '',
+}
+
+/* Penurunan stat selama pengguna tidak ada (dibuat lembut, ada batas bawah) */
+export function applyOffline(s: Saved, now: number): { saved: Saved; hours: number } {
+    const hours = Math.max(0, Math.min(48, (now - s.lastSeen) / 3_600_000))
+    if (hours < 0.1) return { saved: s, hours }
+
+    const fullness = Math.max(Math.min(s.fullness, 15), Math.round(s.fullness - hours * 4))
+    const happiness = Math.max(Math.min(s.happiness, 20), Math.round(s.happiness - hours * 3))
+    const energy = Math.min(100, Math.round(s.energy + hours * 8))
+    const asleep = energy < 20 || (s.asleep && energy < 50)
+
+    return { hours, saved: { ...s, fullness, happiness, energy, asleep } }
+}
+
+export function todayKey() {
+    const d = new Date()
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+export function greeting(
+    hoursAway: number,
+    hour: number,
+    first: boolean,
+    petName = 'Momo',
+): string {
+    if (first) return `Halo! Aku ${petName}. Senang bertemu denganmu! ✨`
+    if (hoursAway >= 24) return 'Kamu lama sekali tidak datang... aku kangen! 💗'
+    if (hoursAway >= 6) return 'Akhirnya kamu kembali! Aku kangen 💗'
+    if (hour >= 23 || hour < 4) return 'Sudah larut... jangan lupa istirahat ya 🌙'
+    if (hour < 11) return 'Selamat pagi! Sudah sarapan? ☀️'
+    if (hour < 15) return 'Selamat siang! Jangan lupa minum air 💧'
+    if (hour < 19) return 'Selamat sore! Satu langkah kecil saja cukup 🌿'
+    return 'Selamat malam! Waktunya pelan-pelan ya 🌙'
+}
+
+================================================================================
+FILE: src/components/pet/momo-world.ts
+================================================================================
+
+
+import { useSyncExternalStore } from 'react'
+
+export type Phase = 'dawn' | 'day' | 'dusk' | 'night'
+export type Weather = 'clear' | 'rain' | 'snow'
+export type World = { hour: number; phase: Phase; weather: Weather }
+
+/* Nilai awal server agar hidrasi tidak bentrok */
+const SERVER_WORLD: World = {
+    hour: 12,
+    phase: 'day',
+    weather: 'clear',
+}
+
+export function phaseOf(hour: number): Phase {
+    if (hour >= 5 && hour < 7) return 'dawn'
+    if (hour >= 7 && hour < 17) return 'day'
+    if (hour >= 17 && hour < 19) return 'dusk'
+    return 'night'
+}
+
+const CLOCK_CHECK_INTERVAL = 30_000
+const WEATHER_CHECK_INTERVAL = 3 * 60 * 1000
+const MIN_SNOW_DURATION = 6 * 60 * 1000
+const SNOW_CHANCE = 0.02
+const CLEAR_CHANCE = 0.35
+
+let world: World = SERVER_WORLD
+let naturalWeather: Weather = 'clear'
+let weatherStartedAt = Date.now()
+
+let hourOverride: number | null = null
+let weatherOverride: Weather | null = null
+
+let timers: number[] = []
+const listeners = new Set<() => void>()
+
+function currentHour(): number {
+    if (hourOverride !== null) return hourOverride
+    return new Date().getHours()
+}
+
+function recompute() {
+    const hour = Math.floor(currentHour())
+
+    /* Hujan dinonaktifkan: cuaca otomatis hanya cerah atau salju */
+    const weather: Weather =
+        weatherOverride === 'snow' ? 'snow' : naturalWeather
+
+    const phase = phaseOf(hour)
+
+    if (
+        hour === world.hour &&
+        weather === world.weather &&
+        phase === world.phase
+    ) {
+        return
+    }
+
+    world = { hour, phase, weather }
+    listeners.forEach((listener) => listener())
+}
+
+function rollWeather() {
+    const now = Date.now()
+    const elapsed = now - weatherStartedAt
+
+    if (naturalWeather === 'snow') {
+        if (elapsed < MIN_SNOW_DURATION) return
+
+        if (Math.random() < CLEAR_CHANCE) {
+            naturalWeather = 'clear'
+            weatherStartedAt = now
+        }
+    } else if (Math.random() < SNOW_CHANCE) {
+        naturalWeather = 'snow'
+        weatherStartedAt = now
+    }
+
+    recompute()
+}
+
+function start() {
+    recompute()
+
+    if (timers.length > 0) return
+
+    timers = [
+        window.setInterval(recompute, CLOCK_CHECK_INTERVAL),
+        window.setInterval(rollWeather, WEATHER_CHECK_INTERVAL),
+    ]
+}
+
+function stop() {
+    timers.forEach((timer) => window.clearInterval(timer))
+    timers = []
+}
+
+function subscribe(callback: () => void) {
+    listeners.add(callback)
+
+    if (listeners.size === 1) start()
+
+    return () => {
+        listeners.delete(callback)
+
+        if (listeners.size === 0) stop()
+    }
+}
+
+const getSnapshot = () => world
+const getServerSnapshot = () => SERVER_WORLD
+
+export function useWorld(): World {
+    return useSyncExternalStore(
+        subscribe,
+        getSnapshot,
+        getServerSnapshot,
+    )
+}
+
+/*
+ * Pengujian lewat console browser:
+ * window.momoWorld.set({ hour: 22, weather: 'snow' })
+ *
+ * Kembali ke jam dan cuaca otomatis:
+ * window.momoWorld.set({ hour: null, weather: null })
+ */
+export function setWorldOverride(
+    options: { hour?: number | null; weather?: Weather | null },
+) {
+    if ('hour' in options) {
+        hourOverride = options.hour ?? null
+    }
+
+    if ('weather' in options) {
+        weatherOverride = options.weather ?? null
+    }
+
+    recompute()
+}
+
+if (typeof window !== 'undefined') {
+    ; (
+        window as unknown as {
+            momoWorld?: { set: typeof setWorldOverride }
+        }
+    ).momoWorld = {
+        set: setWorldOverride,
+    }
+}
+
+
+================================================================================
+FILE: src/app/api/momo/route.ts
+================================================================================
+
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth";
+
+export const dynamic = "force-dynamic";
+
+const momoUpdateSchema = z.object({
+  name: z.string().trim().min(1).max(12),
+  energy: z.number().int().min(0).max(100),
+  happiness: z.number().int().min(0).max(100),
+  fullness: z.number().int().min(0).max(100),
+  asleep: z.boolean(),
+  skin: z.enum(["salju", "jahe", "abu", "siam", "malam"]),
+  accessory: z.enum(["none", "syal", "kacamata", "topi", "mahkota"]),
+  animations: z.boolean(),
+  autoMove: z.boolean(),
+  chase: z.boolean(),
+}).strict();
+
+function responseError(message: string, status: number) {
+  return NextResponse.json(
+    { success: false, message },
+    { status, headers: { "Cache-Control": "no-store" } }
+  );
+}
+
+const defaultMomo = {
+  name: "Momo",
+  score: 0,
+  energy: 80,
+  happiness: 70,
+  fullness: 65,
+  asleep: false,
+  skin: "salju",
+  accessory: "none",
+  animations: true,
+  auto_move: true,
+  chase: true,
+} as const;
+
+export async function GET() {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return responseError("Silakan login terlebih dahulu.", 401);
+    }
+
+    const existing = await prisma.momo_pets.findUnique({
+      where: { user_id: user.id },
+    });
+
+    const pet = await prisma.momo_pets.upsert({
+      where: { user_id: user.id },
+      create: {
+        user_id: user.id,
+        ...defaultMomo,
+        last_seen: new Date(),
+      },
+      update: {},
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        isNew: !existing,
+        userId: user.id.toString(),
+        data: {
+          name: pet.name,
+          score: pet.score,
+          energy: pet.energy,
+          happiness: pet.happiness,
+          fullness: pet.fullness,
+          asleep: pet.asleep,
+          skin: pet.skin,
+          accessory: pet.accessory,
+          animations: pet.animations,
+          autoMove: pet.auto_move,
+          chase: pet.chase,
+          lastSeen: (pet.last_seen ?? pet.updated_at).getTime(),
+          lastCheckin: pet.last_checkin
+            ? pet.last_checkin.toISOString().slice(0, 10)
+            : "",
+        },
+      },
+      { headers: { "Cache-Control": "no-store" } }
+    );
+  } catch (error) {
+    console.error("GET /api/momo:", error);
+    return responseError("Gagal memuat data Momo.", 500);
+  }
+}
+
+export async function PUT(request: Request) {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return responseError("Silakan login terlebih dahulu.", 401);
+    }
+
+    const origin = request.headers.get("origin");
+
+    if (origin && origin !== new URL(request.url).origin) {
+      return responseError("Origin request tidak diizinkan.", 403);
+    }
+
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch {
+      return responseError("Format JSON tidak valid.", 400);
+    }
+
+    const parsed = momoUpdateSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return responseError("Nilai status Momo tidak valid.", 400);
+    }
+
+    const data = parsed.data;
+
+    const pet = await prisma.momo_pets.upsert({
+      where: { user_id: user.id },
+      create: {
+        user_id: user.id,
+        name: data.name,
+        score: 0,
+        energy: data.energy,
+        happiness: data.happiness,
+        fullness: data.fullness,
+        asleep: data.asleep,
+        skin: data.skin,
+        accessory: data.accessory,
+        animations: data.animations,
+        auto_move: data.autoMove,
+        chase: data.chase,
+        last_seen: new Date(),
+      },
+      update: {
+        name: data.name,
+        energy: data.energy,
+        happiness: data.happiness,
+        fullness: data.fullness,
+        asleep: data.asleep,
+        skin: data.skin,
+        accessory: data.accessory,
+        animations: data.animations,
+        auto_move: data.autoMove,
+        chase: data.chase,
+        last_seen: new Date(),
+      },
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          name: pet.name,
+          score: pet.score,
+          energy: pet.energy,
+          happiness: pet.happiness,
+          fullness: pet.fullness,
+          asleep: pet.asleep,
+          skin: pet.skin,
+          accessory: pet.accessory,
+          animations: pet.animations,
+          autoMove: pet.auto_move,
+          chase: pet.chase,
+          lastSeen: (pet.last_seen ?? pet.updated_at).getTime(),
+          lastCheckin: pet.last_checkin
+            ? pet.last_checkin.toISOString().slice(0, 10)
+            : "",
+        },
+      },
+      { headers: { "Cache-Control": "no-store" } }
+    );
+  } catch (error) {
+    console.error("PUT /api/momo:", error);
+    return responseError("Gagal menyimpan data Momo.", 500);
+  }
+}
+
+
+================================================================================
+FILE: src/app/api/momo/xp/route.ts
+================================================================================
+
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth";
+
+export const dynamic = "force-dynamic";
+
+const XP_POINTS = {
+  creeper: 1,
+  pet: 1,
+  feed: 2,
+  play: 5,
+  orb: 2,
+} as const;
+
+const xpSchema = z.object({
+  action: z.enum(["creeper", "pet", "feed", "play", "orb"]),
+  requestId: z.string().uuid(),
+}).strict();
+
+const MAX_SCORE = 1_000_000;
+
+class RateLimitError extends Error {
+  constructor() {
+    super("Batas aktivitas XP tercapai. Coba lagi setelah 60 detik.");
+    this.name = "RateLimitError";
+  }
+}
+
+function responseError(message: string, status: number) {
+  return NextResponse.json(
+    { success: false, message },
+    { status, headers: { "Cache-Control": "no-store" } }
+  );
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return responseError("Silakan login terlebih dahulu.", 401);
+    }
+
+    if (request.headers.get("origin") !== request.nextUrl.origin) {
+      return responseError("Origin request tidak diizinkan.", 403);
+    }
+
+    const contentType = request.headers.get("content-type") ?? "";
+
+    if (!contentType.toLowerCase().startsWith("application/json")) {
+      return responseError("Content-Type harus application/json.", 415);
+    }
+
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch {
+      return responseError("Format JSON tidak valid.", 400);
+    }
+
+    const parsed = xpSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return responseError("Data aktivitas XP tidak valid.", 400);
+    }
+
+    const { action, requestId } = parsed.data;
+    const points = XP_POINTS[action];
+    const now = new Date();
+
+    const result = await prisma.$transaction(async (tx) => {
+      await tx.momo_pets.upsert({
+        where: { user_id: user.id },
+        create: {
+          user_id: user.id,
+          name: "Momo",
+          score: 0,
+          energy: 80,
+          happiness: 70,
+          fullness: 65,
+          asleep: false,
+          skin: "salju",
+          accessory: "none",
+          animations: true,
+          auto_move: true,
+          chase: true,
+          last_seen: now,
+        },
+        update: {},
+      });
+
+      // Catat transaksi lebih dulu agar request duplikat tidak
+      // menghabiskan kuota rate limit.
+      const inserted = await tx.momo_xp_events.createMany({
+        data: [{
+          user_id: user.id,
+          request_id: requestId,
+          action,
+          points,
+        }],
+        skipDuplicates: true,
+      });
+
+      const currentPet = await tx.momo_pets.findUniqueOrThrow({
+        where: { user_id: user.id },
+      });
+
+      if (inserted.count === 0) {
+        return {
+          score: currentPet.score,
+          awarded: false,
+          duplicate: true,
+        };
+      }
+
+      // Maksimal 20 aktivitas dalam satu jendela 60 detik.
+      // Operasi UPSERT ini atomik dan diserialisasi oleh row lock
+      // PostgreSQL untuk setiap user_id.
+      const rateLimit = await tx.$queryRaw<Array<{
+        request_count: number;
+      }>>`
+        INSERT INTO public.momo_xp_rate_limits
+          (user_id, window_started_at, request_count)
+        VALUES
+          (${user.id}, clock_timestamp(), 1)
+        ON CONFLICT (user_id) DO UPDATE
+        SET
+          window_started_at = CASE
+            WHEN public.momo_xp_rate_limits.window_started_at
+              <= EXCLUDED.window_started_at - INTERVAL '60 seconds'
+            THEN EXCLUDED.window_started_at
+            ELSE public.momo_xp_rate_limits.window_started_at
+          END,
+          request_count = CASE
+            WHEN public.momo_xp_rate_limits.window_started_at
+              <= EXCLUDED.window_started_at - INTERVAL '60 seconds'
+            THEN 1
+            ELSE public.momo_xp_rate_limits.request_count + 1
+          END
+        WHERE
+          public.momo_xp_rate_limits.window_started_at
+            <= EXCLUDED.window_started_at - INTERVAL '60 seconds'
+          OR public.momo_xp_rate_limits.request_count < 20
+        RETURNING request_count
+      `;
+
+      if (rateLimit.length === 0) {
+        // Exception akan membatalkan transaksi, termasuk pencatatan
+        // event, sehingga request dapat dicoba kembali nanti.
+        throw new RateLimitError();
+      }
+
+      const updated = await tx.momo_pets.updateMany({
+        where: {
+          user_id: user.id,
+          score: { lte: MAX_SCORE - points },
+        },
+        data: {
+          score: { increment: points },
+          last_seen: now,
+        },
+      });
+
+      const pet = await tx.momo_pets.findUniqueOrThrow({
+        where: { user_id: user.id },
+      });
+
+      return {
+        score: pet.score,
+        awarded: updated.count === 1,
+        duplicate: false,
+      };
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: result,
+      },
+      { headers: { "Cache-Control": "no-store" } }
+    );
+  } catch (error) {
+    if (error instanceof RateLimitError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: error.message,
+        },
+        {
+          status: 429,
+          headers: {
+            "Cache-Control": "no-store",
+            "Retry-After": "60",
+          },
+        }
+      );
+    }
+
+    console.error("POST /api/momo/xp:", error);
+    return responseError("Gagal menambahkan XP Momo.", 500);
+  }
+}
+
+
+================================================================================
+FILE: src/app/api/momo/reset/route.ts
+================================================================================
+
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth";
+
+export const dynamic = "force-dynamic";
+
+function responseError(message: string, status: number) {
+  return NextResponse.json(
+    { success: false, message },
+    { status, headers: { "Cache-Control": "no-store" } }
+  );
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return responseError("Silakan login terlebih dahulu.", 401);
+    }
+
+    if (request.headers.get("origin") !== request.nextUrl.origin) {
+      return responseError("Origin request tidak diizinkan.", 403);
+    }
+
+    const now = new Date();
+
+    const pet = await prisma.momo_pets.upsert({
+      where: { user_id: user.id },
+      create: {
+        user_id: user.id,
+        name: "Momo",
+        score: 0,
+        energy: 80,
+        happiness: 70,
+        fullness: 65,
+        asleep: false,
+        skin: "salju",
+        accessory: "none",
+        animations: true,
+        auto_move: true,
+        chase: true,
+        last_seen: now,
+      },
+      update: {
+        name: "Momo",
+        score: 0,
+        energy: 80,
+        happiness: 70,
+        fullness: 65,
+        asleep: false,
+        skin: "salju",
+        accessory: "none",
+        animations: true,
+        auto_move: true,
+        chase: true,
+        last_seen: now,
+      },
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          score: pet.score,
+          lastCheckin: pet.last_checkin
+            ? pet.last_checkin.toISOString().slice(0, 10)
+            : "",
+          lastSeen: (pet.last_seen ?? pet.updated_at).getTime(),
+        },
+      },
+      { headers: { "Cache-Control": "no-store" } }
+    );
+  } catch (error) {
+    console.error("POST /api/momo/reset:", error);
+    return responseError("Gagal mereset Momo.", 500);
+  }
+}
+
+
+================================================================================
+FILE: src/app/api/checkin/route.ts
+================================================================================
+
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth";
+
+const moodLabels = [
+  "Lelah/Down",
+  "Cemas",
+  "Biasa aja",
+  "Tenang",
+  "Semangat!",
+] as const;
+
+const checkinSchema = z.object({
+  mood: z.enum(moodLabels),
+  energyLevel: z.number().int().min(1).max(5),
+  sleepHours: z.number()
+    .min(0)
+    .max(24)
+    .refine((value) => Number.isInteger(value * 2), {
+      message: "Durasi tidur harus kelipatan 0,5 jam.",
+    }),
+  activities: z.array(z.enum([
+    "Kuliah",
+    "Proyek Kelompok",
+    "Lab/Praktikum",
+  ])).max(3),
+  otherActivity: z.string().trim().max(255),
+}).strict();
+
+function errorResponse(message: string, status: number) {
+  return NextResponse.json(
+    { success: false, message },
+    {
+      status,
+      headers: { "Cache-Control": "no-store" },
+    }
+  );
+}
+
+function getTodayWIB() {
+  const dateString = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+
+  return new Date(`${dateString}T00:00:00.000Z`);
+}
+
+export async function POST(request: NextRequest) {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    return errorResponse("Silakan login terlebih dahulu.", 401);
+  }
+
+  if (request.headers.get("origin") !== request.nextUrl.origin) {
+    return errorResponse("Origin request tidak diizinkan.", 403);
+  }
+
+  const contentType = request.headers.get("content-type") ?? "";
+
+  if (!contentType.toLowerCase().startsWith("application/json")) {
+    return errorResponse("Content-Type harus application/json.", 415);
+  }
+
+  const rawBody = await request.text();
+
+  if (Buffer.byteLength(rawBody, "utf8") > 10_000) {
+    return errorResponse("Ukuran request terlalu besar.", 413);
+  }
+
+  let body: unknown;
+
+  try {
+    body = JSON.parse(rawBody);
+  } catch {
+    return errorResponse("Format JSON tidak valid.", 400);
+  }
+
+  const parsed = checkinSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Data Check-in tidak valid.",
+        errors: z.treeifyError(parsed.error),
+      },
+      {
+        status: 400,
+        headers: { "Cache-Control": "no-store" },
+      }
+    );
+  }
+
+  const { mood, energyLevel, sleepHours, activities, otherActivity } =
+    parsed.data;
+
+  const moodNumber = moodLabels.indexOf(mood) + 1;
+  const today = getTodayWIB();
+  const now = new Date();
+
+  const activityData = JSON.stringify({
+    activities,
+    otherActivity,
+  });
+
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const checkin = await tx.daily_check_ins.upsert({
+        where: {
+          user_id_checkin_date: {
+            user_id: user.id,
+            checkin_date: today,
+          },
+        },
+        create: {
+          user_id: user.id,
+          checkin_date: today,
+          mood: moodNumber,
+          energy: energyLevel,
+          sleep_hours: sleepHours,
+          activity: activityData,
+          created_at: now,
+          updated_at: now,
+        },
+        update: {
+          mood: moodNumber,
+          energy: energyLevel,
+          sleep_hours: sleepHours,
+          activity: activityData,
+          updated_at: now,
+        },
+      });
+
+      // Pastikan data Momo sudah tersedia untuk akun ini.
+      const momo = await tx.momo_pets.upsert({
+        where: { user_id: user.id },
+        create: {
+          user_id: user.id,
+          name: "Momo",
+          score: 0,
+          energy: 80,
+          happiness: 70,
+          fullness: 65,
+          asleep: false,
+          skin: "salju",
+          accessory: "none",
+          animations: true,
+          auto_move: true,
+          chase: true,
+          last_seen: now,
+        },
+        update: {},
+      });
+
+      // Kondisi tanggal membuat hadiah hanya bisa diklaim sekali sehari.
+      const reward = await tx.momo_pets.updateMany({
+        where: {
+          user_id: user.id,
+          OR: [
+            { last_checkin: null },
+            { last_checkin: { lt: today } },
+          ],
+        },
+        data: {
+          score: { increment: 10 },
+          happiness: Math.min(100, momo.happiness + 20),
+          last_checkin: today,
+          last_seen: now,
+        },
+      });
+
+      return {
+        checkin,
+        momoRewardAwarded: reward.count === 1,
+      };
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Check-in hari ini berhasil disimpan.",
+        momoRewardAwarded: result.momoRewardAwarded,
+        data: {
+          id: result.checkin.id.toString(),
+          date: result.checkin.checkin_date.toISOString().slice(0, 10),
+          mood,
+          energyLevel: result.checkin.energy,
+          sleepHours: Number(result.checkin.sleep_hours),
+          activities,
+          otherActivity,
+        },
+      },
+      {
+        headers: { "Cache-Control": "no-store" },
+      }
+    );
+  } catch (error) {
+    console.error("POST /api/checkin:", error);
+    return errorResponse("Check-in gagal disimpan. Silakan coba lagi.", 500);
+  }
+}
+
+
+================================================================================
+FILE: src/components/checkin/CheckinForm.tsx
+================================================================================
+
+'use client'
+
+import { useCallback, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+
+type Mood = {
+  image: string
+  label: string
+}
+
+type CheckinData = {
+  id: string
+  date: string
+  mood: string
+  energyLevel: number
+  sleepHours: number
+  activities: string[]
+  otherActivity: string
+}
+
+type ApiResponse = {
+  success: boolean
+  message?: string
+  momoRewardAwarded?: boolean
+  data?: CheckinData | null
+}
+
+const moods: Mood[] = [
+  { image: '/images/moods/sedih.svg', label: 'Lelah/Down' },
+  { image: '/images/moods/cemas.svg', label: 'Cemas' },
+  { image: '/images/moods/biasa aja.svg', label: 'Biasa aja' },
+  { image: '/images/moods/tenang.svg', label: 'Tenang' },
+  { image: '/images/moods/semangat.svg', label: 'Semangat!' },
+]
+
+const activityOptions = [
+  'Kuliah',
+  'Proyek Kelompok',
+  'Lab/Praktikum',
+]
+
+const energyLabels = [
+  '',
+  'Sangat baterai lemah',
+  'Baterai lemah',
+  'Cukup',
+  'Berenergi',
+  'Sangat berenergi',
+]
+
+export default function CheckinForm() {
+  const router = useRouter()
+
+  const [selectedMood, setSelectedMood] = useState<string | null>(null)
+  const [energyLevel, setEnergyLevel] = useState(3)
+  const [sleepHours, setSleepHours] = useState('')
+  const [activities, setActivities] = useState<string[]>([])
+  const [otherActivity, setOtherActivity] = useState('')
+  const [message, setMessage] = useState('')
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+
+  const loadTodayCheckin = useCallback(async (signal: AbortSignal) => {
+    setIsLoading(true)
+
+    try {
+      const response = await fetch('/api/checkin/today', {
+        method: 'GET',
+        cache: 'no-store',
+        signal,
+      })
+
+      const result = (await response.json()) as ApiResponse
+
+      if (!response.ok || !result.success) {
+        if (response.status === 401) {
+          setMessage(
+            'Silakan login terlebih dahulu untuk menggunakan Check-in.'
+          )
+        } else {
+          setMessage(result.message ?? 'Data Check-in gagal dimuat.')
+        }
+        return
+      }
+
+      if (!result.data) {
+        return
+      }
+
+      setSelectedMood(result.data.mood)
+      setEnergyLevel(result.data.energyLevel)
+      setSleepHours(String(result.data.sleepHours))
+      setActivities(result.data.activities ?? [])
+      setOtherActivity(result.data.otherActivity ?? '')
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        return
+      }
+
+      setMessage(
+        'Tidak dapat memuat Check-in. Periksa koneksi lalu coba lagi.'
+      )
+    } finally {
+      if (!signal.aborted) {
+        setIsLoading(false)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    const controller = new AbortController()
+    void loadTodayCheckin(controller.signal)
+
+    return () => controller.abort()
+  }, [loadTodayCheckin])
+
+  function toggleActivity(activity: string) {
+    setActivities((previous) => {
+      if (previous.includes(activity)) {
+        return previous.filter((item) => item !== activity)
+      }
+
+      if (previous.length >= 3) {
+        return previous
+      }
+
+      return [...previous, activity]
+    })
+
+    setMessage((previous) =>
+      activities.length >= 3 && !activities.includes(activity)
+        ? 'Pilih maksimal 3 aktivitas utama.'
+        : ''
+    )
+  }
+
+  async function handleSave() {
+    if (isSaving || isLoading) return
+
+    if (!selectedMood) {
+      setMessage('Pilih suasana hatimu terlebih dahulu, ya 💚')
+      return
+    }
+
+    if (sleepHours.trim() === '') {
+      setMessage('Masukkan durasi tidurmu terlebih dahulu.')
+      return
+    }
+
+    const hours = Number(sleepHours)
+
+    if (!Number.isFinite(hours) || hours < 0 || hours > 24) {
+      setMessage('Jam istirahat harus antara 0 sampai 24 jam, ya.')
+      return
+    }
+
+    if (!Number.isInteger(hours * 2)) {
+      setMessage('Durasi tidur harus dalam kelipatan 0,5 jam.')
+      return
+    }
+
+    if (activities.length > 3) {
+      setMessage('Pilih maksimal 3 aktivitas utama.')
+      return
+    }
+
+    if (otherActivity.trim().length > 255) {
+      setMessage('Aktivitas lainnya maksimal 255 karakter.')
+      return
+    }
+
+    setIsSaving(true)
+    setMessage('')
+
+    try {
+      const response = await fetch('/api/checkin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mood: selectedMood,
+          energyLevel,
+          sleepHours: hours,
+          activities,
+          otherActivity: otherActivity.trim(),
+        }),
+      })
+
+      const result = (await response.json()) as ApiResponse
+
+      if (!response.ok || !result.success) {
+        if (response.status === 401) {
+          setMessage('Sesi login tidak ditemukan. Silakan login kembali.')
+        } else {
+          setMessage(
+            result.message ?? 'Check-in gagal disimpan. Coba lagi.'
+          )
+        }
+        return
+      }
+
+      // Hadiah Momo sudah diberikan langsung oleh API dan disimpan ke database.
+      setShowSuccess(true)
+    } catch {
+      setMessage(
+        'Tidak dapat terhubung ke server. Periksa koneksi lalu coba lagi.'
+      )
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  return (
+    <>
+      <div className="checkin-demo-card">
+        <div className="checkin-moods" aria-busy={isLoading}>
+          {moods.map((mood) => (
+            <button
+              key={mood.label}
+              type="button"
+              className={`mood-option ${selectedMood === mood.label ? 'selected' : ''
+                }`}
+              onClick={() => {
+                setSelectedMood(mood.label)
+                setMessage('')
+              }}
+              aria-pressed={selectedMood === mood.label}
+              disabled={isLoading || isSaving}
+            >
+              <img
+                src={mood.image}
+                alt=""
+                className="mood-image"
+                aria-hidden="true"
+              />
+
+              <small>{mood.label}</small>
+            </button>
+          ))}
+        </div>
+
+        <div className="checkin-energy-panel">
+          <div className="checkin-energy-header">
+            <label htmlFor="daily-energy-level">
+              TINGKAT ENERGI BATERAI DIRI
+            </label>
+
+            <span className="checkin-energy-badge">
+              {energyLevel}/5 ({energyLabels[energyLevel]})
+            </span>
+          </div>
+
+          <input
+            id="daily-energy-level"
+            className="checkin-energy-slider"
+            type="range"
+            min={1}
+            max={5}
+            step={1}
+            value={energyLevel}
+            onChange={(event) =>
+              setEnergyLevel(Number(event.target.value))
+            }
+            aria-valuetext={energyLabels[energyLevel]}
+            disabled={isLoading || isSaving}
+          />
+        </div>
+
+        <div className="checkin-bottom-grid">
+          <div className="checkin-info-panel">
+            <label htmlFor="daily-sleep-hours">
+              ISTIRAHAT SEMALAM
+            </label>
+
+            <div className="checkin-sleep-input">
+              <input
+                id="daily-sleep-hours"
+                type="number"
+                min="0"
+                max="24"
+                step="0.5"
+                placeholder="Contoh: 7"
+                value={sleepHours}
+                onChange={(event) => {
+                  setSleepHours(event.target.value)
+                  setMessage('')
+                }}
+                disabled={isLoading || isSaving}
+              />
+
+              <span>Jam</span>
+            </div>
+          </div>
+
+          <div className="checkin-info-panel">
+            <p className="checkin-panel-title">
+              AKTIVITAS UTAMA
+            </p>
+
+            <div className="checkin-activities">
+              {activityOptions.map((activity) => (
+                <button
+                  key={activity}
+                  type="button"
+                  className={
+                    activities.includes(activity) ? 'selected' : ''
+                  }
+                  onClick={() => toggleActivity(activity)}
+                  aria-pressed={activities.includes(activity)}
+                  disabled={isLoading || isSaving}
+                >
+                  {activity}
+                </button>
+              ))}
+            </div>
+
+            <div className="checkin-other-activity">
+              <label
+                htmlFor="daily-other-activity"
+                className="sr-only"
+              >
+                Aktivitas lainnya
+              </label>
+
+              <input
+                id="daily-other-activity"
+                type="text"
+                maxLength={255}
+                placeholder="Tulis aktivitas lainnya..."
+                value={otherActivity}
+                onChange={(event) => {
+                  setOtherActivity(event.target.value)
+                  setMessage('')
+                }}
+                disabled={isLoading || isSaving}
+              />
+            </div>
+          </div>
+        </div>
+
+        <button
+          className="checkin-save"
+          type="button"
+          onClick={handleSave}
+          disabled={isLoading || isSaving}
+        >
+          {isLoading
+            ? 'Memuat Check-in...'
+            : isSaving
+              ? 'Menyimpan...'
+              : 'Simpan Check-in Hari Ini'}
+        </button>
+
+        {message && (
+          <p className="checkin-message" role="status">
+            {message}
+          </p>
+        )}
+      </div>
+
+      {showSuccess && (
+        <div className="daily-checkin-overlay" role="presentation">
+          <div
+            className="daily-checkin-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="daily-checkin-success-title"
+            aria-describedby="daily-checkin-success-description"
+          >
+            <div
+              className="daily-checkin-success-icon"
+              aria-hidden="true"
+            >
+              ✓
+            </div>
+
+            <h2 id="daily-checkin-success-title">
+              Berhasil!
+            </h2>
+
+            <p id="daily-checkin-success-description">
+              Check-in harian berhasil disimpan ke database.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => {
+                setShowSuccess(false)
+                router.push('/dashboard')
+                router.refresh()
+              }}
+              autoFocus
+            >
+              Oke
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+================================================================================
+FILE: prisma/schema.prisma
+================================================================================
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model cache {
+  key        String @id @db.VarChar(255)
+  value      String
+  expiration BigInt
+
+  @@index([expiration], map: "cache_expiration_index")
+}
+
+model cache_locks {
+  key        String @id @db.VarChar(255)
+  owner      String @db.VarChar(255)
+  expiration BigInt
+
+  @@index([expiration], map: "cache_locks_expiration_index")
+}
+
+model daily_check_ins {
+  id           BigInt    @id @default(autoincrement())
+  user_id      BigInt
+  mood         Int       @db.SmallInt
+  energy       Int       @db.SmallInt
+  sleep_hours  Decimal   @db.Decimal(3, 1)
+  activity     String?
+  condition    String?
+  created_at   DateTime? @db.Timestamp(0)
+  updated_at   DateTime? @db.Timestamp(0)
+  checkin_date DateTime  @db.Date
+  users        users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "daily_check_ins_user_id_foreign")
+
+  @@unique([user_id, checkin_date], map: "daily_check_ins_user_date_unique")
+}
+
+model failed_jobs {
+  id         BigInt   @id @default(autoincrement())
+  uuid       String   @unique(map: "failed_jobs_uuid_unique") @db.VarChar(255)
+  connection String   @db.VarChar(255)
+  queue      String   @db.VarChar(255)
+  payload    String
+  exception  String
+  failed_at  DateTime @default(now()) @db.Timestamp(0)
+
+  @@index([connection, queue, failed_at], map: "failed_jobs_connection_queue_failed_at_index")
+}
+
+model job_batches {
+  id             String  @id @db.VarChar(255)
+  name           String  @db.VarChar(255)
+  total_jobs     Int
+  pending_jobs   Int
+  failed_jobs    Int
+  failed_job_ids String
+  options        String?
+  cancelled_at   Int?
+  created_at     Int
+  finished_at    Int?
+}
+
+model jobs {
+  id           BigInt @id @default(autoincrement())
+  queue        String @db.VarChar(255)
+  payload      String
+  attempts     Int    @db.SmallInt
+  reserved_at  Int?
+  available_at Int
+  created_at   Int
+
+  @@index([queue], map: "jobs_queue_index")
+}
+
+model journals {
+  id         BigInt    @id @default(autoincrement())
+  user_id    BigInt
+  content    String
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "journals_user_id_foreign")
+}
+
+model migrations {
+  id        Int    @id @default(autoincrement())
+  migration String @db.VarChar(255)
+  batch     Int
+}
+
+model password_reset_tokens {
+  email      String    @id @db.VarChar(255)
+  token      String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+}
+
+model personal_access_tokens {
+  id             BigInt    @id @default(autoincrement())
+  tokenable_type String    @db.VarChar(255)
+  tokenable_id   BigInt
+  name           String
+  token          String    @unique(map: "personal_access_tokens_token_unique") @db.VarChar(64)
+  abilities      String?
+  last_used_at   DateTime? @db.Timestamp(0)
+  expires_at     DateTime? @db.Timestamp(0)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+
+  @@index([expires_at], map: "personal_access_tokens_expires_at_index")
+  @@index([tokenable_type, tokenable_id], map: "personal_access_tokens_tokenable_type_tokenable_id_index")
+}
+
+model sessions {
+  id            String  @id @db.VarChar(255)
+  user_id       BigInt?
+  ip_address    String? @db.VarChar(45)
+  user_agent    String?
+  payload       String
+  last_activity Int
+
+  @@index([last_activity], map: "sessions_last_activity_index")
+  @@index([user_id], map: "sessions_user_id_index")
+}
+
+model users {
+  id                        BigInt                      @id @default(autoincrement())
+  name                      String                      @db.VarChar(255)
+  email                     String                      @unique(map: "users_email_unique") @db.VarChar(255)
+  email_verified_at         DateTime?                   @db.Timestamp(0)
+  password                  String?                     @db.VarChar(255)
+  remember_token            String?                     @db.VarChar(100)
+  created_at                DateTime?                   @db.Timestamp(0)
+  updated_at                DateTime?                   @db.Timestamp(0)
+  username                  String?                     @unique(map: "users_username_unique") @db.VarChar(255)
+  phone                     String?                     @db.VarChar(255)
+  academic_tasks            academic_tasks[]
+  ai_rate_limits            ai_rate_limits[]
+  daily_check_ins           daily_check_ins[]
+  email_verification_tokens email_verification_tokens[]
+  journals                  journals[]
+  mindglow_sessions         mindglow_sessions[]
+  oauth_accounts            oauth_accounts[]
+  momo_pet                  momo_pets?
+  momo_xp_events            momo_xp_events[]
+  momo_xp_rate_limit        momo_xp_rate_limits?
+}
+
+model mindglow_sessions {
+  id         String   @id @default(uuid()) @db.Uuid
+  user_id    BigInt
+  token_hash String   @unique @db.VarChar(64)
+  expires_at DateTime @db.Timestamp(0)
+  created_at DateTime @default(now()) @db.Timestamp(0)
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "mindglow_sessions_user_id_foreign")
+
+  @@index([user_id])
+  @@index([expires_at])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model academic_tasks {
+  id          BigInt   @id @default(autoincrement())
+  user_id     BigInt
+  name        String   @db.VarChar(255)
+  description String?  @db.Text
+  course      String   @db.VarChar(255)
+  deadline    DateTime @db.Date
+  priority    String   @db.VarChar(10)
+  type        String   @db.VarChar(10)
+  completed   Boolean  @default(false)
+  created_at  DateTime @default(now()) @db.Timestamp(0)
+  updated_at  DateTime @default(now()) @db.Timestamp(0)
+  users       users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "academic_tasks_user_id_foreign")
+
+  @@index([user_id, completed], map: "academic_tasks_user_completed_idx")
+  @@index([user_id, deadline], map: "academic_tasks_user_deadline_idx")
+  @@index([user_id])
+}
+
+model ai_rate_limits {
+  id            BigInt   @id @default(autoincrement())
+  user_id       BigInt
+  window_type   String   @db.VarChar(10)
+  window_start  DateTime @db.Timestamptz(6)
+  request_count Int      @default(0)
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+  users         users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, window_type, window_start], map: "ai_rate_limits_unique_window")
+  @@index([window_start])
+}
+
+model email_verification_tokens {
+  id         BigInt   @id @default(autoincrement())
+  user_id    BigInt
+  token_hash String   @unique @db.VarChar(64)
+  expires_at DateTime @db.Timestamp(0)
+  created_at DateTime @default(now()) @db.Timestamp(0)
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "email_verification_tokens_user_id_foreign")
+
+  @@index([user_id])
+  @@index([expires_at])
+}
+
+model oauth_accounts {
+  id                  BigInt   @id @default(autoincrement())
+  user_id             BigInt
+  provider            String   @db.VarChar(50)
+  provider_account_id String   @db.VarChar(255)
+  created_at          DateTime @default(now()) @db.Timestamp(0)
+  users               users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "oauth_accounts_user_id_foreign")
+
+  @@unique([provider, provider_account_id], map: "oauth_accounts_provider_account_unique")
+  @@unique([user_id, provider], map: "oauth_accounts_user_provider_unique")
+  @@index([user_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model auth_rate_limits {
+  rate_key      String   @id @db.VarChar(64)
+  window_start  DateTime @db.Timestamptz(6)
+  request_count Int      @default(1)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([window_start])
+}
+
+model momo_pets {
+  id           BigInt    @id @default(autoincrement())
+  user_id      BigInt    @unique
+  name         String    @default("Momo") @db.VarChar(12)
+  score        Int       @default(0)
+  energy       Int       @default(100) @db.SmallInt
+  happiness    Int       @default(100) @db.SmallInt
+  fullness     Int       @default(100) @db.SmallInt
+  asleep       Boolean   @default(false)
+  skin         String    @default("salju") @db.VarChar(20)
+  accessory    String    @default("none") @db.VarChar(20)
+  animations   Boolean   @default(true)
+  auto_move    Boolean   @default(true)
+  chase        Boolean   @default(true)
+  last_seen    DateTime? @db.Timestamp(0)
+  last_checkin DateTime? @db.Date
+  created_at   DateTime  @default(now()) @db.Timestamp(0)
+  updated_at   DateTime  @updatedAt @db.Timestamp(0)
+
+  users users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "momo_pets_user_id_foreign")
+}
+
+model momo_xp_events {
+  id         BigInt   @id @default(autoincrement())
+  user_id    BigInt
+  request_id String   @db.Uuid
+  action     String   @db.VarChar(16)
+  points     Int      @db.SmallInt
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  users users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "momo_xp_events_user_id_fkey")
+
+  @@unique([user_id, request_id], map: "momo_xp_events_user_request_unique")
+  @@index([user_id, created_at], map: "momo_xp_events_user_created_idx")
+}
+
+model momo_xp_rate_limits {
+  user_id           BigInt   @id
+  window_started_at DateTime @default(now()) @db.Timestamptz(6)
+  request_count     Int      @default(0)
+
+  users users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "momo_xp_rate_limits_user_id_fkey")
+}
+
+
+=== GIT STATUS ===
+
+ M prisma/schema.prisma
+ M src/app/api/checkin/route.ts
+ M src/app/api/momo/route.ts
+ M src/components/checkin/CheckinForm.tsx
+ M src/components/pet/MomoPet.tsx
+ M src/components/pet/momo-data.ts
+?? src/app/api/momo/reset/
+?? src/app/api/momo/xp/

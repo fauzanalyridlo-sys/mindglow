@@ -44,8 +44,7 @@ function recompute() {
     const hour = Math.floor(currentHour())
 
     /* Hujan dinonaktifkan: cuaca otomatis hanya cerah atau salju */
-    const weather: Weather =
-        weatherOverride === 'snow' ? 'snow' : naturalWeather
+    const weather: Weather = weatherOverride ?? naturalWeather
 
     const phase = phaseOf(hour)
 

@@ -85,6 +85,7 @@ export function unlocksAt(level: number): string[] {
 /* ---------- Data tersimpan ---------- */
 export type Saved = {
     v: 1
+    version: number
     name: string
     happiness: number
     fullness: number
@@ -102,6 +103,7 @@ export type Saved = {
 
 export const DEFAULT_SAVED: Saved = {
     v: 1,
+    version: 0,
     name: 'Momo',
     happiness: 70,
     fullness: 65,
@@ -115,67 +117,6 @@ export const DEFAULT_SAVED: Saved = {
     chase: true,
     lastSeen: 0,
     lastCheckin: '',
-}
-
-const KEY = 'momo-pet-v1'
-
-function num(v: unknown, d: number, min = 0, max = 100) {
-    return typeof v === 'number' && Number.isFinite(v) ? Math.min(max, Math.max(min, v)) : d
-}
-
-function sanitize(raw: unknown): Saved | null {
-    if (!raw || typeof raw !== 'object') return null
-    const r = raw as Record<string, unknown>
-    const score = num(r.score, 0, 0, 1_000_000)
-    const level = levelFor(score)
-
-    const skinFound = SKINS.find((s) => s.id === r.skin)
-    const skin: SkinId = skinFound && skinFound.level <= level ? skinFound.id : 'salju'
-
-    const accFound = ACCESSORIES.find((a) => a.id === r.accessory)
-    const accessory: AccessoryId = accFound && accFound.level <= level ? accFound.id : 'none'
-
-    return {
-        v: 1,
-        name: typeof r.name === 'string' && r.name.trim() ? r.name.slice(0, 12) : 'Momo',
-        happiness: num(r.happiness, 70),
-        fullness: num(r.fullness, 65),
-        energy: num(r.energy, 80),
-        asleep: r.asleep === true,
-        score,
-        skin,
-        accessory,
-        animations: r.animations !== false,
-        autoMove: r.autoMove !== false,
-        chase: r.chase !== false,
-        lastSeen: num(r.lastSeen, Date.now(), 0, Number.MAX_SAFE_INTEGER),
-        lastCheckin: typeof r.lastCheckin === 'string' ? r.lastCheckin : '',
-    }
-}
-
-export function loadSaved(): Saved | null {
-    try {
-        const raw = window.localStorage.getItem(KEY)
-        return raw ? sanitize(JSON.parse(raw)) : null
-    } catch {
-        return null
-    }
-}
-
-export function saveSaved(s: Saved) {
-    try {
-        window.localStorage.setItem(KEY, JSON.stringify(s))
-    } catch {
-        /* penyimpanan penuh / diblokir: abaikan */
-    }
-}
-
-export function clearSaved() {
-    try {
-        window.localStorage.removeItem(KEY)
-    } catch {
-        /* abaikan */
-    }
 }
 
 /* Penurunan stat selama pengguna tidak ada (dibuat lembut, ada batas bawah) */
@@ -196,8 +137,13 @@ export function todayKey() {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
-export function greeting(hoursAway: number, hour: number, first: boolean): string {
-    if (first) return 'Halo! Aku Momo. Senang bertemu denganmu! ✨'
+export function greeting(
+    hoursAway: number,
+    hour: number,
+    first: boolean,
+    petName = 'Momo',
+): string {
+    if (first) return `Halo! Aku ${petName}. Senang bertemu denganmu! ✨`
     if (hoursAway >= 24) return 'Kamu lama sekali tidak datang... aku kangen! 💗'
     if (hoursAway >= 6) return 'Akhirnya kamu kembali! Aku kangen 💗'
     if (hour >= 23 || hour < 4) return 'Sudah larut... jangan lupa istirahat ya 🌙'
