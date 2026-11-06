@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 import AppNavbar from '@/components/layout/AppNavbar'
 import AppFooter from '@/components/layout/AppFooter'
+import SessionActivityMonitor from '@/components/layout/SessionActivityMonitor'
 
 export default function AppRouteLayout({
   children,
@@ -10,6 +11,7 @@ export default function AppRouteLayout({
 }) {
   return (
     <div className="app-layout">
+      <SessionActivityMonitor />
       <AppNavbar />
 
       <main className="app-main">
