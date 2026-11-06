@@ -55,8 +55,13 @@ const DashboardPage = () => {
 
   useEffect(() => {
     let active = true
+    let latestRequestId = 0
 
-    const loadDashboard = async () => {
+    const loadDashboard = async (showLoading = false) => {
+      const requestId = ++latestRequestId
+
+      if (showLoading) setLoading(true)
+
       try {
         const response = await fetch('/api/dashboard', {
           method: 'GET',
@@ -71,12 +76,12 @@ const DashboardPage = () => {
           )
         }
 
-        if (active) {
+        if (active && requestId === latestRequestId) {
           setDashboard(result.data as DashboardData)
           setError('')
         }
       } catch (err) {
-        if (active) {
+        if (active && requestId === latestRequestId) {
           setError(
             err instanceof Error
               ? err.message
@@ -84,16 +89,46 @@ const DashboardPage = () => {
           )
         }
       } finally {
-        if (active) {
+        if (active && requestId === latestRequestId && showLoading) {
           setLoading(false)
         }
       }
     }
 
-    loadDashboard()
+    const handleAcademicTasksUpdated = () => {
+      void loadDashboard()
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        void loadDashboard()
+      }
+    }
+
+    window.addEventListener(
+      'mindglow:academic-tasks-updated',
+      handleAcademicTasksUpdated
+    )
+
+    document.addEventListener(
+      'visibilitychange',
+      handleVisibilityChange
+    )
+
+    void loadDashboard(true)
 
     return () => {
       active = false
+
+      window.removeEventListener(
+        'mindglow:academic-tasks-updated',
+        handleAcademicTasksUpdated
+      )
+
+      document.removeEventListener(
+        'visibilitychange',
+        handleVisibilityChange
+      )
     }
   }, [])
 
@@ -159,6 +194,10 @@ const DashboardPage = () => {
           ],
         }
       })
+
+      window.dispatchEvent(
+        new Event('mindglow:academic-tasks-updated')
+      )
     } catch (err) {
       setError(
         err instanceof Error
