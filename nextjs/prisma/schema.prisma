@@ -149,11 +149,12 @@ model users {
 }
 
 model mindglow_sessions {
-  id         String   @id @default(uuid()) @db.Uuid
-  user_id    BigInt
-  token_hash String   @unique @db.VarChar(64)
-  expires_at DateTime @db.Timestamp(0)
-  created_at DateTime @default(now()) @db.Timestamp(0)
+  id               String   @id @default(uuid()) @db.Uuid
+  user_id          BigInt
+  token_hash       String   @unique @db.VarChar(64)
+  expires_at       DateTime @db.Timestamp(0)
+  last_activity_at DateTime @default(now()) @db.Timestamp(0)
+  created_at       DateTime @default(now()) @db.Timestamp(0)
   users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "mindglow_sessions_user_id_foreign")
 
   @@index([user_id])
