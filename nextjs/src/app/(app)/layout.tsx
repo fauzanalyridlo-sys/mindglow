@@ -1,15 +1,26 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
+import { redirect } from "next/navigation";
 
-import AppNavbar from '@/components/layout/AppNavbar'
-import AppFooter from '@/components/layout/AppFooter'
+import AppNavbar from "@/components/layout/AppNavbar";
+import AppFooter from "@/components/layout/AppFooter";
+import IdleSessionGuard from "@/components/auth/IdleSessionGuard";
+import { getCurrentUser } from "@/lib/auth";
 
-export default function AppRouteLayout({
+export default async function AppRouteLayout({
   children,
 }: {
-  children: ReactNode
+  children: ReactNode;
 }) {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
   return (
     <div className="app-layout">
+      <IdleSessionGuard />
+
       <AppNavbar />
 
       <main className="app-main">
@@ -18,5 +29,5 @@ export default function AppRouteLayout({
 
       <AppFooter />
     </div>
-  )
+  );
 }
