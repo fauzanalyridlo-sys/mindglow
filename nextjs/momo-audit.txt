@@ -128,7 +128,7 @@ export default function MomoPet() {
   const say = useCallback((text: string) => setMessage(text), []);
 
   const awardXp = useCallback((
-    activity: "creeper" | "pet" | "feed" | "play" | "orb"
+    activity: "pet" | "feed" | "play" | "orb"
   ): Promise<void> => {
     if (resettingRef.current) {
       return Promise.resolve();
@@ -772,7 +772,6 @@ export default function MomoPet() {
           happiness: clamp(p.happiness + 3),
         }));
 
-        void awardXp("creeper");
       }
 
       if (next.x < -16 || next.x > 116) {
@@ -1944,7 +1943,6 @@ import { getCurrentUser } from "@/lib/auth";
 export const dynamic = "force-dynamic";
 
 const XP_POINTS = {
-  creeper: 1,
   pet: 1,
   feed: 2,
   play: 5,
@@ -1952,18 +1950,11 @@ const XP_POINTS = {
 } as const;
 
 const xpSchema = z.object({
-  action: z.enum(["creeper", "pet", "feed", "play", "orb"]),
+  action: z.enum(["pet", "feed", "play", "orb"]),
   requestId: z.string().uuid(),
 }).strict();
 
 const MAX_SCORE = 1_000_000;
-
-class RateLimitError extends Error {
-  constructor() {
-    super("Batas aktivitas XP tercapai. Coba lagi setelah 60 detik.");
-    this.name = "RateLimitError";
-  }
-}
 
 function responseError(message: string, status: number) {
   return NextResponse.json(
@@ -2030,7 +2021,7 @@ export async function POST(request: NextRequest) {
       });
 
       // Catat transaksi lebih dulu agar request duplikat tidak
-      // menghabiskan kuota rate limit.
+      // tercatat dua kali.
       const inserted = await tx.momo_xp_events.createMany({
         data: [{
           user_id: user.id,
@@ -2051,43 +2042,6 @@ export async function POST(request: NextRequest) {
           awarded: false,
           duplicate: true,
         };
-      }
-
-      // Maksimal 20 aktivitas dalam satu jendela 60 detik.
-      // Operasi UPSERT ini atomik dan diserialisasi oleh row lock
-      // PostgreSQL untuk setiap user_id.
-      const rateLimit = await tx.$queryRaw<Array<{
-        request_count: number;
-      }>>`
-        INSERT INTO public.momo_xp_rate_limits
-          (user_id, window_started_at, request_count)
-        VALUES
-          (${user.id}, clock_timestamp(), 1)
-        ON CONFLICT (user_id) DO UPDATE
-        SET
-          window_started_at = CASE
-            WHEN public.momo_xp_rate_limits.window_started_at
-              <= EXCLUDED.window_started_at - INTERVAL '60 seconds'
-            THEN EXCLUDED.window_started_at
-            ELSE public.momo_xp_rate_limits.window_started_at
-          END,
-          request_count = CASE
-            WHEN public.momo_xp_rate_limits.window_started_at
-              <= EXCLUDED.window_started_at - INTERVAL '60 seconds'
-            THEN 1
-            ELSE public.momo_xp_rate_limits.request_count + 1
-          END
-        WHERE
-          public.momo_xp_rate_limits.window_started_at
-            <= EXCLUDED.window_started_at - INTERVAL '60 seconds'
-          OR public.momo_xp_rate_limits.request_count < 20
-        RETURNING request_count
-      `;
-
-      if (rateLimit.length === 0) {
-        // Exception akan membatalkan transaksi, termasuk pencatatan
-        // event, sehingga request dapat dicoba kembali nanti.
-        throw new RateLimitError();
       }
 
       const updated = await tx.momo_pets.updateMany({
@@ -2120,22 +2074,6 @@ export async function POST(request: NextRequest) {
       { headers: { "Cache-Control": "no-store" } }
     );
   } catch (error) {
-    if (error instanceof RateLimitError) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: error.message,
-        },
-        {
-          status: 429,
-          headers: {
-            "Cache-Control": "no-store",
-            "Retry-After": "60",
-          },
-        }
-      );
-    }
-
     console.error("POST /api/momo/xp:", error);
     return responseError("Gagal menambahkan XP Momo.", 500);
   }
@@ -2997,7 +2935,6 @@ model users {
   oauth_accounts            oauth_accounts[]
   momo_pet                  momo_pets?
   momo_xp_events            momo_xp_events[]
-  momo_xp_rate_limit        momo_xp_rate_limits?
 }
 
 model mindglow_sessions {
@@ -3117,13 +3054,6 @@ model momo_xp_events {
   @@index([user_id, created_at], map: "momo_xp_events_user_created_idx")
 }
 
-model momo_xp_rate_limits {
-  user_id           BigInt   @id
-  window_started_at DateTime @default(now()) @db.Timestamptz(6)
-  request_count     Int      @default(0)
-
-  users users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "momo_xp_rate_limits_user_id_fkey")
-}
 
 
 === GIT STATUS ===

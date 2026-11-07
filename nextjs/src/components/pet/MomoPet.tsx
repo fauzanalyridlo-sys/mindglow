@@ -106,7 +106,6 @@ export default function MomoPet() {
   const saveChainRef = useRef<Promise<void>>(Promise.resolve());
   const dbVersionRef = useRef(0);
   const versionConflictRef = useRef(false);
-  const xpBlockedUntilRef = useRef(0);
 
   useEffect(() => {
     petRef.current = pet;
@@ -130,19 +129,9 @@ export default function MomoPet() {
   const say = useCallback((text: string) => setMessage(text), []);
 
   const awardXp = useCallback((
-    activity: "creeper" | "pet" | "feed" | "play" | "orb"
+    activity: "pet" | "feed" | "play" | "orb"
   ): Promise<void> => {
     if (resettingRef.current || versionConflictRef.current) {
-      return Promise.resolve();
-    }
-
-    if (Date.now() < xpBlockedUntilRef.current) {
-      const remaining = Math.ceil(
-        (xpBlockedUntilRef.current - Date.now()) / 1000
-      );
-      setMessage(
-        `Batas aktivitas XP tercapai. Coba lagi dalam ${remaining} detik.`
-      );
       return Promise.resolve();
     }
 
@@ -156,11 +145,6 @@ export default function MomoPet() {
         versionConflictRef.current ||
         revision !== scoreRevisionRef.current
       ) {
-        return;
-      }
-
-      // Jangan kirim antrean XP yang tertunda selama cooldown.
-      if (Date.now() < xpBlockedUntilRef.current) {
         return;
       }
 
@@ -189,24 +173,6 @@ export default function MomoPet() {
         versionConflictRef.current = true;
         setMessage(
           "Data Momo berubah di perangkat lain. Muat ulang halaman sebelum melanjutkan."
-        );
-        return;
-      }
-
-      // Rate limit adalah kondisi normal, bukan error aplikasi.
-      if (response.status === 429) {
-        const retryAfter = Number(response.headers.get("Retry-After"));
-        const cooldownSeconds =
-          Number.isFinite(retryAfter) && retryAfter > 0
-            ? Math.min(300, Math.ceil(retryAfter))
-            : 60;
-
-        xpBlockedUntilRef.current =
-          Date.now() + cooldownSeconds * 1000;
-
-        setMessage(
-          result.message ??
-            `Batas aktivitas XP tercapai. Coba lagi setelah ${cooldownSeconds} detik.`
         );
         return;
       }
@@ -894,7 +860,6 @@ export default function MomoPet() {
           happiness: clamp(p.happiness + 3),
         }));
 
-        void awardXp("creeper");
       }
 
       if (next.x < -16 || next.x > 116) {
@@ -908,7 +873,7 @@ export default function MomoPet() {
     }, 120);
 
     return () => window.clearInterval(timer);
-  }, [hasCreeper, visible, awardXp]);
+  }, [hasCreeper, visible]);
 
   /* ---------- XP orb: muncul acak, hilang sendiri ---------- */
   useEffect(() => {
