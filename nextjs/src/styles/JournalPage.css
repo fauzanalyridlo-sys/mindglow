@@ -240,7 +240,7 @@
 
   padding-bottom: 12px;
 
-  font-family: "Times New Roman", Times, serif;
+  font-family: var(--font-mindglow), sans-serif;
   font-size: 28px;
   font-weight: normal;
   line-height: 1.4;

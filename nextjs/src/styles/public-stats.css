@@ -28,7 +28,7 @@
 
 .stat-item strong {
   color: #173f35;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-mindglow), sans-serif;
   font-size: 20px;
   font-weight: 700;
 }

@@ -33,7 +33,7 @@
 .features-heading h2 {
   margin: 24px 0 16px;
   color: #263b48;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-mindglow), sans-serif;
   font-size: clamp(30px, 3.5vw, 44px);
   font-weight: 600;
   line-height: 1.25;
@@ -122,7 +122,7 @@
 .feature-card-content h3 {
   margin: 0 0 12px;
   color: #263b48;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-mindglow), sans-serif;
   font-size: 21px;
   font-weight: 600;
 }
