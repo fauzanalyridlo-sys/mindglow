@@ -24,7 +24,7 @@
 .journal-heading h2 {
   margin: 0;
   color: #243c32;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-mindglow), sans-serif;
   font-size: clamp(28px, 3.2vw, 44px);
   font-weight: 500;
   line-height: 1.15;
@@ -59,7 +59,7 @@
 .journal-description h3 {
   margin: 18px 0 12px;
   color: #243c32;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-mindglow), sans-serif;
   font-size: 38px;
   font-weight: 500;
   letter-spacing: -0.04em;

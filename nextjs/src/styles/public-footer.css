@@ -175,7 +175,7 @@
    =================================== */
 
 .site-footer {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-mindglow), sans-serif;
   font-size: 14px;
   text-align: left;
 }

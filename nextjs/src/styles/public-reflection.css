@@ -188,7 +188,7 @@
 .reflection-description h2 {
   margin: 16px 0;
   color: #fff;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-mindglow), sans-serif;
   font-size: clamp(28px, 3vw, 42px);
   font-weight: 500;
   line-height: 1.15;
