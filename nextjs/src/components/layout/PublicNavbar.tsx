@@ -12,7 +12,7 @@ export default function PublicNavbar() {
   return (
     <header className="site-header">
       <div className="container nav-wrap">
-        <Logo />
+        <Logo priority />
 
         <button
           type="button"
