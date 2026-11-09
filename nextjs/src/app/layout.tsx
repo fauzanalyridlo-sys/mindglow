@@ -12,6 +12,10 @@ const lato = Lato({
 export const metadata: Metadata = {
   title: "MindGlow",
   description: "MindGlow — teman perjalanan kesehatan mental dan produktivitasmu.",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
